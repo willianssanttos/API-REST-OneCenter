@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.dto.usuarios.response;
+package onecenter.com.br.ecommerce.dto.produtos.categoria.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsuarioResponse {
+public class CategoriaResponse {
 
-    private String email;
-    private String senha;
+    private String nome;
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import onecenter.com.br.ecommerce.entity.produtos.categoria.CategoriaEntity;
 
 @Data
 @Builder
@@ -13,7 +14,7 @@ public class ProdutosEntity {
 
     private Integer id_produto;
     private String nome;
-    private Float preco;
+    private Double preco;
     private String produto_imagem;
-    private Integer id_categoria;
+    private CategoriaEntity id_categoria;
 }

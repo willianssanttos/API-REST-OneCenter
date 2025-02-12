@@ -23,13 +23,13 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     @Transactional
     public ProdutosEntity criar(ProdutosEntity produtos) {
         try {
-            String sql = "INSERT INTO produtos (nome, preco, imagem_produto, id_categoria) VALUES (?,?,?,?) RETURNING id_produto";
+            String sql = "INSERT INTO produtos (nm_nome, ds_preco, ds_imagem_produto, fk_nr_id_categoria) VALUES (?,?,?,?) RETURNING nr_id_produto";
 
             Integer idProduto = jdbcTemplate.queryForObject(sql, Integer.class,
                     produtos.getNome(),
                     produtos.getPreco(),
                     produtos.getProduto_imagem(),
-                    produtos.getId_categoria()
+                    produtos.getId_categoria().getId_categoria()
             );
 
             produtos.setId_produto(idProduto);
@@ -48,6 +48,5 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
             throw new ObterProdutosNotFundException();
         }
     }
-
 
 }

@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.service.imagem;
+package onecenter.com.br.ecommerce.service.produtos.imagem;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

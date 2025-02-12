@@ -4,9 +4,11 @@ import onecenter.com.br.ecommerce.config.exception.ObterProdutosNotFundException
 import onecenter.com.br.ecommerce.config.exception.ProdutoException;
 import onecenter.com.br.ecommerce.dto.produtos.request.ProdutoRequest;
 import onecenter.com.br.ecommerce.dto.produtos.response.ProdutosResponse;
+import onecenter.com.br.ecommerce.entity.produtos.categoria.CategoriaEntity;
 import onecenter.com.br.ecommerce.entity.produtos.ProdutosEntity;
+import onecenter.com.br.ecommerce.repository.produtos.categoria.ICategoriaRepository;
 import onecenter.com.br.ecommerce.repository.produtos.IProdutosRepository;
-import onecenter.com.br.ecommerce.service.imagem.FileStorageService;
+import onecenter.com.br.ecommerce.service.produtos.imagem.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,18 +21,23 @@ public class ProdutosService {
     private IProdutosRepository iProdutosRepository;
 
     @Autowired
+    private ICategoriaRepository iCategoriaRepository;
+
+    @Autowired
     private FileStorageService fileStorageService;
 
     public ProdutosResponse criar(ProdutoRequest produto){
 
        try {
+
+           CategoriaEntity categoria = iCategoriaRepository.categoriaId(produto.getId_categoria());
            String caminhoImagem = fileStorageService.salvarImagem(produto.getProduto_imagem());
 
            ProdutosEntity novoProduto = ProdutosEntity.builder()
                .nome(produto.getNome())
                .preco(produto.getPreco())
                .produto_imagem(caminhoImagem)
-               .id_categoria(produto.getId_categoria())
+               .id_categoria(categoria)
                .build();
 
            ProdutosEntity produtoInserido = iProdutosRepository.criar(novoProduto);
@@ -46,7 +53,7 @@ public class ProdutosService {
                 .nome(produtoInserido.getNome())
                 .preco(produtoInserido.getPreco())
                 .produto_imagem(String.valueOf(produtoInserido.getProduto_imagem()))
-                .id_categoria(produtoInserido.getId_categoria())
+                .id_categoria(produtoInserido.getId_categoria().getId_categoria())
                 .build();
     }
 

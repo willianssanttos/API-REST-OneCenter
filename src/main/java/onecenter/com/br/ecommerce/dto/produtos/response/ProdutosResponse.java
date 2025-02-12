@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class ProdutosResponse {
 
     private String nome;
-    private Float preco;
+    private Double preco;
     private String produto_imagem;
     private Integer id_categoria;
 }

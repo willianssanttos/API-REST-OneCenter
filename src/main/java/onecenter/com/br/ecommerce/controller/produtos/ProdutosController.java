@@ -22,7 +22,7 @@ public class ProdutosController {
     @PostMapping(value = "/criar", consumes = {"multipart/form-data"})
     public ResponseEntity<ProdutosResponse> criarProduto(
             @RequestParam("nome") String nome,
-            @RequestParam("preco") Float preco,
+            @RequestParam("preco") Double preco,
             @RequestParam("id_categoria") Integer idCategoria,
             @RequestParam("produto_imagem") MultipartFile  imagem) {
 

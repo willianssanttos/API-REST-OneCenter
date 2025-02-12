@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.dto.produtos.request;
+package onecenter.com.br.ecommerce.dto.produtos.categoria.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

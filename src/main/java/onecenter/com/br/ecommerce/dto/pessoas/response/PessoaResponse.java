@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.entity.usuarios;
+package onecenter.com.br.ecommerce.dto.pessoas.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsuarioEntity {
+public class PessoaResponse {
 
-    private Integer id_usuario;
+    private String nome_razaosocial;
     private String email;
     private String senha;
+    private String telefone;
 }

@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.dto.usuarios.request;
+package onecenter.com.br.ecommerce.dto.pessoas.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsuarioRequest {
+public class PessoaRequest {
 
-    private Integer id_usuario;
+    private Integer id_pessoa;
+    private String nome_razaosocial;
     private String email;
     private String senha;
+    private String telefone;
 }
