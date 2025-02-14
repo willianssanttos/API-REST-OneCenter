@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS pessoas (
 
 CREATE TABLE IF NOT EXISTS pessoas_fisicas (
     nr_id_pessoa_fisica SERIAL NOT NULL PRIMARY KEY,
-    ds_cpf CHAR(11) UNIQUE NOT NULL,
-    ds_data_nascimento TIMESTAMP NOT NULL,
+    ds_cpf VARCHAR(11) UNIQUE NOT NULL,
+    ds_data_nascimento DATE NOT NULL,
     fk_nr_id_pessoa INT NOT NULL,
     FOREIGN KEY (fk_nr_id_pessoa) REFERENCES pessoas (nr_id_pessoa)
 );
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS pessoas_fisicas (
 CREATE TABLE IF NOT EXISTS pessoas_juridicas (
     nr_id_pessoa_juridica SERIAL NOT NULL PRIMARY KEY,
     nm_nome_fantasia VARCHAR(255),
-    ds_cnpj CHAR(14) UNIQUE NOT NULL,
+    ds_cnpj VARCHAR(14) UNIQUE NOT NULL,
     fk_nr_id_pessoa INT NOT NULL,
     FOREIGN KEY (fk_nr_id_pessoa) REFERENCES pessoas (nr_id_pessoa)
 );

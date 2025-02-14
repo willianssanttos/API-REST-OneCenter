@@ -13,9 +13,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class PessoaFisicaResponse extends PessoaResponse {
+public class PessoaFisicaResponse extends PessoaResponse{
 
-    private Integer id_pessoa_fisica;
-    private Character cpf;
+    private String cpf;
     private LocalDate data_nascimento;
 }

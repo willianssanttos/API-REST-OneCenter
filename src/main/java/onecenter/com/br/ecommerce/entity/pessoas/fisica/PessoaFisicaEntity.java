@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import onecenter.com.br.ecommerce.entity.pessoas.PessoaEntity;
-
 import java.time.LocalDate;
 
 @Data
@@ -14,8 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class PessoaFisicaEntity extends PessoaEntity {
 
-    private Integer id_pessoa_fisica;
-    private Character cpf;
+    private String cpf;
     private LocalDate data_nascimento;
 
 }

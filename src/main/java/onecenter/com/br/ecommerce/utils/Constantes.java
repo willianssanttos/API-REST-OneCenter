@@ -12,6 +12,8 @@ public class Constantes {
 
     public static final String ErroCadastrarPessoa = "Erro ao realizar o cadastro de usuário!";
 
+    public static final String ErroBuscarCpfPessoa = "Erro ao localizar pessoa por cpf!";
+
 
 
 

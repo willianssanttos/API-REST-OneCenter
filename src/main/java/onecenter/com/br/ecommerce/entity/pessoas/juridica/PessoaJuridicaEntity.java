@@ -14,6 +14,6 @@ public class PessoaJuridicaEntity extends PessoaEntity {
 
     private Integer id_pessoa_juridica;
     private String nome_fantasia;
-    private Character cnpj;
+    private String cnpj;
 
 }

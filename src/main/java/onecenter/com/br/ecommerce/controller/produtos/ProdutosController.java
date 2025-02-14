@@ -36,8 +36,29 @@ public class ProdutosController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<ProdutosEntity>> obterTodosProdutos(){
-        List<ProdutosEntity> response = produtosService.obterTodosProdutos();
+    public ResponseEntity<List<ProdutosResponse>> obterTodosProdutos(){
+        List<ProdutosResponse> response = produtosService.obterTodosProdutos();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PutMapping(value = "/atualizar-produto/{idProduto}", consumes = {"multipart/form-data"})
+    public ResponseEntity<String> atualizarProduto(
+            @PathVariable Integer idProduto,
+            @RequestParam("nome") String nome,
+            @RequestParam("preco") Double preco,
+            @RequestParam("id_categoria") Integer idCategoria,
+            @RequestParam("produto_imagem") MultipartFile  imagem) {
+
+        ProdutosResponse produto = new ProdutosResponse();
+        produto.setId_produto(idProduto);
+        produto.setNome(nome);
+        produto.setPreco(preco);
+        produto.setId_categoria(idCategoria);
+        produto.setProduto_imagem(String.valueOf(imagem));
+
+        produtosService.atualizarProduto(produto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+
 }

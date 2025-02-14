@@ -11,8 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProdutosResponse {
 
+    private Integer id_produto;
     private String nome;
     private Double preco;
     private String produto_imagem;
     private Integer id_categoria;
+
 }

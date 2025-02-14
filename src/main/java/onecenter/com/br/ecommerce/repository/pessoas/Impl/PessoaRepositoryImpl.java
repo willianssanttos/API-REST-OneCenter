@@ -17,7 +17,7 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
     @Transactional
     public PessoaEntity criarPessoa(PessoaEntity pessoa){
         try{
-            String sql = "INSERT INTO pessoas (nm_nome_razaosocial, ds_email, ds_senha, ds_telefone) VALUES (?,?,?,?) RETURNING nr_id_pessoas";
+            String sql = "INSERT INTO pessoas (nm_nome_razaosocial, ds_email, ds_senha, ds_telefone) VALUES (?,?,?,?) RETURNING nr_id_pessoa";
 
             Integer idPessoa = jdbcTemplate.queryForObject(sql, Integer.class,
                     pessoa.getNome_razaosocial(),

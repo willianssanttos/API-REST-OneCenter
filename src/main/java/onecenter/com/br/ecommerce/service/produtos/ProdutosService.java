@@ -11,8 +11,12 @@ import onecenter.com.br.ecommerce.repository.produtos.IProdutosRepository;
 import onecenter.com.br.ecommerce.service.produtos.imagem.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProdutosService {
@@ -37,7 +41,7 @@ public class ProdutosService {
                .nome(produto.getNome())
                .preco(produto.getPreco())
                .produto_imagem(caminhoImagem)
-               .id_categoria(categoria)
+               .id_categoria(categoria.getId_categoria())
                .build();
 
            ProdutosEntity produtoInserido = iProdutosRepository.criar(novoProduto);
@@ -50,18 +54,32 @@ public class ProdutosService {
 
     private ProdutosResponse mapearProduto(ProdutosEntity produtoInserido){
         return ProdutosResponse.builder()
+                .id_produto(produtoInserido.getId_produto())
                 .nome(produtoInserido.getNome())
                 .preco(produtoInserido.getPreco())
                 .produto_imagem(String.valueOf(produtoInserido.getProduto_imagem()))
-                .id_categoria(produtoInserido.getId_categoria().getId_categoria())
+                .id_categoria(produtoInserido.getId_categoria())
                 .build();
     }
 
-    public List<ProdutosEntity> obterTodosProdutos(){
+    public List<ProdutosResponse> obterTodosProdutos(){
         try {
-            return iProdutosRepository.obterTodosProdutos();
+            List<ProdutosEntity> produtos = iProdutosRepository.obterTodosProdutos();
+            return produtos.stream().map(this::mapearProduto).collect(Collectors.toList());
         } catch (Exception e){
             throw new ObterProdutosNotFundException();
         }
     }
+
+    public void atualizarProduto(ProdutosResponse editar){
+        try {
+
+            iProdutosRepository.atualizarProduto(editar);
+        } catch (Exception e){
+            throw new ProdutoException();
+        }
+    }
+
+
+
 }

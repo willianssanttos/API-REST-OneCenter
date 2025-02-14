@@ -14,5 +14,5 @@ public class PessoaJuridicaRequest extends PessoaRequest {
 
     private Integer id_pessoa_juridica;
     private String nome_fantasia;
-    private Character cnpj;
+    private String cnpj;
 }
