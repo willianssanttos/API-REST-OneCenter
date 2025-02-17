@@ -3,7 +3,6 @@ package onecenter.com.br.ecommerce.utils;
 public class Constantes {
 
     //Mensagem debug logger
-
     public static final String DebugRegistroProcesso = "Iniciando o processo de registro no servidor. ";
     public static final String DebugBuscarProcesso = "Iniciando o processo de busca no servidor.";
     public static final String DebugEditarProcesso = "Iniciando o processo de edição do registro no servidor.";
@@ -23,19 +22,36 @@ public class Constantes {
     public static final String ErroEditarRegistroNoServidor = "Erro ao atualizar registro '{}' no servidor! Motivo: {}";
     public static final String ErroDeletarRegistroNoServidor = "Erro ao deletar registro '{}' no servidor! Motivo: {}";
 
+
+    //Mensagem de erro de produtos
+    public static final String ErroCadastrarProduto = "Não foi possivel cadastrar o produto!";
+    public static final String ErroBuscarProduto = "Produtos não encontrados!";
+    public static final String ErroDeletarProduto = "Erro ao deletar o produto!";
+    public static final String ErroEditarProduto = "Erro ao realizar alteração das informações do produto!";
+
+
+
+    //Mensagem de erro categoria de produtos
+    public static final String ErroCadastrarCategoria = "Categoria não cadastrada!";
     public static final String ErroBuscarCategoria = "Categoria não encontrada!";
 
+
+    //Mensagem de erro de imagem produto
     public static final String ErroBuscarImagemProduto = "Imagem do produto não encontrado!";
-    public static final String ErroCadastrarProduto = "Não foi possivel cadastrar o produto!";
 
-    public static final String ErroBuscarProduto = "Produtos não encontrados!";
-    public static final String ErroCadastrarCategoria = "Categoria não cadastrada!";
 
-    public static final String ErroCadastrarPessoa = "Erro ao realizar o cadastro de usuário!";
 
-    public static final String ErroBuscarCpfPessoa = "Erro ao localizar pessoa por cpf!";
 
-    public static final String ErroDeletarProduto = "Erro ao deletar o produto!";
+
+    // Mensagem de erro de pessoas
+    public static final String ErroCadastrarPessoa = "Erro ao realizar o cadastro de usuário! Tente novamente mais tarde.";
+
+    public static final String ErroBuscarCpfPessoa = "CPF do cliente não encontrado!";
+
+    public static final String ErroListaCliente = "Lista de cliente não encontrada!";
+
+    public static final String ErroEditarPessoa = "Não foi possivel editar os dados! Tente novamente mais tarde.";
+
 
 
 

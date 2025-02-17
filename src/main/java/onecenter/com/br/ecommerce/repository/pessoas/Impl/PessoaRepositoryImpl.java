@@ -1,7 +1,13 @@
 package onecenter.com.br.ecommerce.repository.pessoas.Impl;
 
-import onecenter.com.br.ecommerce.config.exception.PessoaException;
+import onecenter.com.br.ecommerce.config.exception.pessoas.EditarPessoaException;
+import onecenter.com.br.ecommerce.config.exception.pessoas.ObterPessoaPorCpfNotFoundException;
+import onecenter.com.br.ecommerce.config.exception.pessoas.PessoaException;
+import onecenter.com.br.ecommerce.dto.pessoas.response.PessoaResponse;
+import onecenter.com.br.ecommerce.dto.pessoas.response.fisica.PessoaFisicaResponse;
 import onecenter.com.br.ecommerce.entity.pessoas.PessoaEntity;
+import onecenter.com.br.ecommerce.entity.pessoas.fisica.PessoaFisicaEntity;
+import onecenter.com.br.ecommerce.repository.mapper.PessoaFisicaRowMapper;
 import onecenter.com.br.ecommerce.repository.pessoas.IPessoaRepository;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import org.slf4j.Logger;
@@ -39,4 +45,21 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
         }
         return pessoa;
     }
+
+    @Override
+    @Transactional
+    public PessoaEntity obterPessoaPorId(Integer idPessoa){
+        logger.info(Constantes.DebugBuscarProcesso);
+        try {
+            String sql = "SELECT nr_id_pessoa, nm_nome_razaosocial, ds_email, ds_senha, ds_telefone,\n" +
+                    "           ds_cpf, ds_data_nascimento\n" +
+                    "    FROM pessoas WHERE nr_id_pessoa = ?";
+            logger.info(Constantes.InfoBuscar, idPessoa);
+            return jdbcTemplate.queryForObject(sql, new Object[] { idPessoa }, new PessoaFisicaRowMapper());
+        } catch (DataAccessException e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
+            throw new ObterPessoaPorCpfNotFoundException();
+        }
+    }
+
 }

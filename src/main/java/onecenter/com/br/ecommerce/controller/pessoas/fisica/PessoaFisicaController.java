@@ -45,4 +45,15 @@ public class PessoaFisicaController {
         logger.info(Constantes.InfoBuscar, response);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PutMapping("/atualizar-dados/{cpf}")
+    public ResponseEntity<PessoaFisicaResponse> alterarDados(@PathVariable String cpf, @RequestBody PessoaFisicaResponse editar) {
+        if (cpf.length() == 11) {
+            editar.setCpf(cpf);
+            PessoaFisicaResponse response = pessoaFisicaService.atualizarDados(editar);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
 }

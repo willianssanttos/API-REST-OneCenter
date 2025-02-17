@@ -1,6 +1,6 @@
 package onecenter.com.br.ecommerce.repository.pessoas.juridica.Impl;
 
-import onecenter.com.br.ecommerce.config.exception.PessoaException;
+import onecenter.com.br.ecommerce.config.exception.pessoas.PessoaException;
 import onecenter.com.br.ecommerce.entity.pessoas.juridica.PessoaJuridicaEntity;
 import onecenter.com.br.ecommerce.repository.pessoas.juridica.IPessoaJuridicaRepository;
 import onecenter.com.br.ecommerce.utils.Constantes;

@@ -1,8 +1,9 @@
 package onecenter.com.br.ecommerce.service.produtos;
 
-import onecenter.com.br.ecommerce.config.exception.DeletarProdutoException;
-import onecenter.com.br.ecommerce.config.exception.ObterProdutosNotFundException;
-import onecenter.com.br.ecommerce.config.exception.ProdutoException;
+import onecenter.com.br.ecommerce.config.exception.produtos.DeletarProdutoException;
+import onecenter.com.br.ecommerce.config.exception.produtos.EditarProdutoException;
+import onecenter.com.br.ecommerce.config.exception.produtos.ObterProdutosNotFundException;
+import onecenter.com.br.ecommerce.config.exception.produtos.ProdutoException;
 import onecenter.com.br.ecommerce.dto.produtos.request.ProdutoRequest;
 import onecenter.com.br.ecommerce.dto.produtos.response.ProdutosResponse;
 import onecenter.com.br.ecommerce.entity.produtos.categoria.CategoriaEntity;
@@ -86,7 +87,7 @@ public class ProdutosService {
             return iProdutosRepository.atualizarProduto(editar);
         } catch (Exception e){
             logger.error(Constantes.ErroEditarRegistroNoServidor);
-            throw new ProdutoException();
+            throw new EditarProdutoException();
         }
     }
 

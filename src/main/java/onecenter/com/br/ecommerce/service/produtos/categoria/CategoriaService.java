@@ -1,7 +1,7 @@
 package onecenter.com.br.ecommerce.service.produtos.categoria;
 
-import onecenter.com.br.ecommerce.config.exception.CategoriaException;
-import onecenter.com.br.ecommerce.config.exception.CategoriaNotFoundException;
+import onecenter.com.br.ecommerce.config.exception.produtos.categoria.CategoriaException;
+import onecenter.com.br.ecommerce.config.exception.produtos.categoria.CategoriaNotFoundException;
 import onecenter.com.br.ecommerce.dto.produtos.categoria.request.CategoriaRequest;
 import onecenter.com.br.ecommerce.dto.produtos.categoria.response.CategoriaResponse;
 import onecenter.com.br.ecommerce.entity.produtos.categoria.CategoriaEntity;

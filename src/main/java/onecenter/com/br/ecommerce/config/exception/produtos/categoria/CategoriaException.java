@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.config.exception;
+package onecenter.com.br.ecommerce.config.exception.produtos.categoria;
 
 import onecenter.com.br.ecommerce.utils.Constantes;
 

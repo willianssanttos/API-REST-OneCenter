@@ -1,8 +1,9 @@
 package onecenter.com.br.ecommerce.repository.produtos.Impl;
 
-import onecenter.com.br.ecommerce.config.exception.DeletarProdutoException;
-import onecenter.com.br.ecommerce.config.exception.ObterProdutosNotFundException;
-import onecenter.com.br.ecommerce.config.exception.ProdutoException;
+import onecenter.com.br.ecommerce.config.exception.produtos.DeletarProdutoException;
+import onecenter.com.br.ecommerce.config.exception.produtos.EditarProdutoException;
+import onecenter.com.br.ecommerce.config.exception.produtos.ObterProdutosNotFundException;
+import onecenter.com.br.ecommerce.config.exception.produtos.ProdutoException;
 import onecenter.com.br.ecommerce.dto.produtos.response.ProdutosResponse;
 import onecenter.com.br.ecommerce.entity.produtos.ProdutosEntity;
 import onecenter.com.br.ecommerce.repository.mapper.ProdutosRowMapper;
@@ -70,7 +71,7 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
             logger.info(Constantes.InfoEditar, editar);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroEditarRegistroNoServidor, e.getMessage());
-            throw new ProdutoException();
+            throw new EditarProdutoException();
         }
         return editar;
     }

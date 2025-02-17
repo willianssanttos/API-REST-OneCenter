@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class PessoaFisicaEntity extends PessoaEntity {
 
+    private Integer pessoa_fisica;
     private String cpf;
     private LocalDate data_nascimento;
 

@@ -1,8 +1,9 @@
 package onecenter.com.br.ecommerce.service.pessoas.fisica;
 
-import onecenter.com.br.ecommerce.config.exception.ObterPessoaPorCpfNotFoundException;
-import onecenter.com.br.ecommerce.config.exception.ObterProdutosNotFundException;
-import onecenter.com.br.ecommerce.config.exception.PessoaException;
+import onecenter.com.br.ecommerce.config.exception.pessoas.EditarPessoaException;
+import onecenter.com.br.ecommerce.config.exception.pessoas.ObterPessoaPorCpfNotFoundException;
+import onecenter.com.br.ecommerce.config.exception.pessoas.ObterTodasPessoas;
+import onecenter.com.br.ecommerce.config.exception.pessoas.PessoaException;
 import onecenter.com.br.ecommerce.dto.pessoas.request.fisica.PessoaFisicaRequest;
 import onecenter.com.br.ecommerce.dto.pessoas.response.fisica.PessoaFisicaResponse;
 import onecenter.com.br.ecommerce.entity.pessoas.PessoaEntity;
@@ -92,8 +93,25 @@ public class PessoaFisicaService {
             return todasPessos.stream().map(this::mapearPessoaFisica).collect(Collectors.toList());
         } catch (Exception e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor);
-            throw new ObterProdutosNotFundException();
+            throw new ObterTodasPessoas();
         }
     }
+
+    public PessoaFisicaResponse atualizarDados(PessoaFisicaResponse editar) {
+        logger.info(Constantes.DebugEditarProcesso);
+        try {
+            // Busca o ID da pessoa com base no CPF
+            PessoaFisicaEntity idPessoa = iPessoaFisicaRepository.buscarPorCpf(editar.getCpf());
+            if (idPessoa == null) {
+                throw new EditarPessoaException();
+            }
+            return iPessoaFisicaRepository.atualizarDados(editar);
+        } catch (Exception e) {
+            logger.error(Constantes.ErroEditarRegistroNoServidor, e);
+            throw new EditarPessoaException();
+        }
+    }
+
+
 
 }

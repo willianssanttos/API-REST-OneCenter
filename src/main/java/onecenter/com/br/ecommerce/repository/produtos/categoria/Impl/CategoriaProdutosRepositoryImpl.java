@@ -1,7 +1,7 @@
 package onecenter.com.br.ecommerce.repository.produtos.categoria.Impl;
 
-import onecenter.com.br.ecommerce.config.exception.CategoriaException;
-import onecenter.com.br.ecommerce.config.exception.CategoriaNotFoundException;
+import onecenter.com.br.ecommerce.config.exception.produtos.categoria.CategoriaException;
+import onecenter.com.br.ecommerce.config.exception.produtos.categoria.CategoriaNotFoundException;
 import onecenter.com.br.ecommerce.entity.produtos.categoria.CategoriaEntity;
 import onecenter.com.br.ecommerce.repository.mapper.CategoriaRowMapper;
 import onecenter.com.br.ecommerce.repository.produtos.categoria.ICategoriaRepository;
