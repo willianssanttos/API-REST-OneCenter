@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.service.produtos;
 
+import onecenter.com.br.ecommerce.config.exception.DeletarProdutoException;
 import onecenter.com.br.ecommerce.config.exception.ObterProdutosNotFundException;
 import onecenter.com.br.ecommerce.config.exception.ProdutoException;
 import onecenter.com.br.ecommerce.dto.produtos.request.ProdutoRequest;
@@ -11,10 +12,6 @@ import onecenter.com.br.ecommerce.repository.produtos.IProdutosRepository;
 import onecenter.com.br.ecommerce.service.produtos.imagem.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,6 +77,13 @@ public class ProdutosService {
         }
     }
 
+    public void excluirProduto(Integer idProduto){
+        try {
+            iProdutosRepository.excluirProduto(idProduto);
+        } catch (Exception e){
+            throw new DeletarProdutoException();
+        }
+    }
 
 
 }

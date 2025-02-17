@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.repository.produtos.Impl;
 
+import onecenter.com.br.ecommerce.config.exception.DeletarProdutoException;
 import onecenter.com.br.ecommerce.config.exception.ObterProdutosNotFundException;
 import onecenter.com.br.ecommerce.config.exception.ProdutoException;
 import onecenter.com.br.ecommerce.dto.produtos.request.ProdutoRequest;
@@ -60,6 +61,17 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
             jdbcTemplate.update(sql,editar.getNome(), editar.getPreco(), editar.getProduto_imagem(), editar.getId_categoria(), editar.getId_produto());
         } catch (DataAccessException e){
             throw new ProdutoException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void excluirProduto(Integer idProduto){
+        try {
+            String sql = "DELETE FROM produtos WHERE nr_id_produto = ?";
+            jdbcTemplate.update(sql, idProduto);
+        } catch (DataAccessException e){
+            throw new DeletarProdutoException();
         }
     }
 

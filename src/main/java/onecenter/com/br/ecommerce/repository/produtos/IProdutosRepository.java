@@ -14,4 +14,6 @@ public interface IProdutosRepository {
 
     void atualizarProduto(ProdutosResponse editar);
 
+    void excluirProduto(Integer idProduto);
+
 }

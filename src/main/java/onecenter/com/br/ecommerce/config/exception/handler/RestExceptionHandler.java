@@ -17,6 +17,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({
             Exception.class,
+            DeletarProdutoException.class,
 
     })
     public ResponseEntity<ApiError> genericException(Exception ex) {

@@ -14,6 +14,9 @@ public class Constantes {
 
     public static final String ErroBuscarCpfPessoa = "Erro ao localizar pessoa por cpf!";
 
+    public static final String ErroDeletarProduto = "Erro ao deletar o produto!";
+
+
 
 
 
