@@ -1,0 +1,66 @@
+CREATE TABLE IF NOT EXISTS pessoas (
+    nr_id_pessoa SERIAL NOT NULL PRIMARY KEY,
+    nm_nome_razaosocial VARCHAR(100) NOT NULL,
+    ds_email VARCHAR(100) NOT NULL,
+    ds_senha VARCHAR(100) NOT NULL,
+    ds_telefone VARCHAR(100)
+);
+
+CREATE TABLE IF NOT EXISTS pessoas_fisicas (
+    nr_id_pessoa_fisica SERIAL NOT NULL PRIMARY KEY,
+    ds_cpf VARCHAR(11) UNIQUE NOT NULL,
+    ds_data_nascimento DATE NOT NULL,
+    fk_nr_id_pessoa INT NOT NULL,
+    FOREIGN KEY (fk_nr_id_pessoa) REFERENCES pessoas (nr_id_pessoa)
+);
+
+CREATE TABLE IF NOT EXISTS pessoas_juridicas (
+    nr_id_pessoa_juridica SERIAL NOT NULL PRIMARY KEY,
+    nm_nome_fantasia VARCHAR(255),
+    ds_cnpj VARCHAR(14) UNIQUE NOT NULL,
+    fk_nr_id_pessoa INT NOT NULL,
+    FOREIGN KEY (fk_nr_id_pessoa) REFERENCES pessoas (nr_id_pessoa)
+);
+
+CREATE TABLE IF NOT EXISTS enderecos (
+   nr_id_endereco SERIAL NOT NULL PRIMARY KEY,
+   nm_rua VARCHAR(50) NOT NULL,
+   ds_numero VARCHAR(50),
+   ds_bairro VARCHAR(50) NOT NULL,
+   ds_cidade VARCHAR(50) NOT NULL,
+   ds_uf VARCHAR(2) NOT NULL,
+   ds_cep VARCHAR(10) NOT NULL,
+   fk_nr_id_pessoa INT NOT NULL,
+   FOREIGN KEY (fk_nr_id_pessoa) REFERENCES pessoas (nr_id_pessoa)
+);
+
+CREATE TABLE IF NOT EXISTS categorias (
+    nr_id_categoria SERIAL NOT NULL PRIMARY KEY,
+    nm_nome VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS produtos (
+    nr_id_produto SERIAL NOT NULL PRIMARY KEY ,
+    nm_nome VARCHAR(100) NOT NULL,
+    ds_preco DOUBLE precision NOT NULL,
+    ds_imagem_produto VARCHAR(255) NOT NULL,
+    fk_nr_id_categoria INT NOT NULL,
+    FOREIGN KEY (fk_nr_id_categoria) REFERENCES categorias (nr_id_categoria)
+);
+
+CREATE TABLE IF NOT EXISTS imagens_produtos (
+    nr_id_imagem SERIAL NOT NULL PRIMARY KEY,
+    fk_nr_id_produto INT,
+    ds_caminho VARCHAR(255),
+    FOREIGN KEY (fk_nr_id_produto) REFERENCES produtos (nr_id_produto)
+);
+
+CREATE TABLE IF NOT EXISTS pedidos (
+    nr_id_pedido SERIAL NOT NULL PRIMARY KEY,
+    fk_nr_id_produto INT NOT NULL,
+    ds_quantidade INT NOT NULL,
+    fk_nr_id_pessoa INT NOT NULL,
+    FOREIGN KEY (fk_nr_id_pessoa) REFERENCES pessoas (nr_id_pessoa),
+    FOREIGN KEY (fk_nr_id_produto) REFERENCES produtos (nr_id_produto)
+);
+
