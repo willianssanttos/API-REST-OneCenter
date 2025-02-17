@@ -1,8 +1,9 @@
-HELP.md
+ELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+/logs/ecommerce/application.log
 
 ### STS ###
 .apt_generated

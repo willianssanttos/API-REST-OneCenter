@@ -16,4 +16,11 @@ public class PessoaFisicaEntity extends PessoaEntity {
     private String cpf;
     private LocalDate data_nascimento;
 
+    @Override
+    public String toString() {
+        return "PessoaFisicaEntity{" +
+                " Data de Nascimento= " + data_nascimento +
+                '}';
+    }
+
 }

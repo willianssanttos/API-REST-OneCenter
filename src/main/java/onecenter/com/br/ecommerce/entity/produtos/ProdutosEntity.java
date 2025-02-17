@@ -17,4 +17,15 @@ public class ProdutosEntity extends CategoriaEntity{
     private Double preco;
     private String produto_imagem;
 
+    @Override
+    public String toString() {
+        return "ProdutosEntity{" +
+                "ID= " + id_produto +
+                ", Nome= '" + nome + '\'' +
+                ", Preço= " + preco +
+                ", Imagem= '" + produto_imagem + '\'' +
+                '}';
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.service.pessoas.fisica;
 
+import onecenter.com.br.ecommerce.config.exception.ObterPessoaPorCpfNotFoundException;
 import onecenter.com.br.ecommerce.config.exception.ObterProdutosNotFundException;
 import onecenter.com.br.ecommerce.config.exception.PessoaException;
 import onecenter.com.br.ecommerce.dto.pessoas.request.fisica.PessoaFisicaRequest;
@@ -9,6 +10,9 @@ import onecenter.com.br.ecommerce.entity.pessoas.fisica.PessoaFisicaEntity;
 import onecenter.com.br.ecommerce.repository.pessoas.IPessoaRepository;
 import onecenter.com.br.ecommerce.repository.pessoas.fisica.IPessoaFisicaRepository;
 import onecenter.com.br.ecommerce.repository.pessoas.juridica.IPessoaJuridicaRepository;
+import onecenter.com.br.ecommerce.utils.Constantes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +31,10 @@ public class PessoaFisicaService {
     @Autowired
     private IPessoaJuridicaRepository iPessoaJuridicaRepository;
 
-    public PessoaFisicaResponse cadastrarPessoaFisica (PessoaFisicaRequest fisica){
+    private static final Logger logger = LoggerFactory.getLogger(PessoaFisicaService.class);
 
+    public PessoaFisicaResponse cadastrarPessoaFisica (PessoaFisicaRequest fisica){
+        logger.info(Constantes.DebugRegistroProcesso);
         try {
             PessoaEntity pessoa = PessoaEntity.builder()
                     .nome_razaosocial(fisica.getNome_razaosocial())
@@ -45,10 +51,11 @@ public class PessoaFisicaService {
                     .data_nascimento(fisica.getData_nascimento())
                     .build();
 
-            PessoaFisicaEntity fisicaCriada = iPessoaFisicaRepository.criarFisica(criarFisica);
-
+            iPessoaFisicaRepository.criarFisica(criarFisica);
+            logger.info(Constantes.InfoRegistrar, fisica);
             return mapearPessoaFisica(criarFisica);
         } catch (Exception e){
+            logger.error(Constantes.ErroRegistrarNoServidor);
             throw new PessoaException();
         }
     }
@@ -66,15 +73,25 @@ public class PessoaFisicaService {
     }
 
     public PessoaFisicaResponse obterPorCpf(String CPF){
-        PessoaFisicaEntity pessoaFisica = iPessoaFisicaRepository.buscarPorCpf(CPF);
-        return mapearPessoaFisica(pessoaFisica);
+        logger.info(Constantes.DebugBuscarProcesso);
+        try {
+            PessoaFisicaEntity pessoaFisica = iPessoaFisicaRepository.buscarPorCpf(CPF);
+            logger.info(Constantes.InfoBuscar, CPF);
+            return mapearPessoaFisica(pessoaFisica);
+        } catch (Exception e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor);
+            throw new ObterPessoaPorCpfNotFoundException();
+        }
     }
 
     public List<PessoaFisicaResponse> obterTodasPessoas(){
+        logger.info(Constantes.DebugBuscarProcesso);
         try {
              List<PessoaFisicaEntity> todasPessos = iPessoaFisicaRepository.obterTodasPessos();
-             return todasPessos.stream().map(this::mapearPessoaFisica).collect(Collectors.toList());
+            logger.info(Constantes.InfoBuscar, todasPessos);
+            return todasPessos.stream().map(this::mapearPessoaFisica).collect(Collectors.toList());
         } catch (Exception e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor);
             throw new ObterProdutosNotFundException();
         }
     }
