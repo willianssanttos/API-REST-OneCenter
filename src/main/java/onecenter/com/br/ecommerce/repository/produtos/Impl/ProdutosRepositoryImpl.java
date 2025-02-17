@@ -55,10 +55,11 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
 
     @Override
     @Transactional
-    public void atualizarProduto(ProdutosResponse editar){
+    public ProdutosResponse atualizarProduto(ProdutosResponse editar){
         try {
-            String sql = "UPDATE produtos SET nm_nome = ?, ds_preco = ?, ds_imagem_produto = ?, fk_nr_id_categoria = ? WHERE id = ?";
+            String sql = "UPDATE produtos SET nm_nome = ?, ds_preco = ?, ds_imagem_produto = ?, fk_nr_id_categoria = ? WHERE nr_id_produto = ?";
             jdbcTemplate.update(sql,editar.getNome(), editar.getPreco(), editar.getProduto_imagem(), editar.getId_categoria(), editar.getId_produto());
+            return editar;
         } catch (DataAccessException e){
             throw new ProdutoException();
         }

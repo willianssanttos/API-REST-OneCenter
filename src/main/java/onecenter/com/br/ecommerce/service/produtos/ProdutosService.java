@@ -68,10 +68,9 @@ public class ProdutosService {
         }
     }
 
-    public void atualizarProduto(ProdutosResponse editar){
+    public ProdutosResponse atualizarProduto(ProdutosResponse editar){
         try {
-
-            iProdutosRepository.atualizarProduto(editar);
+            return iProdutosRepository.atualizarProduto(editar);
         } catch (Exception e){
             throw new ProdutoException();
         }
@@ -84,6 +83,5 @@ public class ProdutosService {
             throw new DeletarProdutoException();
         }
     }
-
 
 }
