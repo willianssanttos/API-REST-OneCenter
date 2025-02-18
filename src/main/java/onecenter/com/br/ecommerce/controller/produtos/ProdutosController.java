@@ -4,9 +4,6 @@ import onecenter.com.br.ecommerce.dto.produtos.request.ProdutoRequest;
 import onecenter.com.br.ecommerce.dto.produtos.response.ProdutosResponse;
 import onecenter.com.br.ecommerce.service.produtos.ProdutosService;
 import onecenter.com.br.ecommerce.service.produtos.imagem.FileStorageService;
-import onecenter.com.br.ecommerce.utils.Constantes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +23,6 @@ public class ProdutosController {
     @Autowired
     private FileStorageService fileStorageService;
 
-    private static final Logger logger = LoggerFactory.getLogger(ProdutosController.class);
-
     @PostMapping(value = "/criar", consumes = {"multipart/form-data"})
     public ResponseEntity<ProdutosResponse> criarProduto(
             @RequestParam("nome") String nome,
@@ -41,14 +36,12 @@ public class ProdutosController {
         produto.setId_categoria(idCategoria);
         produto.setProduto_imagem(imagem);
 
-        logger.info(Constantes.InfoRegistrar, produto);
         return new ResponseEntity<>(produtosService.criar(produto), HttpStatus.CREATED);
     }
 
     @GetMapping("/")
     public ResponseEntity<List<ProdutosResponse>> obterTodosProdutos(){
         List<ProdutosResponse> response = produtosService.obterTodosProdutos();
-        logger.info(Constantes.InfoBuscar, response);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -70,14 +63,12 @@ public class ProdutosController {
         produto.setProduto_imagem(caminhoImagem);
 
         ProdutosResponse response = produtosService.atualizarProduto(produto);
-        logger.info(Constantes.InfoEditar, response);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/deletar-produto/{idProduto}")
     public ResponseEntity<Void> deletarProduto(@PathVariable Integer idProduto){
         produtosService.excluirProduto(idProduto);
-        logger.info(Constantes.InfoDeletar, idProduto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

@@ -15,7 +15,6 @@ import java.time.LocalDate;
 
 public class PessoaFisicaResponse extends PessoaResponse{
 
-    private Integer idPessoaFisica;
     private String cpf;
     private LocalDate data_nascimento;
 }

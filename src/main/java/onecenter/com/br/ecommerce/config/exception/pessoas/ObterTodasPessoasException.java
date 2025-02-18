@@ -2,9 +2,9 @@ package onecenter.com.br.ecommerce.config.exception.pessoas;
 
 import onecenter.com.br.ecommerce.utils.Constantes;
 
-public class ObterTodasPessoas extends RuntimeException{
+public class ObterTodasPessoasException extends RuntimeException{
 
-    public ObterTodasPessoas(){
+    public ObterTodasPessoasException(){
         super(Constantes.ErroListaCliente);
     }
 }

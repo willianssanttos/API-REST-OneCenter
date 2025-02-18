@@ -1,9 +1,6 @@
 package onecenter.com.br.ecommerce.repository.pessoas.fisica.Impl;
 
-import onecenter.com.br.ecommerce.config.exception.pessoas.EditarPessoaException;
-import onecenter.com.br.ecommerce.config.exception.pessoas.ObterPessoaPorCpfNotFoundException;
-import onecenter.com.br.ecommerce.config.exception.pessoas.ObterTodasPessoas;
-import onecenter.com.br.ecommerce.config.exception.pessoas.PessoaException;
+import onecenter.com.br.ecommerce.config.exception.pessoas.*;
 import onecenter.com.br.ecommerce.dto.pessoas.response.fisica.PessoaFisicaResponse;
 import onecenter.com.br.ecommerce.entity.pessoas.fisica.PessoaFisicaEntity;
 import onecenter.com.br.ecommerce.repository.mapper.PessoaFisicaRowMapper;
@@ -49,6 +46,22 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
 
     @Override
     @Transactional
+    public boolean verificarCpfExistente(String cpf){
+        logger.info(Constantes.DebugBuscarProcesso);
+        try {
+            String sql = "SELECT * FROM pessoas_fisicas WHERE ds_cpf = ?";
+            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, cpf);
+            return count > 0;
+
+        } catch (DataAccessException e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
+            return false;
+        }
+    }
+
+
+    @Override
+    @Transactional
     public PessoaFisicaEntity buscarPorCpf(String CPF){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
@@ -84,31 +97,16 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
             return jdbcTemplate.query(sql, new PessoaFisicaRowMapper());
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
-            throw new ObterTodasPessoas();
+            throw new ObterTodasPessoasException();
         }
     }
-
-//    @Override
-//    @Transactional
-//    public PessoaFisicaEntity obterPessoaPorId(Integer idPessoaFisica) {
-//        logger.info(Constantes.DebugBuscarProcesso);
-//        try {
-//            String sql = "SELECT nr_id_pessoa_fisica, ds_data_nascimento FROM pessoas_fisicas WHERE nr_id_pessoa_fisica = ?";
-//            logger.info(Constantes.InfoBuscar, idPessoaFisica);
-//            return jdbcTemplate.queryForObject(sql, new Object[]{idPessoaFisica}, new PessoaFisicaRowMapper());
-//        } catch (DataAccessException e) {
-//            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
-//            throw new ObterPessoaPorCpfNotFoundException();
-//        }
-//    }
-
 
     @Override
     @Transactional
     public PessoaFisicaResponse atualizarDados(PessoaFisicaResponse editar) {
         logger.info(Constantes.DebugEditarProcesso);
         try {
-            // Busca ID da pessoa pelo CPF
+
             String sqlBuscarId = "SELECT fk_nr_id_pessoa FROM pessoas_fisicas WHERE ds_cpf = ?";
             Integer idPessoa = jdbcTemplate.queryForObject(sqlBuscarId, Integer.class, editar.getCpf());
 
@@ -130,6 +128,8 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
             throw new EditarPessoaException();
         }
         return editar;
+
+
     }
 
 

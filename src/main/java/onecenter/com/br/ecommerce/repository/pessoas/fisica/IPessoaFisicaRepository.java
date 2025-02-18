@@ -9,6 +9,8 @@ public interface IPessoaFisicaRepository {
 
     PessoaFisicaEntity criarFisica(PessoaFisicaEntity fisica);
 
+    boolean verificarCpfExistente(String cpf);
+
     PessoaFisicaEntity buscarPorCpf(String CPF);
 
     List<PessoaFisicaEntity> obterTodasPessos();

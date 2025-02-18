@@ -1,6 +1,7 @@
 package onecenter.com.br.ecommerce.repository.pessoas.Impl;
 
 import onecenter.com.br.ecommerce.config.exception.pessoas.EditarPessoaException;
+import onecenter.com.br.ecommerce.config.exception.pessoas.EmailExistenteException;
 import onecenter.com.br.ecommerce.config.exception.pessoas.ObterPessoaPorCpfNotFoundException;
 import onecenter.com.br.ecommerce.config.exception.pessoas.PessoaException;
 import onecenter.com.br.ecommerce.dto.pessoas.response.PessoaResponse;
@@ -48,18 +49,17 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
 
     @Override
     @Transactional
-    public PessoaEntity obterPessoaPorId(Integer idPessoa){
+    public boolean verificarEmailExistente(String email){
         logger.info(Constantes.DebugBuscarProcesso);
+
         try {
-            String sql = "SELECT nr_id_pessoa, nm_nome_razaosocial, ds_email, ds_senha, ds_telefone,\n" +
-                    "           ds_cpf, ds_data_nascimento\n" +
-                    "    FROM pessoas WHERE nr_id_pessoa = ?";
-            logger.info(Constantes.InfoBuscar, idPessoa);
-            return jdbcTemplate.queryForObject(sql, new Object[] { idPessoa }, new PessoaFisicaRowMapper());
+            String sql = "SELECT COUNT(*) pessosas WHERE ds_email = ?";
+            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, email);
+            return count > 0;
         } catch (DataAccessException e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
-            throw new ObterPessoaPorCpfNotFoundException();
+            return false;
+
         }
     }
-
 }

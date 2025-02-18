@@ -4,6 +4,6 @@ import onecenter.com.br.ecommerce.entity.pessoas.PessoaEntity;
 
 public interface IPessoaRepository {
     PessoaEntity criarPessoa(PessoaEntity pessoa);
-    PessoaEntity obterPessoaPorId(Integer idPessoa);
+    boolean verificarEmailExistente(String email);
 
 }
