@@ -15,6 +15,7 @@ import java.time.LocalDate;
 
 public class PessoaFisicaRequest extends PessoaRequest {
 
+    private Integer pessoa_fisica;
     private String cpf;
     private LocalDate data_nascimento;
 }

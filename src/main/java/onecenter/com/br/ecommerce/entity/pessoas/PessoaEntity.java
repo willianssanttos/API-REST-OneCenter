@@ -17,4 +17,14 @@ public class PessoaEntity {
     private String email;
     private String senha;
     private String telefone;
+
+    @Override
+    public String toString() {
+        return "PessoaEntity{" +
+                "ID= " + id_pessoa +
+                ", Nome= '" + nome_razaosocial + '\'' +
+                ", Email= '" + email + '\'' +
+                ", Telefone= '" + telefone + '\'' +
+                '}';
+    }
 }

@@ -1,7 +1,6 @@
 package onecenter.com.br.ecommerce.service.pessoas.fisica;
 
-import onecenter.com.br.ecommerce.config.exception.ObterProdutosNotFundException;
-import onecenter.com.br.ecommerce.config.exception.PessoaException;
+import onecenter.com.br.ecommerce.config.exception.pessoas.*;
 import onecenter.com.br.ecommerce.dto.pessoas.request.fisica.PessoaFisicaRequest;
 import onecenter.com.br.ecommerce.dto.pessoas.response.fisica.PessoaFisicaResponse;
 import onecenter.com.br.ecommerce.entity.pessoas.PessoaEntity;
@@ -9,6 +8,10 @@ import onecenter.com.br.ecommerce.entity.pessoas.fisica.PessoaFisicaEntity;
 import onecenter.com.br.ecommerce.repository.pessoas.IPessoaRepository;
 import onecenter.com.br.ecommerce.repository.pessoas.fisica.IPessoaFisicaRepository;
 import onecenter.com.br.ecommerce.repository.pessoas.juridica.IPessoaJuridicaRepository;
+import onecenter.com.br.ecommerce.utils.Constantes;
+import onecenter.com.br.ecommerce.utils.validacoes.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,17 +30,61 @@ public class PessoaFisicaService {
     @Autowired
     private IPessoaJuridicaRepository iPessoaJuridicaRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(PessoaFisicaService.class);
+
+    private void validarDados(PessoaFisicaRequest pessoaFisica){
+
+        if(!ValidarCPF.cpfValidado(pessoaFisica.getCpf())){
+            throw new CpfValidacaoException();
+        }
+
+        Boolean cpfExistente = iPessoaFisicaRepository.verificarCpfExistente(pessoaFisica.getCpf());
+        if (cpfExistente != null && cpfExistente){
+            throw new CpfExistenteException();
+        }
+
+        Boolean emailExistente = iPessoaRepository.verificarEmailExistente(pessoaFisica.getEmail());
+        if (emailExistente != null && emailExistente){
+            throw new EmailExistenteException();
+        }
+
+        if(!ValidarNome.validarNome(pessoaFisica.getNome_razaosocial())){
+            throw new NomeValidacaoException();
+        }
+
+        if (!ValidarEmail.validaEmail(pessoaFisica.getEmail())){
+            throw new EmailValidacaoException();
+        }
+
+        if (!ValidarSenha.validarSenha(pessoaFisica.getSenha())){
+            throw new SenhaValidacaoException();
+        }
+
+        if(!ValidarDataNascimento.validarDataNascimento(String.valueOf(pessoaFisica.getData_nascimento()))){
+            throw new NomeValidacaoException();
+        }
+
+        if (!ValidarNumeroCelular.validarNumeroCelular(pessoaFisica.getTelefone())) {
+            throw new NumeroCelularValidacaoException();
+        }
+
+    }
+
     public PessoaFisicaResponse cadastrarPessoaFisica (PessoaFisicaRequest fisica){
+        logger.info(Constantes.DebugRegistroProcesso);
+
+        validarDados(fisica);
 
         try {
             PessoaEntity pessoa = PessoaEntity.builder()
                     .nome_razaosocial(fisica.getNome_razaosocial())
                     .email(fisica.getEmail())
                     .senha(fisica.getSenha())
-                    .telefone(fisica.getTelefone())
+                    .telefone(ValidarNumeroCelular.formatarNumeroCelular(fisica.getTelefone()))
                     .build();
 
             PessoaEntity pessoaCriada = iPessoaRepository.criarPessoa(pessoa);
+
 
             PessoaFisicaEntity criarFisica = PessoaFisicaEntity.builder()
                     .id_pessoa(pessoaCriada.getId_pessoa())
@@ -45,10 +92,11 @@ public class PessoaFisicaService {
                     .data_nascimento(fisica.getData_nascimento())
                     .build();
 
-            PessoaFisicaEntity fisicaCriada = iPessoaFisicaRepository.criarFisica(criarFisica);
-
+            iPessoaFisicaRepository.criarFisica(criarFisica);
+            logger.info(Constantes.InfoRegistrar, fisica);
             return mapearPessoaFisica(criarFisica);
         } catch (Exception e){
+            logger.error(Constantes.ErroRegistrarNoServidor);
             throw new PessoaException();
         }
     }
@@ -66,16 +114,41 @@ public class PessoaFisicaService {
     }
 
     public PessoaFisicaResponse obterPorCpf(String CPF){
-        PessoaFisicaEntity pessoaFisica = iPessoaFisicaRepository.buscarPorCpf(CPF);
-        return mapearPessoaFisica(pessoaFisica);
+        logger.info(Constantes.DebugBuscarProcesso);
+        try {
+            PessoaFisicaEntity pessoaFisica = iPessoaFisicaRepository.buscarPorCpf(CPF);
+            logger.info(Constantes.InfoBuscar, CPF);
+            return mapearPessoaFisica(pessoaFisica);
+        } catch (Exception e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor);
+            throw new ObterPessoaPorCpfNotFoundException();
+        }
     }
 
     public List<PessoaFisicaResponse> obterTodasPessoas(){
+        logger.info(Constantes.DebugBuscarProcesso);
         try {
              List<PessoaFisicaEntity> todasPessos = iPessoaFisicaRepository.obterTodasPessos();
-             return todasPessos.stream().map(this::mapearPessoaFisica).collect(Collectors.toList());
+            logger.info(Constantes.InfoBuscar, todasPessos);
+            return todasPessos.stream().map(this::mapearPessoaFisica).collect(Collectors.toList());
         } catch (Exception e){
-            throw new ObterProdutosNotFundException();
+            logger.error(Constantes.ErroBuscarRegistroNoServidor);
+            throw new ObterTodasPessoasException();
+        }
+    }
+
+    public PessoaFisicaResponse atualizarDados(PessoaFisicaResponse editar) {
+        logger.info(Constantes.DebugEditarProcesso);
+        try {
+            // Busca o ID da pessoa com base no CPF
+            PessoaFisicaEntity idPessoa = iPessoaFisicaRepository.buscarPorCpf(editar.getCpf());
+            if (idPessoa == null) {
+                throw new EditarPessoaException();
+            }
+            return iPessoaFisicaRepository.atualizarDados(editar);
+        } catch (Exception e) {
+            logger.error(Constantes.ErroEditarRegistroNoServidor, e);
+            throw new EditarPessoaException();
         }
     }
 

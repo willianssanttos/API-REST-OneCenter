@@ -71,6 +71,4 @@ public class ProdutosController {
         produtosService.excluirProduto(idProduto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-
 }

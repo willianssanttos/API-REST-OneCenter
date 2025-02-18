@@ -1,7 +1,10 @@
 package onecenter.com.br.ecommerce.config.exception.handler;
 
-import onecenter.com.br.ecommerce.config.exception.*;
 import onecenter.com.br.ecommerce.config.exception.entity.ApiError;
+import onecenter.com.br.ecommerce.config.exception.pessoas.*;
+import onecenter.com.br.ecommerce.config.exception.produtos.*;
+import onecenter.com.br.ecommerce.config.exception.produtos.categoria.CategoriaException;
+import onecenter.com.br.ecommerce.config.exception.produtos.categoria.CategoriaNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,10 +20,14 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({
             Exception.class,
+            ProdutoException.class,
+            CategoriaException.class,
+            EditarPessoaException.class,
+            EditarProdutoException.class,
             DeletarProdutoException.class,
-
+            ObterTodasPessoasException.class
     })
-    public ResponseEntity<ApiError> genericException(Exception ex) {
+    public ResponseEntity<ApiError> genericException(Exception ex){
         ApiError apiError = ApiError
                 .builder()
                 .timestamp(LocalDateTime.now())
@@ -30,12 +37,12 @@ public class RestExceptionHandler {
                 .build();
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     @ExceptionHandler({
             CategoriaNotFoundException.class,
             ImagemProdutoNotFoundException.class,
             ObterPessoaPorCpfNotFoundException.class,
-            ObterProdutosNotFundException.class,
-
+            ObterProdutosNotFundException.class
     })
     public ResponseEntity<ApiError> notFoundException(RuntimeException ex) {
         ApiError apiError = ApiError
@@ -49,11 +56,11 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler({
-            ProdutoException.class,
-            PessoaException.class,
-            CategoriaException.class,
-
-
+            CpfValidacaoException.class,
+            NomeValidacaoException.class,
+            EmailValidacaoException.class,
+            SenhaValidacaoException.class,
+            NumeroCelularValidacaoException.class
     })
     public ResponseEntity<ApiError> badRequetException(RuntimeException ex) {
         ApiError apiError = ApiError
@@ -67,7 +74,8 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler({
-
+            CpfExistenteException.class,
+            EmailExistenteException.class
     })
     public ResponseEntity<ApiError> unavailableException(RuntimeException ex) {
         ApiError apiError = ApiError
@@ -80,7 +88,9 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class
+    })
     public ResponseEntity<ApiError> argumentNotValidException(MethodArgumentNotValidException ex) {
         List<String> errorList = ex.getBindingResult()
                 .getFieldErrors()
@@ -96,5 +106,4 @@ public class RestExceptionHandler {
                 .build();
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
-
 }

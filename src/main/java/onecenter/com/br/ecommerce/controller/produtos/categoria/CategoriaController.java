@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.controller.categoria;
+package onecenter.com.br.ecommerce.controller.produtos.categoria;
 
 import onecenter.com.br.ecommerce.dto.produtos.categoria.request.CategoriaRequest;
 import onecenter.com.br.ecommerce.dto.produtos.categoria.response.CategoriaResponse;

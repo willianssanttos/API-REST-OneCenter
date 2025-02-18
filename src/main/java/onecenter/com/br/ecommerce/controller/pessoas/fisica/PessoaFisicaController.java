@@ -2,13 +2,11 @@ package onecenter.com.br.ecommerce.controller.pessoas.fisica;
 
 import onecenter.com.br.ecommerce.dto.pessoas.request.fisica.PessoaFisicaRequest;
 import onecenter.com.br.ecommerce.dto.pessoas.response.fisica.PessoaFisicaResponse;
-import onecenter.com.br.ecommerce.entity.pessoas.fisica.PessoaFisicaEntity;
 import onecenter.com.br.ecommerce.service.pessoas.fisica.PessoaFisicaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -37,4 +35,15 @@ public class PessoaFisicaController {
         List<PessoaFisicaResponse> response = pessoaFisicaService.obterTodasPessoas();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PutMapping("/atualizar-dados/{cpf}")
+    public ResponseEntity<PessoaFisicaResponse> alterarDados(@PathVariable String cpf, @RequestBody PessoaFisicaResponse editar) {
+        if (cpf.length() == 11) {
+            editar.setCpf(cpf);
+            PessoaFisicaResponse response = pessoaFisicaService.atualizarDados(editar);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
 }

@@ -10,5 +10,5 @@ public interface ICategoriaRepository {
 
     List<CategoriaEntity> obterTodasCategoria();
 
-    CategoriaEntity categoriaId(Integer idCategoria);
+    CategoriaEntity obterCategoriaPorId(Integer idCategoria);
 }

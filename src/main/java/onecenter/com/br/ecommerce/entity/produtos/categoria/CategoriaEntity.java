@@ -13,4 +13,12 @@ public class CategoriaEntity {
 
     private Integer id_categoria;
     private String nomeCategoria;
+
+    @Override
+    public String toString() {
+        return "CategoriaEntity{" +
+                "ID= " + id_categoria +
+                ", Categoria= '" + nomeCategoria + '\'' +
+                '}';
+    }
 }
