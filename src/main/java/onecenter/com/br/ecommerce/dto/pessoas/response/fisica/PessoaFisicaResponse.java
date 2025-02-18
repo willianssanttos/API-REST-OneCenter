@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.dto.pessoas.response.fisica;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,18 @@ import java.time.LocalDate;
 
 public class PessoaFisicaResponse extends PessoaResponse{
 
+    private Integer idPessoa;
+    private String nome_razaosocial;
     private String cpf;
-    private LocalDate data_nascimento;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private String data_nascimento;
+    private String email;
+    private String telefone;
+    private String rua;
+    private String numero;
+    private String bairro;
+    private String cidade;
+    private String cep;
+    private String uf;
+
 }

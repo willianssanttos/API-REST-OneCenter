@@ -48,8 +48,13 @@ public class Constantes {
     public static final String cadastroSenha = "Senha inválida. A senha deve ter no mínimo 8 caracteres, contendo letras, números e pelo menos um caractere especial (@, #, %, &, $).";
     public static final String EmailJaCadastrado = "Esse e-mail, já foi cadastrado!";
     public static final String CpfInvalido = "Esse CPF, esta invalido verifique o número digitado!";
-
     public static final String CPFJaCadastrado = "Esse CPF, já foi cadastrado!";
+
+    public static final String CepInvalido = "Esse CEP é inválido! Verifique o número digitado!";
+    public static final String DataNascimentoInvalida = "Verifiquei a Data de nascimento, a mesma esta inválida!";
+    public static final String ErroCadastrarEndereco = "Erro ao registrar o endereço informado!";
+    public static final String ErroEnderecoNaoEncontrado = "Esse endereço, não foi encontrado com o cep informado!";
+
 
 
 

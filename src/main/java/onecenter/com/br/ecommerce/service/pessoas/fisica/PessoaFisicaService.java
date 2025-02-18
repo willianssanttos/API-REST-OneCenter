@@ -3,11 +3,15 @@ package onecenter.com.br.ecommerce.service.pessoas.fisica;
 import onecenter.com.br.ecommerce.config.exception.pessoas.*;
 import onecenter.com.br.ecommerce.dto.pessoas.request.fisica.PessoaFisicaRequest;
 import onecenter.com.br.ecommerce.dto.pessoas.response.fisica.PessoaFisicaResponse;
+import onecenter.com.br.ecommerce.dto.produtos.endereco.ApiViaCep.ViaCepResponse;
 import onecenter.com.br.ecommerce.entity.pessoas.PessoaEntity;
+import onecenter.com.br.ecommerce.entity.pessoas.endereco.EnderecoEntity;
 import onecenter.com.br.ecommerce.entity.pessoas.fisica.PessoaFisicaEntity;
 import onecenter.com.br.ecommerce.repository.pessoas.IPessoaRepository;
+import onecenter.com.br.ecommerce.repository.pessoas.endereco.IEnderecoRepository;
 import onecenter.com.br.ecommerce.repository.pessoas.fisica.IPessoaFisicaRepository;
 import onecenter.com.br.ecommerce.repository.pessoas.juridica.IPessoaJuridicaRepository;
+import onecenter.com.br.ecommerce.service.pessoas.endereco.ApiViaCepService;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import onecenter.com.br.ecommerce.utils.validacoes.*;
 import org.slf4j.Logger;
@@ -22,7 +26,13 @@ import java.util.stream.Collectors;
 public class PessoaFisicaService {
 
     @Autowired
+    private ApiViaCepService apiViaCepService;
+
+    @Autowired
     private IPessoaRepository iPessoaRepository;
+
+    @Autowired
+    private IEnderecoRepository iEnderecoRepository;
 
     @Autowired
     private IPessoaFisicaRepository iPessoaFisicaRepository;
@@ -59,10 +69,13 @@ public class PessoaFisicaService {
         if (!ValidarSenha.validarSenha(pessoaFisica.getSenha())){
             throw new SenhaValidacaoException();
         }
-
-        if(!ValidarDataNascimento.validarDataNascimento(String.valueOf(pessoaFisica.getData_nascimento()))){
-            throw new NomeValidacaoException();
+        if (!ValidarCEP.validarCep(pessoaFisica.getCep())){
+            throw new CepValidacaoExcecao();
         }
+
+//        if(!ValidarDataNascimento.validarDataNascimento(String.valueOf(pessoaFisica.getData_nascimento()))){
+//            throw new DataNascimentoException();
+//        }
 
         if (!ValidarNumeroCelular.validarNumeroCelular(pessoaFisica.getTelefone())) {
             throw new NumeroCelularValidacaoException();
@@ -76,6 +89,13 @@ public class PessoaFisicaService {
         validarDados(fisica);
 
         try {
+
+            ViaCepResponse viaCep = apiViaCepService.consultarCep(fisica.getCep());
+                    fisica.setRua(viaCep.getLogradouro());
+                    fisica.setBairro(viaCep.getBairro());
+                    fisica.setCidade(viaCep.getBairro());
+                    fisica.setUf(viaCep.getUf());
+
             PessoaEntity pessoa = PessoaEntity.builder()
                     .nome_razaosocial(fisica.getNome_razaosocial())
                     .email(fisica.getEmail())
@@ -84,6 +104,17 @@ public class PessoaFisicaService {
                     .build();
 
             PessoaEntity pessoaCriada = iPessoaRepository.criarPessoa(pessoa);
+
+            EnderecoEntity endereco = EnderecoEntity.builder()
+                    .id_pessoa(pessoaCriada.getId_pessoa())
+                    .rua(fisica.getRua())
+                    .numero(fisica.getNumero())
+                    .bairro(fisica.getBairro())
+                    .cidade(fisica.getCidade())
+                    .cep(fisica.getCep())
+                    .uf(fisica.getUf())
+                    .build();
+            EnderecoEntity enderecoSalvo = iEnderecoRepository.salverEndereco(endereco);
 
 
             PessoaFisicaEntity criarFisica = PessoaFisicaEntity.builder()
@@ -101,16 +132,27 @@ public class PessoaFisicaService {
         }
     }
 
-    private PessoaFisicaResponse mapearPessoaFisica(PessoaFisicaEntity pessoaCriada){
-        return PessoaFisicaResponse.builder()
-                .idPessoa(pessoaCriada.getId_pessoa())
-                .nome_razaosocial(pessoaCriada.getNome_razaosocial())
-                .email(pessoaCriada.getEmail())
-                .senha(pessoaCriada.getSenha())
-                .telefone(pessoaCriada.getTelefone())
-                .cpf(pessoaCriada.getCpf())
-                .data_nascimento(pessoaCriada.getData_nascimento())
-                .build();
+    private PessoaFisicaResponse mapearPessoaFisica(PessoaFisicaEntity fisica){
+        try {
+            EnderecoEntity endereco = iEnderecoRepository.obterEnderecoPorIdPessoa(fisica.getId_pessoa());
+
+            return PessoaFisicaResponse.builder()
+                    .idPessoa(fisica.getId_pessoa())
+                    .nome_razaosocial(fisica.getNome_razaosocial())
+                    .cpf(fisica.getCpf())
+                    .data_nascimento(String.valueOf(fisica.getData_nascimento()))
+                    .email(fisica.getEmail())
+                    .telefone(fisica.getTelefone())
+                    .rua(endereco.getRua())
+                    .numero(endereco.getNumero())
+                    .bairro(endereco.getBairro())
+                    .cidade(endereco.getCidade())
+                    .cep(endereco.getCep())
+                    .uf(endereco.getUf())
+                    .build();
+        } catch (Exception e){
+            throw new BuscarEnderecoNotFoundException();
+        }
     }
 
     public PessoaFisicaResponse obterPorCpf(String CPF){
@@ -123,6 +165,7 @@ public class PessoaFisicaService {
             logger.error(Constantes.ErroBuscarRegistroNoServidor);
             throw new ObterPessoaPorCpfNotFoundException();
         }
+
     }
 
     public List<PessoaFisicaResponse> obterTodasPessoas(){

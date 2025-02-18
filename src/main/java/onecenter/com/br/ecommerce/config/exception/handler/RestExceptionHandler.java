@@ -21,6 +21,7 @@ public class RestExceptionHandler {
     @ExceptionHandler({
             Exception.class,
             ProdutoException.class,
+            EnderecoException.class,
             CategoriaException.class,
             EditarPessoaException.class,
             EditarProdutoException.class,

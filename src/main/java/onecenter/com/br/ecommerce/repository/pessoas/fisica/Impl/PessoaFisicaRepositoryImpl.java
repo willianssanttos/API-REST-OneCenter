@@ -65,11 +65,24 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
     public PessoaFisicaEntity buscarPorCpf(String CPF){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT p.nr_id_pessoa, p.nm_nome_razaosocial, p.ds_email, p.ds_senha, p.ds_telefone,\n" +
-                    "           pf.ds_cpf, pf.ds_data_nascimento\n" +
-                    "    FROM pessoas_fisicas pf\n" +
-                    "    INNER JOIN pessoas p ON pf.fk_nr_id_pessoa = p.nr_id_pessoa\n" +
-                    "    WHERE pf.ds_cpf = ?";
+            String sql = "SELECT \n" +
+                    "    p.nr_id_pessoa,\n" +
+                    "    p.nm_nome_razaosocial,\n" +
+                    "    p.ds_email,\n" +
+                    "    p.ds_senha,\n" +
+                    "    p.ds_telefone,\n" +
+                    "    pf.ds_cpf,\n" +
+                    "    pf.ds_data_nascimento,\n" +
+                    "    e.nm_rua,\n" +
+                    "    e.ds_numero,\n" +
+                    "    e.ds_bairro,\n" +
+                    "    e.ds_cidade,\n" +
+                    "    e.ds_cep,\n" +
+                    "    e.ds_uf\n" +
+                    "FROM pessoas p\n" +
+                    "LEFT JOIN pessoas_fisicas pf ON p.nr_id_pessoa = pf.fk_nr_id_pessoa\n" +
+                    "LEFT JOIN enderecos e ON p.nr_id_pessoa = e.fk_nr_id_pessoa\n" +
+                    "WHERE pf.ds_cpf = ?";
             logger.info(Constantes.InfoBuscar, CPF);
             return jdbcTemplate.queryForObject(sql, new Object[] { CPF }, new PessoaFisicaRowMapper());
         } catch (DataAccessException e){
@@ -90,9 +103,17 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
                     "    p.ds_senha,\n" +
                     "    p.ds_telefone,\n" +
                     "    pf.ds_cpf,\n" +
-                    "    pf.ds_data_nascimento\n" +
+                    "    pf.ds_data_nascimento,\n" +
+                    "    e.ds_rua,\n" +
+                    "    e.nr_numero,\n" +
+                    "    e.ds_bairro,\n" +
+                    "    e.ds_cidade,\n" +
+                    "    e.ds_cep,\n" +
+                    "    e.ds_uf\n" +
                     "FROM pessoas p\n" +
-                    "LEFT JOIN pessoas_fisicas pf ON p.nr_id_pessoa = pf.fk_nr_id_pessoa;\n";
+                    "LEFT JOIN pessoas_fisicas pf ON p.nr_id_pessoa = pf.fk_nr_id_pessoa\n" +
+                    "LEFT JOIN enderecos e ON p.nr_id_pessoa = e.fk_nr_id_pessoa;";
+
             logger.info(Constantes.InfoBuscar);
             return jdbcTemplate.query(sql, new PessoaFisicaRowMapper());
         } catch (DataAccessException e) {

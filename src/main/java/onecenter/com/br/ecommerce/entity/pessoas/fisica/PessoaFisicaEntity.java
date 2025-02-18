@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.entity.pessoas.fisica;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class PessoaFisicaEntity extends PessoaEntity {
 
     private Integer pessoa_fisica;
     private String cpf;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate data_nascimento;
 
     @Override
