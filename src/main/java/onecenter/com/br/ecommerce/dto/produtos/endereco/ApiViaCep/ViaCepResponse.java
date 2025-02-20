@@ -13,4 +13,5 @@ public class ViaCepResponse {
     private String unidade;
     private String ibge;
     private String gia;
+
 }

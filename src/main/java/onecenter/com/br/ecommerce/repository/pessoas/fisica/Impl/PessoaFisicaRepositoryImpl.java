@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,31 +97,34 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
     public List<PessoaFisicaEntity> obterTodasPessos() {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT \n" +
-                    "    p.nr_id_pessoa,\n" +
-                    "    p.nm_nome_razaosocial,\n" +
-                    "    p.ds_email,\n" +
-                    "    p.ds_senha,\n" +
-                    "    p.ds_telefone,\n" +
-                    "    pf.ds_cpf,\n" +
-                    "    pf.ds_data_nascimento,\n" +
-                    "    e.ds_rua,\n" +
-                    "    e.nr_numero,\n" +
-                    "    e.ds_bairro,\n" +
-                    "    e.ds_cidade,\n" +
-                    "    e.ds_cep,\n" +
-                    "    e.ds_uf\n" +
-                    "FROM pessoas p\n" +
-                    "LEFT JOIN pessoas_fisicas pf ON p.nr_id_pessoa = pf.fk_nr_id_pessoa\n" +
-                    "LEFT JOIN enderecos e ON p.nr_id_pessoa = e.fk_nr_id_pessoa;";
+            String sql = """
+                SELECT 
+                    p.nr_id_pessoa,
+                    p.nm_nome_razaosocial,
+                    p.ds_email,
+                    p.ds_senha,
+                    p.ds_telefone,
+                    pf.ds_cpf,
+                    pf.ds_data_nascimento,
+                    e.nm_rua,
+                    e.ds_numero,
+                    e.ds_bairro,
+                    e.ds_cidade,
+                    e.ds_cep,
+                    e.ds_uf
+                FROM pessoas p
+                LEFT JOIN pessoas_fisicas pf ON p.nr_id_pessoa = pf.fk_nr_id_pessoa
+                LEFT JOIN enderecos e ON p.nr_id_pessoa = e.fk_nr_id_pessoa
+                """;
 
             logger.info(Constantes.InfoBuscar);
             return jdbcTemplate.query(sql, new PessoaFisicaRowMapper());
         } catch (DataAccessException e) {
-            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e);
             throw new ObterTodasPessoasException();
         }
     }
+
 
     @Override
     @Transactional
@@ -136,8 +140,8 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
             }
 
             // Atualiza os dados na tabela 'pessoas'
-            String sqlPessoa = "UPDATE pessoas SET nm_nome_razaosocial = ?, ds_email = ?, ds_senha = ?, ds_telefone = ? WHERE nr_id_pessoa = ?";
-            jdbcTemplate.update(sqlPessoa, editar.getNome_razaosocial(), editar.getEmail(), editar.getSenha(), editar.getTelefone(), idPessoa);
+            String sqlPessoa = "UPDATE pessoas SET nm_nome_razaosocial = ?, ds_email = ?, ds_telefone = ? WHERE nr_id_pessoa = ?";
+            jdbcTemplate.update(sqlPessoa, editar.getNome_razaosocial(), editar.getEmail(), editar.getTelefone(), idPessoa);
 
             // Atualiza os dados na tabela 'pessoas_fisicas'
             String sqlPessoaFisica = "UPDATE pessoas_fisicas SET ds_data_nascimento = ? WHERE nr_id_pessoa_fisica = ?";
@@ -149,8 +153,6 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
             throw new EditarPessoaException();
         }
         return editar;
-
-
     }
 
 

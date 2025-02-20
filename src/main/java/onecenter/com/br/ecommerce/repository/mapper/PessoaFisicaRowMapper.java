@@ -18,15 +18,8 @@ public class PessoaFisicaRowMapper implements RowMapper<PessoaFisicaEntity> {
         pessoa.setSenha(rs.getString(4));
         pessoa.setTelefone(rs.getString(5));
         pessoa.setCpf(rs.getString(6));
-        pessoa.setData_nascimento(rs.getDate(7).toLocalDate());
+        pessoa.setData_nascimento(rs.getTimestamp(7));
 
-        EnderecoEntity endereco = new EnderecoEntity();
-        endereco.setRua(rs.getString(8));
-        endereco.setNumero(rs.getString(9));
-        endereco.setBairro(rs.getString(10));
-        endereco.setCidade(rs.getString(11));
-        endereco.setUf(rs.getString(12));
-        endereco.setCep(rs.getString(13));
         return pessoa;
     }
 

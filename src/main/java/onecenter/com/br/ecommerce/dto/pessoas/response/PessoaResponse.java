@@ -15,6 +15,5 @@ public class PessoaResponse extends EnderecoResponse {
     private Integer idPessoa;
     private String nome_razaosocial;
     private String email;
-    private String senha;
     private String telefone;
 }

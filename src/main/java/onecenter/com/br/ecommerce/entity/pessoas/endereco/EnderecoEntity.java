@@ -17,7 +17,7 @@ public class EnderecoEntity  extends PessoaEntity {
     private String rua;
     private String numero;
     private String bairro;
-    private String cidade;
+    private String localidade;
     private String cep;
     private String uf;
 
@@ -28,7 +28,7 @@ public class EnderecoEntity  extends PessoaEntity {
                 ", Locradouro='" + rua + '\'' +
                 ", numero='" + numero + '\'' +
                 ", bairro='" + bairro + '\'' +
-                ", cidade='" + cidade + '\'' +
+                ", cidade='" + localidade + '\'' +
                 ", cep='" + cep + '\'' +
                 ", uf='" + uf + '\'' +
                 '}';

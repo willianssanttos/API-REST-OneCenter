@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,7 +95,7 @@ public class PessoaFisicaService {
             ViaCepResponse viaCep = apiViaCepService.consultarCep(fisica.getCep());
                     fisica.setRua(viaCep.getLogradouro());
                     fisica.setBairro(viaCep.getBairro());
-                    fisica.setCidade(viaCep.getBairro());
+                    fisica.setCidade(viaCep.getLocalidade());
                     fisica.setUf(viaCep.getUf());
 
             PessoaEntity pessoa = PessoaEntity.builder()
@@ -110,7 +112,7 @@ public class PessoaFisicaService {
                     .rua(fisica.getRua())
                     .numero(fisica.getNumero())
                     .bairro(fisica.getBairro())
-                    .cidade(fisica.getCidade())
+                    .localidade(fisica.getCidade())
                     .cep(fisica.getCep())
                     .uf(fisica.getUf())
                     .build();
@@ -120,7 +122,7 @@ public class PessoaFisicaService {
             PessoaFisicaEntity criarFisica = PessoaFisicaEntity.builder()
                     .id_pessoa(pessoaCriada.getId_pessoa())
                     .cpf(fisica.getCpf())
-                    .data_nascimento(fisica.getData_nascimento())
+                    .data_nascimento(Timestamp.valueOf(fisica.getData_nascimento().atStartOfDay()))
                     .build();
 
             iPessoaFisicaRepository.criarFisica(criarFisica);
@@ -140,13 +142,13 @@ public class PessoaFisicaService {
                     .idPessoa(fisica.getId_pessoa())
                     .nome_razaosocial(fisica.getNome_razaosocial())
                     .cpf(fisica.getCpf())
-                    .data_nascimento(String.valueOf(fisica.getData_nascimento()))
+                    .data_nascimento(Timestamp.valueOf(String.valueOf(fisica.getData_nascimento())))
                     .email(fisica.getEmail())
                     .telefone(fisica.getTelefone())
                     .rua(endereco.getRua())
                     .numero(endereco.getNumero())
                     .bairro(endereco.getBairro())
-                    .cidade(endereco.getCidade())
+                    .localidade(endereco.getLocalidade())
                     .cep(endereco.getCep())
                     .uf(endereco.getUf())
                     .build();
@@ -171,11 +173,11 @@ public class PessoaFisicaService {
     public List<PessoaFisicaResponse> obterTodasPessoas(){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-             List<PessoaFisicaEntity> todasPessos = iPessoaFisicaRepository.obterTodasPessos();
-            logger.info(Constantes.InfoBuscar, todasPessos);
-            return todasPessos.stream().map(this::mapearPessoaFisica).collect(Collectors.toList());
+            List<PessoaFisicaEntity> todasPessoas = iPessoaFisicaRepository.obterTodasPessos();
+            logger.info(Constantes.InfoBuscar, todasPessoas);
+            return todasPessoas.stream().map(this::mapearPessoaFisica).collect(Collectors.toList());
         } catch (Exception e){
-            logger.error(Constantes.ErroBuscarRegistroNoServidor);
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e);
             throw new ObterTodasPessoasException();
         }
     }

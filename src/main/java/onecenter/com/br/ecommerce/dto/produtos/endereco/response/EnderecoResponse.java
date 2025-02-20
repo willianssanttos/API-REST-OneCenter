@@ -14,7 +14,7 @@ public class EnderecoResponse {
     private String rua;
     private String numero;
     private String bairro;
-    private String cidade;
+    private String localidade;
     private String cep;
     private String uf;
 }

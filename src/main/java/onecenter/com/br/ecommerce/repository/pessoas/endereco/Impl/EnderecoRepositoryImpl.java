@@ -4,6 +4,7 @@ import onecenter.com.br.ecommerce.config.exception.pessoas.BuscarEnderecoNotFoun
 import onecenter.com.br.ecommerce.config.exception.pessoas.EnderecoException;
 import onecenter.com.br.ecommerce.config.exception.pessoas.PessoaException;
 import onecenter.com.br.ecommerce.entity.pessoas.endereco.EnderecoEntity;
+import onecenter.com.br.ecommerce.repository.mapper.EnderecoRowMapper;
 import onecenter.com.br.ecommerce.repository.pessoas.endereco.IEnderecoRepository;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
                     endereco.getRua(),
                     endereco.getNumero(),
                     endereco.getBairro(),
-                    endereco.getCidade(),
+                    endereco.getLocalidade(),
                     endereco.getUf(),
                     endereco.getCep(),
                     endereco.getId_pessoa());
@@ -53,7 +54,7 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
     public EnderecoEntity obterEnderecoPorIdPessoa(Integer idPessoa) {
         try {
             String sql = "SELECT * FROM enderecos WHERE fk_nr_id_pessoa = ?";
-            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(EnderecoEntity.class), idPessoa);
+            return jdbcTemplate.queryForObject(sql, new EnderecoRowMapper(), idPessoa);
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
             throw new BuscarEnderecoNotFoundException();

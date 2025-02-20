@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import onecenter.com.br.ecommerce.entity.pessoas.fisica.PessoaFisicaEntity;
 
 @Data
 @SuperBuilder
@@ -24,6 +23,7 @@ public class PessoaEntity {
                 "ID= " + id_pessoa +
                 ", Nome= '" + nome_razaosocial + '\'' +
                 ", Email= '" + email + '\'' +
+                ", Senha= '" + senha + '\'' +
                 ", Telefone= '" + telefone + '\'' +
                 '}';
     }
