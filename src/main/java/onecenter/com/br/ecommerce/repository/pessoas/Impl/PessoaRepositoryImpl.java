@@ -1,14 +1,9 @@
 package onecenter.com.br.ecommerce.repository.pessoas.Impl;
 
-import onecenter.com.br.ecommerce.config.exception.pessoas.EditarPessoaException;
-import onecenter.com.br.ecommerce.config.exception.pessoas.EmailExistenteException;
-import onecenter.com.br.ecommerce.config.exception.pessoas.ObterPessoaPorCpfNotFoundException;
 import onecenter.com.br.ecommerce.config.exception.pessoas.PessoaException;
-import onecenter.com.br.ecommerce.dto.pessoas.response.PessoaResponse;
-import onecenter.com.br.ecommerce.dto.pessoas.response.fisica.PessoaFisicaResponse;
+import onecenter.com.br.ecommerce.config.exception.produtos.EditarProdutoException;
+import onecenter.com.br.ecommerce.dto.pessoas.request.fisica.PessoaFisicaRequest;
 import onecenter.com.br.ecommerce.entity.pessoas.PessoaEntity;
-import onecenter.com.br.ecommerce.entity.pessoas.fisica.PessoaFisicaEntity;
-import onecenter.com.br.ecommerce.repository.mapper.PessoaFisicaRowMapper;
 import onecenter.com.br.ecommerce.repository.pessoas.IPessoaRepository;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import org.slf4j.Logger;
@@ -60,6 +55,25 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             return false;
 
+        }
+    }
+
+    @Override
+    @Transactional
+    public void atualizarPessoa(Integer idPessoa, PessoaFisicaRequest editar) {
+        logger.info(Constantes.DebugEditarProcesso);
+        try {
+            String sql = "UPDATE pessoas SET nm_nome_razaosocial = ?, ds_email = ?, ds_senha = ?, ds_telefone = ? WHERE nr_id_pessoa = ?";
+            jdbcTemplate.update(sql,
+                    editar.getNome_razaosocial(),
+                    editar.getEmail(),
+                    editar.getSenha(),
+                    editar.getTelefone(),
+                    idPessoa);
+            logger.info(Constantes.InfoEditar, editar);
+        } catch (DataAccessException e){
+            logger.error(Constantes.ErroEditarRegistroNoServidor, e.getMessage());
+            throw new EditarProdutoException();
         }
     }
 }

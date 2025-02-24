@@ -1,8 +1,9 @@
 package onecenter.com.br.ecommerce.repository.pessoas.endereco.Impl;
 
+import onecenter.com.br.ecommerce.config.exception.pessoas.AtualizarEnderecoException;
 import onecenter.com.br.ecommerce.config.exception.pessoas.BuscarEnderecoNotFoundException;
 import onecenter.com.br.ecommerce.config.exception.pessoas.EnderecoException;
-import onecenter.com.br.ecommerce.config.exception.pessoas.PessoaException;
+import onecenter.com.br.ecommerce.dto.pessoas.request.fisica.PessoaFisicaRequest;
 import onecenter.com.br.ecommerce.entity.pessoas.endereco.EnderecoEntity;
 import onecenter.com.br.ecommerce.repository.mapper.EnderecoRowMapper;
 import onecenter.com.br.ecommerce.repository.pessoas.endereco.IEnderecoRepository;
@@ -11,13 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.xml.crypto.Data;
-import java.util.Optional;
 
 @Repository
 public class EnderecoRepositoryImpl implements IEnderecoRepository {
@@ -61,4 +58,24 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
         }
     }
 
+    @Override
+    @Transactional
+    public void atualizarEndereco(Integer idPessoa, PessoaFisicaRequest editar) {
+        logger.info(Constantes.DebugEditarProcesso);
+        try {
+            String sql = "UPDATE enderecos SET nm_rua = ?, ds_numero = ?, ds_bairro = ?, ds_cidade = ?, ds_cep = ?, ds_uf = ? WHERE fk_nr_id_pessoa = ?";
+            jdbcTemplate.update(sql,
+                    editar.getRua(),
+                    editar.getNumero(),
+                    editar.getBairro(),
+                    editar.getLocalidade(),
+                    editar.getCep(),
+                    editar.getUf(),
+                    idPessoa);
+            logger.info(Constantes.InfoBuscar, editar);
+        } catch (DataAccessException e) {
+            logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
+            throw new AtualizarEnderecoException();
+        }
+    }
 }

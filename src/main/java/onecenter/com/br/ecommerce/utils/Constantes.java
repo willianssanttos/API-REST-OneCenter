@@ -70,6 +70,8 @@ public class Constantes {
 
     public static final String ErroEditarPessoa = "Não foi possivel editar os dados! Tente novamente mais tarde.";
 
+    public static final String ErroEditarEndereco = "Não foi possivel alterar o endereço! Tente novamente mais tarde.";
+
 
 
 

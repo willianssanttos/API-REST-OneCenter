@@ -37,7 +37,7 @@ public class PessoaFisicaController {
     }
 
     @PutMapping("/atualizar-dados/{cpf}")
-    public ResponseEntity<PessoaFisicaResponse> alterarDados(@PathVariable String cpf, @RequestBody PessoaFisicaResponse editar) {
+    public ResponseEntity<PessoaFisicaResponse> alterarDados(@PathVariable String cpf, @RequestBody PessoaFisicaRequest editar) {
         if (cpf.length() == 11) {
             editar.setCpf(cpf);
             PessoaFisicaResponse response = pessoaFisicaService.atualizarDados(editar);

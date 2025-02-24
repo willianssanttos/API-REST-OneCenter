@@ -1,6 +1,5 @@
 package onecenter.com.br.ecommerce.repository.mapper;
 
-import onecenter.com.br.ecommerce.entity.pessoas.endereco.EnderecoEntity;
 import onecenter.com.br.ecommerce.entity.pessoas.fisica.PessoaFisicaEntity;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -19,7 +18,6 @@ public class PessoaFisicaRowMapper implements RowMapper<PessoaFisicaEntity> {
         pessoa.setTelefone(rs.getString(5));
         pessoa.setCpf(rs.getString(6));
         pessoa.setData_nascimento(rs.getTimestamp(7));
-
         return pessoa;
     }
 

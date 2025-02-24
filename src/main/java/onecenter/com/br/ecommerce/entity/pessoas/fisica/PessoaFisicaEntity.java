@@ -15,7 +15,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class PessoaFisicaEntity extends PessoaEntity {
 
-    private Integer pessoa_fisica;
+    private Integer idPessoa_Fisica;
+    private Integer idPessoa;
     private String cpf;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Timestamp data_nascimento;

@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,9 +74,9 @@ public class PessoaFisicaService {
             throw new CepValidacaoExcecao();
         }
 
-//        if(!ValidarDataNascimento.validarDataNascimento(String.valueOf(pessoaFisica.getData_nascimento()))){
-//            throw new DataNascimentoException();
-//        }
+        if(!ValidarDataNascimento.validarDataNascimento(String.valueOf(pessoaFisica.getData_nascimento()))){
+            throw new DataNascimentoException();
+        }
 
         if (!ValidarNumeroCelular.validarNumeroCelular(pessoaFisica.getTelefone())) {
             throw new NumeroCelularValidacaoException();
@@ -95,7 +94,7 @@ public class PessoaFisicaService {
             ViaCepResponse viaCep = apiViaCepService.consultarCep(fisica.getCep());
                     fisica.setRua(viaCep.getLogradouro());
                     fisica.setBairro(viaCep.getBairro());
-                    fisica.setCidade(viaCep.getLocalidade());
+                    fisica.setLocalidade(viaCep.getLocalidade());
                     fisica.setUf(viaCep.getUf());
 
             PessoaEntity pessoa = PessoaEntity.builder()
@@ -112,17 +111,17 @@ public class PessoaFisicaService {
                     .rua(fisica.getRua())
                     .numero(fisica.getNumero())
                     .bairro(fisica.getBairro())
-                    .localidade(fisica.getCidade())
+                    .localidade(fisica.getLocalidade())
                     .cep(fisica.getCep())
                     .uf(fisica.getUf())
                     .build();
-            EnderecoEntity enderecoSalvo = iEnderecoRepository.salverEndereco(endereco);
 
+            iEnderecoRepository.salverEndereco(endereco);
 
             PessoaFisicaEntity criarFisica = PessoaFisicaEntity.builder()
                     .id_pessoa(pessoaCriada.getId_pessoa())
                     .cpf(fisica.getCpf())
-                    .data_nascimento(Timestamp.valueOf(fisica.getData_nascimento().atStartOfDay()))
+                    .data_nascimento(Timestamp.valueOf(fisica.getData_nascimento().toLocalDateTime()))
                     .build();
 
             iPessoaFisicaRepository.criarFisica(criarFisica);
@@ -152,6 +151,7 @@ public class PessoaFisicaService {
                     .cep(endereco.getCep())
                     .uf(endereco.getUf())
                     .build();
+
         } catch (Exception e){
             throw new BuscarEnderecoNotFoundException();
         }
@@ -182,19 +182,43 @@ public class PessoaFisicaService {
         }
     }
 
-    public PessoaFisicaResponse atualizarDados(PessoaFisicaResponse editar) {
+    public PessoaFisicaResponse atualizarDados(PessoaFisicaRequest editar){
         logger.info(Constantes.DebugEditarProcesso);
         try {
-            // Busca o ID da pessoa com base no CPF
-            PessoaFisicaEntity idPessoa = iPessoaFisicaRepository.buscarPorCpf(editar.getCpf());
-            if (idPessoa == null) {
+            Integer idPessoa = iPessoaFisicaRepository.buscarIdPorCpf(editar.getCpf());
+            if (idPessoa == null){
                 throw new EditarPessoaException();
             }
-            return iPessoaFisicaRepository.atualizarDados(editar);
-        } catch (Exception e) {
+
+            iPessoaRepository.atualizarPessoa(idPessoa, editar);
+            iPessoaFisicaRepository.atualizarPessoaFisica(idPessoa, editar);
+
+            ViaCepResponse viaCep = apiViaCepService.consultarCep(editar.getCep());
+            editar.setRua(viaCep.getLogradouro());
+            editar.setBairro(viaCep.getBairro());
+            editar.setLocalidade(viaCep.getLocalidade());
+            editar.setUf(viaCep.getUf());
+
+            iEnderecoRepository.atualizarEndereco(idPessoa, editar);
+
+            return PessoaFisicaResponse.builder()
+                    .idPessoa(idPessoa)
+                    .nome_razaosocial(editar.getNome_razaosocial())
+                    .cpf(editar.getCpf())
+                    .data_nascimento(editar.getData_nascimento())
+                    .email(editar.getEmail())
+                    .telefone(editar.getTelefone())
+                    .rua(editar.getRua())
+                    .numero(editar.getNumero())
+                    .bairro(editar.getBairro())
+                    .localidade(editar.getLocalidade())
+                    .cep(editar.getCep())
+                    .uf(editar.getUf())
+                    .build();
+
+        }catch (Exception e){
             logger.error(Constantes.ErroEditarRegistroNoServidor, e);
             throw new EditarPessoaException();
         }
     }
-
 }
