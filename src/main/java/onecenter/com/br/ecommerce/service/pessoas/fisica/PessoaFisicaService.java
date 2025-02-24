@@ -10,7 +10,6 @@ import onecenter.com.br.ecommerce.entity.pessoas.fisica.PessoaFisicaEntity;
 import onecenter.com.br.ecommerce.repository.pessoas.IPessoaRepository;
 import onecenter.com.br.ecommerce.repository.pessoas.endereco.IEnderecoRepository;
 import onecenter.com.br.ecommerce.repository.pessoas.fisica.IPessoaFisicaRepository;
-import onecenter.com.br.ecommerce.repository.pessoas.juridica.IPessoaJuridicaRepository;
 import onecenter.com.br.ecommerce.service.pessoas.endereco.ApiViaCepService;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import onecenter.com.br.ecommerce.utils.validacoes.*;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PessoaFisicaService {
@@ -38,9 +36,6 @@ public class PessoaFisicaService {
     @Autowired
     private IPessoaFisicaRepository iPessoaFisicaRepository;
 
-    @Autowired
-    private IPessoaJuridicaRepository iPessoaJuridicaRepository;
-
     private static final Logger logger = LoggerFactory.getLogger(PessoaFisicaService.class);
 
     private void validarDados(PessoaFisicaRequest pessoaFisica){
@@ -49,13 +44,11 @@ public class PessoaFisicaService {
             throw new CpfValidacaoException();
         }
 
-        Boolean cpfExistente = iPessoaFisicaRepository.verificarCpfExistente(pessoaFisica.getCpf());
-        if (cpfExistente != null && cpfExistente){
+        if (Boolean.TRUE.equals(iPessoaFisicaRepository.verificarCpfExistente(pessoaFisica.getCpf()))){
             throw new CpfExistenteException();
         }
 
-        Boolean emailExistente = iPessoaRepository.verificarEmailExistente(pessoaFisica.getEmail());
-        if (emailExistente != null && emailExistente){
+        if (Boolean.TRUE.equals(iPessoaRepository.verificarEmailExistente(pessoaFisica.getEmail()))){
             throw new EmailExistenteException();
         }
 
@@ -72,10 +65,6 @@ public class PessoaFisicaService {
         }
         if (!ValidarCEP.validarCep(pessoaFisica.getCep())){
             throw new CepValidacaoExcecao();
-        }
-
-        if(!ValidarDataNascimento.validarDataNascimento(String.valueOf(pessoaFisica.getData_nascimento()))){
-            throw new DataNascimentoException();
         }
 
         if (!ValidarNumeroCelular.validarNumeroCelular(pessoaFisica.getTelefone())) {
@@ -121,7 +110,7 @@ public class PessoaFisicaService {
             PessoaFisicaEntity criarFisica = PessoaFisicaEntity.builder()
                     .id_pessoa(pessoaCriada.getId_pessoa())
                     .cpf(fisica.getCpf())
-                    .data_nascimento(Timestamp.valueOf(fisica.getData_nascimento().toLocalDateTime()))
+                    .data_nascimento(fisica.getData_nascimento())
                     .build();
 
             iPessoaFisicaRepository.criarFisica(criarFisica);
@@ -175,7 +164,7 @@ public class PessoaFisicaService {
         try {
             List<PessoaFisicaEntity> todasPessoas = iPessoaFisicaRepository.obterTodasPessos();
             logger.info(Constantes.InfoBuscar, todasPessoas);
-            return todasPessoas.stream().map(this::mapearPessoaFisica).collect(Collectors.toList());
+            return todasPessoas.stream().map(this::mapearPessoaFisica).toList();
         } catch (Exception e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e);
             throw new ObterTodasPessoasException();

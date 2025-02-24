@@ -80,22 +80,22 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
             String sql = """
-            SELECT 
+            SELECT
                 p.nr_id_pessoa,
-                p.nm_nome_razaosocial AS nomeRazaoSocial,
-                p.ds_email AS email,
-                p.ds_senha AS senha,
-                p.ds_telefone AS telefone,
-                pf.ds_cpf AS cpf,
-                pf.ds_data_nascimento AS dataNascimento,
-                e.nm_rua AS rua,
-                e.ds_numero AS numero,
-                e.ds_bairro AS bairro,
-                e.ds_cidade AS cidade,
-                e.ds_cep AS cep,
-                e.ds_uf AS uf
+                p.nm_nome_razaosocial,
+                p.ds_email,
+                p.ds_senha,
+                p.ds_telefone,
+                pf.ds_cpf,
+                pf.ds_data_nascimento,
+                e.nm_rua,
+                e.ds_numero,
+                e.ds_bairro,
+                e.ds_cidade,
+                e.ds_cep,
+                e.ds_uf
             FROM pessoas p
-            LEFT JOIN pessoas_fisicas pf ON p.nr_id_pessoa = pf.fk_nr_id_pessoa AS idPessoa
+            LEFT JOIN pessoas_fisicas pf ON p.nr_id_pessoa = pf.fk_nr_id_pessoa
             LEFT JOIN enderecos e ON p.nr_id_pessoa = e.fk_nr_id_pessoa
             WHERE pf.ds_cpf = ?
         """;
