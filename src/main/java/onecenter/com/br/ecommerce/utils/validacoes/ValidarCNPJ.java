@@ -2,7 +2,7 @@ package onecenter.com.br.ecommerce.utils.validacoes;
 
 public class ValidarCNPJ {
 
-    public boolean isCnpjValid(String cnpj) {
+    public static boolean isCnpjValid(String cnpj) {
         cnpj = cnpj.replaceAll("[^\\d]", ""); // Remove todos os caracteres não numéricos
 
         // Verifica se o CNPJ tem um formato inválido ou se todos os dígitos são iguais

@@ -50,6 +50,10 @@ public class Constantes {
     public static final String CpfInvalido = "Esse CPF, esta invalido verifique o número digitado!";
     public static final String CPFJaCadastrado = "Esse CPF, já foi cadastrado!";
 
+    public static final String CnpjJaCadastrado = "Esse CNPJ, já foi cadastrado!";
+
+    public static final String CNPJInvalido = "Esse CNPJ está invalido, verifique o número digitado!";
+
     public static final String CepInvalido = "Esse CEP é inválido! Verifique o número digitado!";
     public static final String DataNascimentoInvalida = "Verifiquei a Data de nascimento, a mesma esta inválida!";
     public static final String ErroCadastrarEndereco = "Erro ao registrar o endereço informado!";
@@ -66,6 +70,7 @@ public class Constantes {
 
     public static final String ErroBuscarCpfPessoa = "CPF do cliente não encontrado!";
 
+    public static final String ErroBuscarCnpjPessoa = "CNPJ do cliente não encontrado!";
     public static final String ErroListaCliente = "Lista de cliente não encontrada!";
 
     public static final String ErroEditarPessoa = "Não foi possivel editar os dados! Tente novamente mais tarde.";

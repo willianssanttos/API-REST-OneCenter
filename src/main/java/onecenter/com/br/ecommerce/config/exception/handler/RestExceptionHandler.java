@@ -1,10 +1,18 @@
 package onecenter.com.br.ecommerce.config.exception.handler;
 
+import onecenter.com.br.ecommerce.pessoa.exception.endereco.EnderecoException;
 import onecenter.com.br.ecommerce.config.exception.entity.ApiError;
-import onecenter.com.br.ecommerce.config.exception.pessoas.*;
-import onecenter.com.br.ecommerce.config.exception.produtos.*;
-import onecenter.com.br.ecommerce.config.exception.produtos.categoria.CategoriaException;
-import onecenter.com.br.ecommerce.config.exception.produtos.categoria.CategoriaNotFoundException;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.*;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.CpfExistenteException;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.CpfValidacaoException;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.NumeroCelularValidacaoException;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.ObterPessoaPorCpfNotFoundException;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.CnpjExistenteException;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.CnpjValidacaoException;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.ObterPessoaPorCnpjNotFoundException;
+import onecenter.com.br.ecommerce.produto.exception.*;
+import onecenter.com.br.ecommerce.produto.exception.categoria.CategoriaException;
+import onecenter.com.br.ecommerce.produto.exception.categoria.CategoriaNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -41,9 +49,10 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({
             CategoriaNotFoundException.class,
+            ObterProdutosNotFundException.class,
             ImagemProdutoNotFoundException.class,
             ObterPessoaPorCpfNotFoundException.class,
-            ObterProdutosNotFundException.class
+            ObterPessoaPorCnpjNotFoundException.class
     })
     public ResponseEntity<ApiError> notFoundException(RuntimeException ex) {
         ApiError apiError = ApiError
@@ -58,6 +67,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({
             CpfValidacaoException.class,
+            CnpjValidacaoException.class,
             NomeValidacaoException.class,
             EmailValidacaoException.class,
             SenhaValidacaoException.class,
@@ -76,6 +86,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({
             CpfExistenteException.class,
+            CnpjExistenteException.class,
             EmailExistenteException.class
     })
     public ResponseEntity<ApiError> unavailableException(RuntimeException ex) {
