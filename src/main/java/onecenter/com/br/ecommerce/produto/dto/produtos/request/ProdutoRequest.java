@@ -1,13 +1,13 @@
 package onecenter.com.br.ecommerce.produto.dto.produtos.request;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProdutoRequest {

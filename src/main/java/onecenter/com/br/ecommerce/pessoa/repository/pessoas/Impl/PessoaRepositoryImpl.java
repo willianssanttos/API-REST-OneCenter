@@ -1,6 +1,9 @@
 package onecenter.com.br.ecommerce.pessoa.repository.pessoas.Impl;
 
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ErroLocalizarPessoaNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.PessoaException;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.ObterPessoaPorCpfNotFoundException;
+import onecenter.com.br.ecommerce.pessoa.repository.mapper.PessoaRowMapper;
 import onecenter.com.br.ecommerce.produto.exception.EditarProdutoException;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.PessoaRequest;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
@@ -53,6 +56,19 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public PessoaEntity buscarIdPessoa(Integer IdPessoa){
+        logger.info(Constantes.DebugBuscarProcesso);
+        try {
+            String sql = "SELECT * FROM pessoas WHERE nr_id_pessoa = ?";
+            return jdbcTemplate.queryForObject(sql, new PessoaRowMapper(), IdPessoa);
+        } catch (DataAccessException e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
+            throw new ErroLocalizarPessoaNotFoundException();
         }
     }
 

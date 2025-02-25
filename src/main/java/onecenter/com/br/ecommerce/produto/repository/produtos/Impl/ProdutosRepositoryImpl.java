@@ -1,5 +1,8 @@
 package onecenter.com.br.ecommerce.produto.repository.produtos.Impl;
 
+import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ErroLocalizarPessoaNotFoundException;
+import onecenter.com.br.ecommerce.pessoa.repository.mapper.PessoaRowMapper;
 import onecenter.com.br.ecommerce.produto.exception.DeletarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.EditarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.ObterProdutosNotFundException;
@@ -45,6 +48,19 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
             throw new ProdutoException();
         }
         return produtos;
+    }
+
+    @Override
+    @Transactional
+    public ProdutosEntity buscarIdProduto(Integer IdProduto){
+        logger.info(Constantes.DebugBuscarProcesso);
+        try {
+            String sql = "SELECT * FROM produtos WHERE nr_id_produto = ?";
+            return jdbcTemplate.queryForObject(sql, new ProdutosRowMapper(), IdProduto);
+        } catch (DataAccessException e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
+            throw new ErroLocalizarPessoaNotFoundException();
+        }
     }
 
     @Override

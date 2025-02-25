@@ -78,6 +78,14 @@ public class Constantes {
     public static final String ErroEditarEndereco = "Não foi possivel alterar o endereço! Tente novamente mais tarde.";
 
 
+    //Erros de pedidos
+
+    public static final String ErroCadastrarPedido = "Erro ao realizar pedido! Tente novamente mais tarde.";
+
+    public static final String ErroPessoaNãoEncontrada = "Não foi possivel localizar cliente!.";
+
+
+
 
 
 

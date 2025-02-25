@@ -34,7 +34,7 @@ public class RestExceptionHandler {
             EditarPessoaException.class,
             EditarProdutoException.class,
             DeletarProdutoException.class,
-            ObterTodasPessoasException.class
+            ObterTodasPessoasNotFoundException.class
     })
     public ResponseEntity<ApiError> genericException(Exception ex){
         ApiError apiError = ApiError
@@ -52,7 +52,9 @@ public class RestExceptionHandler {
             ObterProdutosNotFundException.class,
             ImagemProdutoNotFoundException.class,
             ObterPessoaPorCpfNotFoundException.class,
-            ObterPessoaPorCnpjNotFoundException.class
+            ObterPessoaPorCnpjNotFoundException.class,
+            ErroLocalizarPessoaNotFoundException.class,
+            ErroLocalizarProdutoNotFoundException.class
     })
     public ResponseEntity<ApiError> notFoundException(RuntimeException ex) {
         ApiError apiError = ApiError

@@ -145,7 +145,7 @@ public class PessoaFisicaService {
                     .build();
 
         } catch (Exception e){
-            throw new BuscarEnderecoNotFoundException();
+            throw new ObterTodasPessoasNotFoundException();
         }
     }
 
