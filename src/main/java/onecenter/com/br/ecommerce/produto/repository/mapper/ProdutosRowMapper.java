@@ -12,8 +12,11 @@ public class ProdutosRowMapper implements RowMapper<ProdutosEntity> {
         produtos.setId_produto(rs.getInt(1));
         produtos.setNome(rs.getString(2));
         produtos.setPreco(rs.getDouble(3));
-        produtos.setProduto_imagem(rs.getString(4));
-        produtos.setId_categoria(rs.getInt(5));
+        produtos.setDescricaoProduto(rs.getString(4));
+        produtos.setProduto_imagem(rs.getString(5));
+        produtos.setNomeCategoria(rs.getString(6));
+        //produtos.setNomeCategoria();
+
         return produtos;
     }
 }

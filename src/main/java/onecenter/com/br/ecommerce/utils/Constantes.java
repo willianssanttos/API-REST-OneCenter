@@ -82,7 +82,11 @@ public class Constantes {
 
     public static final String ErroCadastrarPedido = "Erro ao realizar pedido! Tente novamente mais tarde.";
 
+    public static final String ErroLocalizarPedido = "Pedidos não localizados! Tente novamente mais tarde.";
+
     public static final String ErroPessoaNãoEncontrada = "Não foi possivel localizar cliente!.";
+
+    public static final String ArquivoImagemVazio = "O arquivo da imagem está vazio!.";
 
 
 

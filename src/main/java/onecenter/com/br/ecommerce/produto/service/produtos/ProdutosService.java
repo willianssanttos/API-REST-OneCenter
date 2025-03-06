@@ -37,14 +37,15 @@ public class ProdutosService {
         logger.info(Constantes.DebugRegistroProcesso);
        try {
 
-           CategoriaEntity categoria = iCategoriaRepository.obterCategoriaPorId(produto.getId_categoria());
+           Integer categoria = iCategoriaRepository.obterCategoriaPorNome(produto.getNomeCategoria());
            String caminhoImagem = fileStorageService.salvarImagem(produto.getProduto_imagem());
 
            ProdutosEntity novoProduto = ProdutosEntity.builder()
                .nome(produto.getNome())
                .preco(produto.getPreco())
+               .descricaoProduto(produto.getDescricaoProduto())
                .produto_imagem(caminhoImagem)
-               .id_categoria(categoria.getId_categoria())
+               .id_categoria(categoria)
                .build();
            ProdutosEntity produtoInserido = iProdutosRepository.criar(novoProduto);
            logger.info(Constantes.InfoRegistrar, produto);
@@ -62,6 +63,7 @@ public class ProdutosService {
                 .nome(produtoInserido.getNome())
                 .preco(produtoInserido.getPreco())
                 .produto_imagem(String.valueOf(produtoInserido.getProduto_imagem()))
+                .descricaoProduto(produtoInserido.getDescricaoProduto())
                 .id_categoria(produtoInserido.getId_categoria())
                 .build();
     }
@@ -83,8 +85,19 @@ public class ProdutosService {
     public ProdutosResponse atualizarProduto(ProdutosResponse editar){
         logger.info(Constantes.DebugEditarProcesso);
         try {
+            Integer categoria = iCategoriaRepository.obterCategoriaPorNome(editar.getNomeCategoria());
+
+            ProdutosEntity atualizarProduto = ProdutosEntity.builder()
+                    .id_produto(editar.getId_produto())
+                    .nome(editar.getNome())
+                    .preco(editar.getPreco())
+                    .descricaoProduto(editar.getDescricaoProduto())
+                    .produto_imagem(editar.getProduto_imagem())
+                    .id_categoria(categoria)
+                    .build();
             logger.info(Constantes.InfoEditar, editar);
-            return iProdutosRepository.atualizarProduto(editar);
+            ProdutosEntity produtoAtualizado = iProdutosRepository.atualizarProduto(atualizarProduto);
+            return mapearProduto(produtoAtualizado);
         } catch (Exception e){
             logger.error(Constantes.ErroEditarRegistroNoServidor);
             throw new EditarProdutoException();

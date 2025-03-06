@@ -41,8 +41,9 @@ CREATE TABLE IF NOT EXISTS categorias (
 
 CREATE TABLE IF NOT EXISTS produtos (
     nr_id_produto SERIAL NOT NULL PRIMARY KEY ,
-    nm_nome VARCHAR(100) NOT NULL,
+    nm_nome VARCHAR(255) NOT NULL,
     ds_preco DOUBLE precision NOT NULL,
+    ds_descricao TEXT NOT NULL,
     ds_imagem_produto VARCHAR(255) NOT NULL,
     fk_nr_id_categoria INT NOT NULL,
     FOREIGN KEY (fk_nr_id_categoria) REFERENCES categorias (nr_id_categoria)
@@ -63,4 +64,3 @@ CREATE TABLE IF NOT EXISTS pedidos (
     FOREIGN KEY (fk_nr_id_pessoa) REFERENCES pessoas (nr_id_pessoa),
     FOREIGN KEY (fk_nr_id_produto) REFERENCES produtos (nr_id_produto)
 );
-

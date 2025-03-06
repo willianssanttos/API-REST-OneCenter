@@ -15,6 +15,7 @@ public class ProdutosEntity extends CategoriaEntity{
     private Integer id_produto;
     private String nome;
     private Double preco;
+    private String descricaoProduto;
     private String produto_imagem;
 
     @Override
@@ -24,6 +25,7 @@ public class ProdutosEntity extends CategoriaEntity{
                 ", Nome= '" + nome + '\'' +
                 ", Preço= " + preco +
                 ", Imagem= '" + produto_imagem + '\'' +
+                ", Descrição= '" + descricaoProduto + '\''+
                 '}';
     }
 

@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/v1/pedido")
 public class PedidosController {
@@ -18,5 +20,11 @@ public class PedidosController {
     @PostMapping("/")
     public ResponseEntity<PedidoResponse> pedidoCriado(@RequestBody PedidoRequest pedido){
         return new ResponseEntity<>(pedidosService.criarPedidos(pedido), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<PedidoResponse>> localizarPedido(){
+        List<PedidoResponse> response = pedidosService.obterTodosProdutos();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

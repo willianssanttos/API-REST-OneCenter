@@ -27,14 +27,16 @@ public class ProdutosController {
     public ResponseEntity<ProdutosResponse> criarProduto(
             @RequestParam("nome") String nome,
             @RequestParam("preco") Double preco,
-            @RequestParam("id_categoria") Integer idCategoria,
-            @RequestParam("produto_imagem") MultipartFile  imagem) {
+            @RequestParam("categoria") String nomeCategaria,
+            @RequestParam("descricaoProduto") String descricaoProduto,
+            @RequestParam("produto_imagem") MultipartFile  imagem){
 
         ProdutoRequest produto = new ProdutoRequest();
         produto.setNome(nome);
         produto.setPreco(preco);
-        produto.setId_categoria(idCategoria);
+        produto.setNomeCategoria(nomeCategaria);
         produto.setProduto_imagem(imagem);
+        produto.setDescricaoProduto(descricaoProduto);
 
         return new ResponseEntity<>(produtosService.criar(produto), HttpStatus.CREATED);
     }
@@ -50,7 +52,8 @@ public class ProdutosController {
             @PathVariable Integer idProduto,
             @RequestParam("nome") String nome,
             @RequestParam("preco") Double preco,
-            @RequestParam("id_categoria") Integer idCategoria,
+            @RequestParam("descricaoProduto") String descricaoProduto,
+            @RequestParam("categoria") String nomeCategaria,
             @RequestParam("produto_imagem") MultipartFile  imagem) throws IOException {
 
         String caminhoImagem = fileStorageService.salvarImagem(imagem);
@@ -59,7 +62,8 @@ public class ProdutosController {
         produto.setId_produto(idProduto);
         produto.setNome(nome);
         produto.setPreco(preco);
-        produto.setId_categoria(idCategoria);
+        produto.setDescricaoProduto(descricaoProduto);
+        produto.setNomeCategoria(nomeCategaria);
         produto.setProduto_imagem(caminhoImagem);
 
         ProdutosResponse response = produtosService.atualizarProduto(produto);

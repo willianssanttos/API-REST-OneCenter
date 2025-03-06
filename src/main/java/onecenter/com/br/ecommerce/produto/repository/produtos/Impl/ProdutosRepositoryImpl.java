@@ -1,8 +1,6 @@
 package onecenter.com.br.ecommerce.produto.repository.produtos.Impl;
 
-import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ErroLocalizarPessoaNotFoundException;
-import onecenter.com.br.ecommerce.pessoa.repository.mapper.PessoaRowMapper;
 import onecenter.com.br.ecommerce.produto.exception.DeletarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.EditarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.ObterProdutosNotFundException;
@@ -34,10 +32,11 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     public ProdutosEntity criar(ProdutosEntity produtos) {
         logger.info(Constantes.DebugRegistroProcesso);
         try {
-            String sql = "INSERT INTO produtos (nm_nome, ds_preco, ds_imagem_produto, fk_nr_id_categoria) VALUES (?,?,?,?) RETURNING nr_id_produto";
+            String sql = "INSERT INTO produtos (nm_nome, ds_preco, ds_descricao, ds_imagem_produto, fk_nr_id_categoria) VALUES (?,?,?,?,?) RETURNING nr_id_produto";
             Integer idProduto = jdbcTemplate.queryForObject(sql, Integer.class,
                     produtos.getNome(),
                     produtos.getPreco(),
+                    produtos.getDescricaoProduto(),
                     produtos.getProduto_imagem(),
                     produtos.getId_categoria()
             );
@@ -68,7 +67,15 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     public List<ProdutosEntity> obterTodosProdutos(){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT * FROM produtos";
+            String sql = "SELECT \n" +
+            "                p.nr_id_produto,\n" +
+            "                p.nm_nome,\n" +
+            "                p.ds_preco,\n" +
+            "                p.ds_descricao,\n" +
+            "                p.ds_imagem_produto,\n" +
+            "                c.nm_nome \n" +
+            "            FROM produtos p\n" +
+            "            LEFT JOIN categorias c ON p.fk_nr_id_categoria = c.nr_id_categoria";
             logger.info(Constantes.InfoBuscar);
             return jdbcTemplate.query(sql, new ProdutosRowMapper());
         } catch (DataAccessException e){
@@ -79,7 +86,7 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
 
     @Override
     @Transactional
-    public ProdutosResponse atualizarProduto(ProdutosResponse editar){
+    public ProdutosEntity atualizarProduto(ProdutosEntity editar){
         logger.info(Constantes.DebugEditarProcesso);
         try {
             String sql = "UPDATE produtos SET nm_nome = ?, ds_preco = ?, ds_imagem_produto = ?, fk_nr_id_categoria = ? WHERE nr_id_produto = ?";

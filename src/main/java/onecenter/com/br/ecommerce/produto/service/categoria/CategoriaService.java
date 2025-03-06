@@ -26,7 +26,7 @@ public class CategoriaService {
         try {
 
             CategoriaEntity novaCategoria = CategoriaEntity.builder()
-                .nomeCategoria(categoria.getNome())
+                .nomeCategoria(categoria.getNomeCategoria())
                 .build();
             CategoriaEntity categoriaCriada = iCategoriaRepository.criarCategoria(novaCategoria);
             logger.info(Constantes.InfoRegistrar, categoria);
@@ -40,7 +40,7 @@ public class CategoriaService {
 
     private CategoriaResponse mapearCategoria(CategoriaEntity categoriaCriada){
         return CategoriaResponse.builder()
-                .nome(categoriaCriada.getNomeCategoria())
+                .id_categoria(Integer.valueOf(categoriaCriada.getNomeCategoria()))
                 .build();
     }
 

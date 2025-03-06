@@ -12,7 +12,7 @@ public interface IProdutosRepository {
     ProdutosEntity buscarIdProduto(Integer IdProduto);
     List<ProdutosEntity> obterTodosProdutos();
 
-    ProdutosResponse atualizarProduto(ProdutosResponse editar);
+    ProdutosEntity atualizarProduto(ProdutosEntity editar);
 
     void excluirProduto(Integer idProduto);
 
