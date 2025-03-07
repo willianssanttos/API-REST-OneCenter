@@ -5,7 +5,6 @@ import onecenter.com.br.ecommerce.produto.exception.DeletarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.EditarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.ObterProdutosNotFundException;
 import onecenter.com.br.ecommerce.produto.exception.ProdutoException;
-import onecenter.com.br.ecommerce.produto.dto.produtos.response.ProdutosResponse;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 import onecenter.com.br.ecommerce.produto.repository.mapper.ProdutosRowMapper;
 import onecenter.com.br.ecommerce.produto.repository.produtos.IProdutosRepository;

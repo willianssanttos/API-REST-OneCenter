@@ -2,6 +2,7 @@ package onecenter.com.br.ecommerce.produto.controller.produtos;
 
 import onecenter.com.br.ecommerce.produto.dto.produtos.request.ProdutoRequest;
 import onecenter.com.br.ecommerce.produto.dto.produtos.response.ProdutosResponse;
+import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 import onecenter.com.br.ecommerce.produto.service.produtos.ProdutosService;
 import onecenter.com.br.ecommerce.produto.service.imagem.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,12 @@ public class ProdutosController {
         List<ProdutosResponse> response = produtosService.obterTodosProdutos();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<ProdutosEntity> obterProdutoPorId(@PathVariable Integer id) {
+        ProdutosEntity response = produtosService.obterProdutoPorId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
     @PutMapping(value = "/atualizar-produto/{idProduto}", consumes = {"multipart/form-data"})
     public ResponseEntity<ProdutosResponse> atualizarProduto(
@@ -64,7 +71,7 @@ public class ProdutosController {
         produto.setPreco(preco);
         produto.setDescricaoProduto(descricaoProduto);
         produto.setNomeCategoria(nomeCategaria);
-        produto.setProduto_imagem(caminhoImagem);
+        produto.setProdutoImagem(caminhoImagem);
 
         ProdutosResponse response = produtosService.atualizarProduto(produto);
         return ResponseEntity.status(HttpStatus.OK).body(response);

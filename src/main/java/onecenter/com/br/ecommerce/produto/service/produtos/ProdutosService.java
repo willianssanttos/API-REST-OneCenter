@@ -6,7 +6,6 @@ import onecenter.com.br.ecommerce.produto.exception.ObterProdutosNotFundExceptio
 import onecenter.com.br.ecommerce.produto.exception.ProdutoException;
 import onecenter.com.br.ecommerce.produto.dto.produtos.request.ProdutoRequest;
 import onecenter.com.br.ecommerce.produto.dto.produtos.response.ProdutosResponse;
-import onecenter.com.br.ecommerce.produto.entity.categoria.CategoriaEntity;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 import onecenter.com.br.ecommerce.produto.repository.categoria.ICategoriaRepository;
 import onecenter.com.br.ecommerce.produto.repository.produtos.IProdutosRepository;
@@ -62,7 +61,7 @@ public class ProdutosService {
                 .id_produto(produtoInserido.getId_produto())
                 .nome(produtoInserido.getNome())
                 .preco(produtoInserido.getPreco())
-                .produto_imagem(String.valueOf(produtoInserido.getProduto_imagem()))
+                .produtoImagem(String.valueOf(produtoInserido.getProduto_imagem()))
                 .descricaoProduto(produtoInserido.getDescricaoProduto())
                 .id_categoria(produtoInserido.getId_categoria())
                 .build();
@@ -82,6 +81,15 @@ public class ProdutosService {
         }
     }
 
+    public ProdutosEntity obterProdutoPorId( Integer idProduto){
+        try {
+            logger.info(Constantes.InfoBuscar, idProduto);
+            return iProdutosRepository.buscarIdProduto(idProduto);
+        } catch (Exception e){
+            throw new ObterProdutosNotFundException();
+        }
+    }
+
     public ProdutosResponse atualizarProduto(ProdutosResponse editar){
         logger.info(Constantes.DebugEditarProcesso);
         try {
@@ -92,7 +100,7 @@ public class ProdutosService {
                     .nome(editar.getNome())
                     .preco(editar.getPreco())
                     .descricaoProduto(editar.getDescricaoProduto())
-                    .produto_imagem(editar.getProduto_imagem())
+                    .produto_imagem(editar.getProdutoImagem())
                     .id_categoria(categoria)
                     .build();
             logger.info(Constantes.InfoEditar, editar);

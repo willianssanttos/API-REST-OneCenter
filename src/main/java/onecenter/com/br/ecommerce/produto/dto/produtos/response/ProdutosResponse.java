@@ -14,8 +14,12 @@ public class ProdutosResponse extends CategoriaResponse {
 
     private Integer id_produto;
     private String nome;
-    private Double preco;
     private String descricaoProduto;
-    private String produto_imagem;
+    private String nomeCategoria;
+    private Double preco;
+    private String produtoImagem;
 
+    public String getProdutoImagem() {
+        return "http://localhost:8080" + this.produtoImagem;
+    }
 }
