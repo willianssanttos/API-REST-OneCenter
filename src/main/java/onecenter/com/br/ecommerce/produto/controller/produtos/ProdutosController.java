@@ -49,7 +49,7 @@ public class ProdutosController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<ProdutosEntity> obterProdutoPorId(@PathVariable Integer id) {
-        ProdutosEntity response = produtosService.obterProdutoPorId(id);
+        ProdutosEntity response = produtosService.buscarProdutoComImagens(id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

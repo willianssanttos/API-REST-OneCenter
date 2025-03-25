@@ -1,5 +1,7 @@
 package onecenter.com.br.ecommerce.produto.service.produtos;
 
+import onecenter.com.br.ecommerce.produto.entity.categoria.EnumCategoria;
+import onecenter.com.br.ecommerce.produto.entity.imagens.ImagensProdutosEntity;
 import onecenter.com.br.ecommerce.produto.exception.DeletarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.EditarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.ObterProdutosNotFundException;
@@ -7,6 +9,7 @@ import onecenter.com.br.ecommerce.produto.exception.ProdutoException;
 import onecenter.com.br.ecommerce.produto.dto.produtos.request.ProdutoRequest;
 import onecenter.com.br.ecommerce.produto.dto.produtos.response.ProdutosResponse;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
+import onecenter.com.br.ecommerce.produto.exception.imagens.ImagensException;
 import onecenter.com.br.ecommerce.produto.repository.categoria.ICategoriaRepository;
 import onecenter.com.br.ecommerce.produto.repository.produtos.IProdutosRepository;
 import onecenter.com.br.ecommerce.produto.service.imagem.FileStorageService;
@@ -63,7 +66,7 @@ public class ProdutosService {
                 .preco(produtoInserido.getPreco())
                 .produtoImagem(String.valueOf(produtoInserido.getProduto_imagem()))
                 .descricaoProduto(produtoInserido.getDescricaoProduto())
-                .id_categoria(produtoInserido.getId_categoria())
+                .nomeCategoria(EnumCategoria.valueOf(produtoInserido.getNomeCategoria()).name())
                 .build();
     }
 
@@ -88,6 +91,21 @@ public class ProdutosService {
         } catch (Exception e){
             throw new ObterProdutosNotFundException();
         }
+    }
+
+    public List<String> buscarImagensProduto(Integer idProduto){
+        try {
+            return iProdutosRepository.buscarImagensProduto(idProduto);
+        } catch (Exception ex){
+            throw new ImagensException();
+        }
+    }
+
+    public ProdutosEntity buscarProdutoComImagens(Integer idProduto) {
+        ProdutosEntity produto = obterProdutoPorId(idProduto);
+        List<String> imagens = buscarImagensProduto(idProduto);
+        produto.setImagens(imagens);
+        return produto;
     }
 
     public ProdutosResponse atualizarProduto(ProdutosResponse editar){

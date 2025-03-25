@@ -10,6 +10,8 @@ public interface IProdutosRepository {
     ProdutosEntity criar(ProdutosEntity produtos);
 
     ProdutosEntity buscarIdProduto(Integer IdProduto);
+
+    List<String> buscarImagensProduto(Integer idProduto);
     List<ProdutosEntity> obterTodosProdutos();
 
     ProdutosEntity atualizarProduto(ProdutosEntity editar);

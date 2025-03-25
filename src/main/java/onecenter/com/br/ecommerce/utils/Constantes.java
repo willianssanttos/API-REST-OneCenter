@@ -88,6 +88,9 @@ public class Constantes {
 
     public static final String ArquivoImagemVazio = "O arquivo da imagem está vazio!.";
 
+    public static final String ErroCadastraImagem = "Erro! Imagens não registradas no servidor!.";
+
+
 
 
 

@@ -14,6 +14,7 @@ import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.ObterPessoaP
 import onecenter.com.br.ecommerce.produto.exception.*;
 import onecenter.com.br.ecommerce.produto.exception.categoria.CategoriaException;
 import onecenter.com.br.ecommerce.produto.exception.categoria.CategoriaNotFoundException;
+import onecenter.com.br.ecommerce.produto.exception.imagens.ImagensException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,6 +30,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({
             Exception.class,
+            ImagensException.class,
             ProdutoException.class,
             EnderecoException.class,
             CategoriaException.class,

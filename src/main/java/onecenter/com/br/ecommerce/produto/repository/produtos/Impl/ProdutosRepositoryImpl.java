@@ -63,6 +63,14 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
 
     @Override
     @Transactional
+    public List<String> buscarImagensProduto(Integer idProduto) {
+        String baseUrl = "http://localhost:8080";
+        String sql = "SELECT ds_caminho FROM imagens_produtos WHERE fk_nr_id_produto = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> baseUrl + rs.getString("ds_caminho"), idProduto);
+    }
+
+    @Override
+    @Transactional
     public List<ProdutosEntity> obterTodosProdutos(){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
@@ -88,8 +96,8 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     public ProdutosEntity atualizarProduto(ProdutosEntity editar){
         logger.info(Constantes.DebugEditarProcesso);
         try {
-            String sql = "UPDATE produtos SET nm_nome = ?, ds_preco = ?, ds_imagem_produto = ?, fk_nr_id_categoria = ? WHERE nr_id_produto = ?";
-            jdbcTemplate.update(sql,editar.getNome(), editar.getPreco(), editar.getProduto_imagem(), editar.getId_categoria(), editar.getId_produto());
+            String sql = "UPDATE produtos SET nm_nome = ?, ds_preco = ?, ds_descricao = ?, ds_imagem_produto = ?, fk_nr_id_categoria = ? WHERE nr_id_produto = ?";
+            jdbcTemplate.update(sql,editar.getNome(), editar.getPreco(), editar.getDescricaoProduto(), editar.getProduto_imagem(), editar.getId_categoria(), editar.getId_produto());
             logger.info(Constantes.InfoEditar, editar);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroEditarRegistroNoServidor, e.getMessage());

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import onecenter.com.br.ecommerce.produto.entity.categoria.CategoriaEntity;
 
+import java.util.List;
+
 @Data
 @SuperBuilder
 @AllArgsConstructor
@@ -17,6 +19,15 @@ public class ProdutosEntity extends CategoriaEntity{
     private Double preco;
     private String descricaoProduto;
     private String produto_imagem;
+    private List<String> imagens;
+
+    public List<String> getImagens() {
+        return imagens;
+    }
+
+    public void setImagens(List<String> imagens) {
+        this.imagens = imagens;
+    }
 
     @Override
     public String toString() {

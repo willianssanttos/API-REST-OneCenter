@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.produto.entity.imagens;
+package onecenter.com.br.ecommerce.produto.dto.imagens.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,8 +10,9 @@ import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImagensProdutosEntity extends ProdutosEntity{
+public class ImagensProdutosResponse extends ProdutosEntity{
 
     private Integer id_imagem;
     private String caminho;
+
 }

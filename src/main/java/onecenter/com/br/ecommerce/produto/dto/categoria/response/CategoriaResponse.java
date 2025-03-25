@@ -11,6 +11,5 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class CategoriaResponse {
 
-    private Integer id_categoria;
     private String nomeCategoria;
 }
