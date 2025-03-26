@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/v1/categoria")
-public class CategoriaController {
+public class CategoriaController implements ICategoriaController{
 
     @Autowired
     private CategoriaService categoriaService;

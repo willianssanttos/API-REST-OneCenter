@@ -19,7 +19,4 @@ public class ProdutosResponse extends CategoriaResponse {
     private Double preco;
     private String produtoImagem;
 
-    public String getProdutoImagem() {
-        return "http://localhost:8080" + this.produtoImagem;
-    }
 }

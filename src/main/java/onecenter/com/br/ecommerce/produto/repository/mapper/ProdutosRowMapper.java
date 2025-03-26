@@ -8,15 +8,14 @@ import java.sql.SQLException;
 
 public class ProdutosRowMapper implements RowMapper<ProdutosEntity> {
     public ProdutosEntity mapRow(ResultSet rs, int rowNum) throws SQLException{
+        String baseUrl = "http://localhost:8080";
         ProdutosEntity produtos = new ProdutosEntity();
         produtos.setId_produto(rs.getInt(1));
         produtos.setNome(rs.getString(2));
         produtos.setPreco(rs.getDouble(3));
         produtos.setDescricaoProduto(rs.getString(4));
-        produtos.setProduto_imagem(rs.getString(5));
+        produtos.setProduto_imagem(baseUrl + rs.getString(5));
         produtos.setNomeCategoria(rs.getString(6));
-        //produtos.setNomeCategoria();
-
         return produtos;
     }
 }

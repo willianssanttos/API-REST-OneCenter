@@ -54,7 +54,7 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
             String sql = "SELECT * FROM produtos WHERE nr_id_produto = ?";
-            return jdbcTemplate.queryForObject(sql, new ProdutosRowMapper(), IdProduto);
+            return jdbcTemplate.queryForObject(sql,  new ProdutosRowMapper(), IdProduto);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             throw new ErroLocalizarPessoaNotFoundException();
