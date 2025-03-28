@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/v1/imagem" )
-public class ImagensProdutosController {
+public class ImagensProdutosController implements IImagensProdutosController{
 
     @Autowired
     private ImagemProdutoService imagemProdutoService;

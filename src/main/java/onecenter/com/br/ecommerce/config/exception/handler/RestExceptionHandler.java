@@ -51,6 +51,7 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler({
+            ObterLoginNotFoundException.class,
             CategoriaNotFoundException.class,
             ObterProdutosNotFundException.class,
             ImagemProdutoNotFoundException.class,

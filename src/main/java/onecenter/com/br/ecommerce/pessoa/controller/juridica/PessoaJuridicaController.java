@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/v1/pessoa/juridica")
-public class PessoaJuridicaController {
+public class PessoaJuridicaController implements  IPessoaJuridicaController{
 
     @Autowired
     private PessoaJuridicaService pessoaJuridicaService;

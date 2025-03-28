@@ -61,7 +61,13 @@ public class Constantes {
 
 
 
+    public static final String GerarToken = "Erro ao gerar token.";
 
+    public static final String GToken = "Token ausente.";
+
+    public static final String Token = "Token inválido ou expirado!";
+
+    public static final String erroLoginConta = "Usuário ou senha incorretos!";
 
 
 

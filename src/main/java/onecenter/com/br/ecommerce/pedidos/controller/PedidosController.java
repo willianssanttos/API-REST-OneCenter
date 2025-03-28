@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/v1/pedido")
-public class PedidosController {
+public class PedidosController implements IPedidosController{
 
     @Autowired
     private PedidosService pedidosService;

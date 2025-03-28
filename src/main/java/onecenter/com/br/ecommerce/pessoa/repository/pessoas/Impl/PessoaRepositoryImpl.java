@@ -1,6 +1,7 @@
 package onecenter.com.br.ecommerce.pessoa.repository.pessoas.Impl;
 
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ErroLocalizarPessoaNotFoundException;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ObterLoginNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.PessoaException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.ObterPessoaPorCpfNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.repository.mapper.PessoaRowMapper;
@@ -29,8 +30,9 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
     public PessoaEntity criarPessoa(PessoaEntity pessoa){
         logger.info(Constantes.DebugRegistroProcesso);
         try{
-            String sql = "INSERT INTO pessoas (nm_nome_razaosocial, ds_email, ds_senha, ds_telefone) VALUES (?,?,?,?) RETURNING nr_id_pessoa";
+            String sql = "INSERT INTO pessoas (nm_roles, nm_nome_razaosocial, ds_email, ds_senha, ds_telefone) VALUES (?,?,?,?,?) RETURNING nr_id_pessoa";
             Integer idPessoa = jdbcTemplate.queryForObject(sql, Integer.class,
+                    pessoa.getRole(),
                     pessoa.getNome_razaosocial(),
                     pessoa.getEmail(),
                     pessoa.getSenha(),
@@ -77,8 +79,9 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
     public void atualizarPessoa(Integer idPessoa, PessoaRequest editar) {
         logger.info(Constantes.DebugEditarProcesso);
         try {
-            String sql = "UPDATE pessoas SET nm_nome_razaosocial = ?, ds_email = ?, ds_senha = ?, ds_telefone = ? WHERE nr_id_pessoa = ?";
+            String sql = "UPDATE pessoas SET nm_roles = ?, nm_nome_razaosocial = ?, ds_email = ?, ds_senha = ?, ds_telefone = ? WHERE nr_id_pessoa = ?";
             jdbcTemplate.update(sql,
+                    editar.getRole(),
                     editar.getNome_razaosocial(),
                     editar.getEmail(),
                     editar.getSenha(),
@@ -88,6 +91,20 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
         } catch (DataAccessException e){
             logger.error(Constantes.ErroEditarRegistroNoServidor, e.getMessage());
             throw new EditarProdutoException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public PessoaEntity obterLogin(String email){
+        logger.info(Constantes.DebugBuscarProcesso);
+        try {
+            String sql = "SELECT * FROM validar_login(?)";
+            return jdbcTemplate.queryForObject(sql, new Object[] { email }, new PessoaRowMapper());
+
+        } catch (DataAccessException e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
+            throw new ObterLoginNotFoundException();
         }
     }
 }

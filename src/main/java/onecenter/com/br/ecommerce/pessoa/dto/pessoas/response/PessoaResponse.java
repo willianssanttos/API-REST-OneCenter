@@ -13,6 +13,7 @@ import onecenter.com.br.ecommerce.pessoa.dto.endereco.response.EnderecoResponse;
 public class PessoaResponse extends EnderecoResponse {
 
     private Integer idPessoa;
+    private String role;
     private String nome_razaosocial;
     private String email;
     private String telefone;
