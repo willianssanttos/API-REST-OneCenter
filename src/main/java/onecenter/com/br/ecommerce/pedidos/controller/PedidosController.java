@@ -22,7 +22,7 @@ public class PedidosController implements IPedidosController{
         return new ResponseEntity<>(pedidosService.criarPedidos(pedido), HttpStatus.CREATED);
     }
 
-    @GetMapping("/")
+    @GetMapping("/localizar")
     public ResponseEntity<List<PedidoResponse>> localizarPedido(){
         List<PedidoResponse> response = pedidosService.obterTodosProdutos();
         return ResponseEntity.status(HttpStatus.OK).body(response);

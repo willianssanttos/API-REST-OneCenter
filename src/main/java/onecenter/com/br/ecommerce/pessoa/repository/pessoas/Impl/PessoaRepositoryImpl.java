@@ -99,7 +99,7 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
     public PessoaEntity obterLogin(String email){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT * FROM validar_login(?)";
+            String sql = "SELECT * FROM pessoas WHERE ds_email = ?";
             return jdbcTemplate.queryForObject(sql, new Object[] { email }, new PessoaRowMapper());
 
         } catch (DataAccessException e){

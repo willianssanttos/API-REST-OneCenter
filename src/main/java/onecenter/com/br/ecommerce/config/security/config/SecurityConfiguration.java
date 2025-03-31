@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -25,7 +26,7 @@ public class SecurityConfiguration {
 
     public static final String[] ENDPOINTS_COM_AUTENTICACAO_NAO_OBRIGATORIA = {
             "/v1/login/usuario",
-            "/v1/pessoa/fisica/",
+            "/v1/usuario/criar-usuario",
             "/swagger-ui/**",
             "/swagger-resources/**",
             "/swagger-ui.html",
@@ -34,8 +35,8 @@ public class SecurityConfiguration {
     };
 
     public static final String[] ENDPOINTS_COM_AUTENTICACAO_NECESSARIA_PARA_LISTAR = {
-            "/v1/conta",
-            "/v1/conta/obter-contas/{idUsuario}",
+            "/v1/pessoa/fisica/",
+            "/v1/pessoa/fisica/buscar/{CPF}",
             "/v1/transacao",
             "v1/transacao/extrato-transacao/{idUsuario}"
     };
@@ -80,3 +81,4 @@ public class SecurityConfiguration {
     }
 
 }
+

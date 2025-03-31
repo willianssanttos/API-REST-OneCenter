@@ -37,12 +37,13 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     private IPessoaRepository iPessoaRepository;
 
     @Override
-    protected  void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = recoveryToken(request);
 
-            if (checkIfEndpointIsNotPublic(request)){
-                if (token != null){
+
+            if (checkIfEndpointIsNotPublic(request)) {
+                if (token != null) {
                     String subject = jwtTokenService.getSubjectFromToken(token);
                     PessoaEntity login = iPessoaRepository.obterLogin(subject);
                     UserDetailsImpl userDetails = new UserDetailsImpl(login);
@@ -56,7 +57,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
-        } catch (TokenException ex){
+        } catch (TokenException ex) {
             buidErrorResponse(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.name(), ex, response);
         } catch (JWTCreationException ex) {
             buidErrorResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.name(), ex, response);
@@ -65,20 +66,20 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    private String recoveryToken(HttpServletRequest request){
+    private String recoveryToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null){
-            return authorizationHeader.replace("Bearer", "");
+        if (authorizationHeader != null) {
+            return authorizationHeader.replace("Bearer ", "");
         }
         return null;
     }
 
-    private boolean checkIfEndpointIsNotPublic(HttpServletRequest request){
+    private boolean checkIfEndpointIsNotPublic(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         return !Arrays.asList(SecurityConfiguration.ENDPOINTS_COM_AUTENTICACAO_NAO_OBRIGATORIA).contains(requestURI);
     }
 
-    private void buidErrorResponse(Integer codeError, String statusError, Exception ex, HttpServletResponse response) throws IOException{
+    private void buidErrorResponse(Integer codeError, String statusError, Exception ex, HttpServletResponse response) throws IOException {
         ApiError apiError = ApiError.builder()
                 .timestamp(LocalDateTime.now())
                 .code(codeError)
@@ -90,7 +91,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         response.getWriter().write(convertObjToJson(apiError));
     }
 
-    private String convertObjToJson(Object object) throws JsonProcessingException{
+    private String convertObjToJson(Object object) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
         return objectMapper.writeValueAsString(object);

@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import onecenter.com.br.ecommerce.config.security.userdetails.UserDetailsImpl;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +19,12 @@ import java.time.temporal.ChronoUnit;
 @Service
 public class JwtTokenService {
 
-    @Value("${projeto.jwtSecret}")
+    @Value("${spring.application.projeto.jwtSecret}")
     private String jwtSecret;
 
-    private static final String EMISSOR =  "OneCenter";
+    private static final String EMISSOR = "OneCenter";
 
-    public String generateJwtToken(UserDetailsImpl login){
+    public String generateJwtToken(UserDetailsImpl login) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
             return JWT.create()
@@ -37,8 +38,9 @@ public class JwtTokenService {
         }
     }
 
-    public String getSubjectFromToken(String token){
+    public String getSubjectFromToken(String token) {
         try {
+
             Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
             return JWT.require(algorithm)
                     .withIssuer(EMISSOR)
@@ -57,4 +59,5 @@ public class JwtTokenService {
     private Instant expirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
+
 }

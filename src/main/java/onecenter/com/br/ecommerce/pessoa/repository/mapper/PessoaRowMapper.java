@@ -15,14 +15,17 @@ public class PessoaRowMapper implements RowMapper<PessoaEntity> {
 
         PessoaEntity pessoa = new PessoaEntity();
 
+        // Criar a Role corretamente
         RolesEntity role = new RolesEntity();
-        role.setNomeRole(RolesEnum.valueOf(rs.getString(1)));
-        pessoa.getNomeRole().add(role);
-        pessoa.setId_pessoa(rs.getInt(2));
-        pessoa.setNome_razaosocial(rs.getString(3));
-        pessoa.setEmail(rs.getString(4));
-        pessoa.setSenha(rs.getString(5));
-        pessoa.setTelefone(rs.getString(6));
+        role.setNomeRole(RolesEnum.valueOf(rs.getString("nm_roles").toUpperCase()));
+        pessoa.getNomeRole().add(role);  // Adicionando a role na lista
+
+        // Mapear os campos corretamente
+        pessoa.setId_pessoa(rs.getInt("nr_id_pessoa"));
+        pessoa.setNome_razaosocial(rs.getString("nm_nome_razaosocial"));
+        pessoa.setEmail(rs.getString("ds_email"));
+        pessoa.setSenha(rs.getString("ds_senha"));
+        pessoa.setTelefone(rs.getString("ds_telefone"));
 
 
         return pessoa;
