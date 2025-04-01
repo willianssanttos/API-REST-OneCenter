@@ -1,17 +1,29 @@
 package onecenter.com.br.ecommerce.pessoa.enums;
 
+import onecenter.com.br.ecommerce.config.security.exception.RolesException;
+import onecenter.com.br.ecommerce.utils.Constantes;
+
 public enum RolesEnum {
 
-    ROLE_CLIENTE("ROLE_CLIENTE"),
-    ROLE_MODERADOR("ROLE_MODERADOR"),
-    ROLE_ADMINISTRADOR("ROLE_ADMINISTRADOR");
+    CLIENTE("CLIENTE"),
+    MODERADOR("MODERADOR"),
+    ADMINISTRADOR("ADMINISTRADOR");
 
-    private String RolesEnum;
+    private String rolesEnum;
     RolesEnum(String rolesEnum) {
-        RolesEnum = rolesEnum;
+        this. rolesEnum = rolesEnum;
     }
 
     public String getRolesEnum() {
-        return RolesEnum;
+        return rolesEnum;
+    }
+
+    public static RolesEnum fromString(String input) {
+        for (RolesEnum role : RolesEnum.values()) {
+            if (role.getRolesEnum().equalsIgnoreCase(input.trim())) {
+                return role;
+            }
+        }
+        throw new RolesException(Constantes.RolesInvalido);
     }
 }

@@ -38,24 +38,30 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String requestPath = request.getRequestURI(); // Obtém a rota acessada
+
+        // Verifica se a rota é pública no rotas.json
+        if (isPublicRoute(requestPath)) {
+            filterChain.doFilter(request, response); // Libera a requisição sem exigir token
+            return;
+        }
+
         try {
             String token = recoveryToken(request);
 
+            if (token != null) {
+                String subject = jwtTokenService.getSubjectFromToken(token);
+                PessoaEntity login = iPessoaRepository.obterLogin(subject);
+                UserDetailsImpl userDetails = new UserDetailsImpl(login);
 
-            if (checkIfEndpointIsNotPublic(request)) {
-                if (token != null) {
-                    String subject = jwtTokenService.getSubjectFromToken(token);
-                    PessoaEntity login = iPessoaRepository.obterLogin(subject);
-                    UserDetailsImpl userDetails = new UserDetailsImpl(login);
+                Authentication authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
 
-                    Authentication authentication =
-                            new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
-
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                } else {
-                    throw new TokenException();
-                }
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                throw new TokenException();
             }
+
             filterChain.doFilter(request, response);
         } catch (TokenException ex) {
             buidErrorResponse(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.name(), ex, response);
@@ -66,17 +72,17 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
+    private boolean isPublicRoute(String requestPath) {
+        return SecurityConfiguration.rotasMap.containsKey(requestPath) &&
+                SecurityConfiguration.rotasMap.get(requestPath).isEmpty();
+    }
+
     private String recoveryToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             return authorizationHeader.replace("Bearer ", "");
         }
         return null;
-    }
-
-    private boolean checkIfEndpointIsNotPublic(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        return !Arrays.asList(SecurityConfiguration.ENDPOINTS_COM_AUTENTICACAO_NAO_OBRIGATORIA).contains(requestURI);
     }
 
     private void buidErrorResponse(Integer codeError, String statusError, Exception ex, HttpServletResponse response) throws IOException {

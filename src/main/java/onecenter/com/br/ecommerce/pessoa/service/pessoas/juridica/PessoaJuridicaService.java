@@ -86,7 +86,7 @@ public class PessoaJuridicaService {
             juridica.setUf(viaCep.getUf());
 
             PessoaEntity pessoa = PessoaEntity.builder()
-                    .role(String.valueOf(RolesEnum.ROLE_CLIENTE))
+                    .role(String.valueOf(RolesEnum.CLIENTE))
                     .nome_razaosocial(juridica.getNome_razaosocial())
                     .email(juridica.getEmail())
                     .senha(juridica.getSenha())

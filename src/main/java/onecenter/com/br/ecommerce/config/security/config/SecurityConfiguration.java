@@ -1,6 +1,9 @@
 package onecenter.com.br.ecommerce.config.security.config;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import onecenter.com.br.ecommerce.config.security.authentication.UserAuthenticationFilter;
+import org.springframework.aop.target.LazyInitTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +19,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 @Configuration
 @EnableWebSecurity
@@ -24,50 +33,49 @@ public class SecurityConfiguration {
     @Autowired
     private UserAuthenticationFilter userAuthenticationFilter;
 
-    public static final String[] ENDPOINTS_COM_AUTENTICACAO_NAO_OBRIGATORIA = {
-            "/v1/login/usuario",
-            "/v1/usuario/criar-usuario",
-            "/swagger-ui/**",
-            "/swagger-resources/**",
-            "/swagger-ui.html",
-            "/v3/api-docs/**",
-            "/swagger-ui/index.html/"
-    };
+    private static final String ROTAS_JSON_PATH = "src/main/resources/rotas.json";
+    public static Map<String, List<String>> rotasMap = new HashMap<>();
 
-    public static final String[] ENDPOINTS_COM_AUTENTICACAO_NECESSARIA_PARA_LISTAR = {
-            "/v1/pessoa/fisica/",
-            "/v1/pessoa/fisica/buscar/{CPF}",
-            "/v1/transacao",
-            "v1/transacao/extrato-transacao/{idUsuario}"
-    };
+    static {
+        carregarRotas();
+    }
 
-    private static final String[] ENDPOINTS_COM_AUTENTICACAO_NECESSARIO_PARA_CRIAR = {
-            "/v1/conta",
-            "/v1/conta/criar-conta",
-            "/v1/conta/atualizar-conta/{idConta}",
-            "/v1/transacao",
-            "/v1/transacao/criar-transacao",
-    };
+    private static void carregarRotas(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            List<Map<String, Object>> rotas = objectMapper.readValue(Paths.get(ROTAS_JSON_PATH).toFile(), new TypeReference<>() {
+            });
+            for (Map<String, Object> rota : rotas) {
+                String path = (String) rota.get("path");
+                List<String> roles = (List<String>) rota.get("roles");
+                rotasMap.put(path, roles);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao carregar o arquivo de rotas: " + e.getMessage());
+        }
+    }
 
-    private static final String[] ENDPOINTS_COM_AUTENTICACAO_NECESSARIO_PARA_DELETAR = {
-            "/v1/conta",
-            "/v1/conta/deletar-conta/{idConta}"
-    };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(ENDPOINTS_COM_AUTENTICACAO_NAO_OBRIGATORIA).permitAll()
-                        .requestMatchers(HttpMethod.GET, ENDPOINTS_COM_AUTENTICACAO_NECESSARIA_PARA_LISTAR).hasAuthority("ROLE_CLIENTE")
-                        .requestMatchers(HttpMethod.POST, ENDPOINTS_COM_AUTENTICACAO_NECESSARIO_PARA_CRIAR).hasAuthority("ROLE_CLIENTE")
-                        .requestMatchers(HttpMethod.DELETE, ENDPOINTS_COM_AUTENTICACAO_NECESSARIO_PARA_DELETAR).hasAuthority("ROLE_CLIENTE")
-                        .anyRequest().authenticated()
-                )
-
-                .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+            .csrf(AbstractHttpConfigurer::disable)
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(authorize -> {
+                for (Map.Entry<String, List<String>> entry : rotasMap.entrySet()){
+                    String path = entry.getKey();
+                    List<String> roles = entry.getValue();
+                    if (roles.isEmpty()) {
+                        authorize.requestMatchers(path).permitAll();
+                    } else {
+                        authorize.requestMatchers(HttpMethod.GET, path).hasAnyAuthority(roles.toArray(new String[0]));
+                        authorize.requestMatchers(HttpMethod.POST, path).hasAnyAuthority(roles.toArray(new String[0]));
+                        authorize.requestMatchers(HttpMethod.DELETE, path).hasAnyAuthority(roles.toArray(new String[0]));
+                    }
+                }
+                authorize.anyRequest().authenticated();
+            })
+            .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
     }
 
     @Bean

@@ -2,7 +2,6 @@ package onecenter.com.br.ecommerce.pessoa.service.pessoas.fisica;
 
 import onecenter.com.br.ecommerce.config.security.config.SecurityConfiguration;
 import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
-import onecenter.com.br.ecommerce.pessoa.exception.endereco.BuscarEnderecoNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.CepValidacaoExcecao;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.fisica.PessoaFisicaRequest;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.response.fisica.PessoaFisicaResponse;
@@ -95,7 +94,7 @@ public class PessoaFisicaService {
                     fisica.setUf(viaCep.getUf());
 
             PessoaEntity pessoa = PessoaEntity.builder()
-                    .role(String.valueOf(RolesEnum.ROLE_CLIENTE))
+                    .role(String.valueOf(RolesEnum.CLIENTE))
                     .nome_razaosocial(fisica.getNome_razaosocial())
                     .email(fisica.getEmail())
                     .senha(securityConfiguration.passwordEncoder().encode(fisica.getSenha()))
