@@ -1,11 +1,13 @@
 package onecenter.com.br.ecommerce.pessoa.controller.fisica;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.fisica.PessoaFisicaRequest;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.response.fisica.PessoaFisicaResponse;
 import onecenter.com.br.ecommerce.pessoa.service.pessoas.fisica.PessoaFisicaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +23,8 @@ public class PessoaFisicaController implements IPessoaFisicaController{
     }
 
     @GetMapping("/buscar/{CPF}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<PessoaFisicaResponse> buscarPorCpf(@PathVariable String CPF){
         if(CPF.length() == 11){
            PessoaFisicaResponse response = pessoaFisicaService.obterPorCpf(CPF);
@@ -30,6 +34,8 @@ public class PessoaFisicaController implements IPessoaFisicaController{
     }
 
     @PutMapping("/atualizar-dados/{CPF}")
+    @PreAuthorize("hasRole('CLIENTE')")
+    @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<PessoaFisicaResponse> alterarDados(@PathVariable String CPF, @RequestBody PessoaFisicaRequest editar) {
         if (CPF.length() == 11) {
             editar.setCpf(CPF);

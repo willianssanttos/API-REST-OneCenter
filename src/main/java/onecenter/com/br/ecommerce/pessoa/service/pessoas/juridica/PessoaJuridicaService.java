@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.pessoa.service.pessoas.juridica;
 
+import onecenter.com.br.ecommerce.config.security.config.SecurityConfiguration;
 import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.CepValidacaoExcecao;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.BuscarEnderecoNotFoundException;
@@ -34,6 +35,8 @@ public class PessoaJuridicaService {
     private IPessoaRepository iPessoaRepository;
     @Autowired
     private IEnderecoRepository iEnderecoRepository;
+    @Autowired
+    private SecurityConfiguration securityConfiguration;
     @Autowired
     private IPessoaJuridicaRepository iPessoaJuridicaRepository;
 
@@ -86,10 +89,10 @@ public class PessoaJuridicaService {
             juridica.setUf(viaCep.getUf());
 
             PessoaEntity pessoa = PessoaEntity.builder()
-                    .role(String.valueOf(RolesEnum.CLIENTE))
+                    .role(String.valueOf(RolesEnum.ADMINISTRADOR))
                     .nome_razaosocial(juridica.getNome_razaosocial())
                     .email(juridica.getEmail())
-                    .senha(juridica.getSenha())
+                    .senha(securityConfiguration.passwordEncoder().encode(juridica.getSenha()))
                     .telefone(ValidarNumeroCelular.formatarNumeroCelular(juridica.getTelefone()))
                     .build();
 

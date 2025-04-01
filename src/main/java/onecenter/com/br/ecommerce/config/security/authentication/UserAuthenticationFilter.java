@@ -24,7 +24,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -38,11 +37,15 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String requestPath = request.getRequestURI(); // Obtém a rota acessada
+//        if (!checkPathExistence(request)) {
+//            response.sendError(HttpStatus.NOT_FOUND.value());
+//            return;
+//        }
 
-        // Verifica se a rota é pública no rotas.json
+        String requestPath = request.getRequestURI();
+
         if (isPublicRoute(requestPath)) {
-            filterChain.doFilter(request, response); // Libera a requisição sem exigir token
+            filterChain.doFilter(request, response);
             return;
         }
 
@@ -72,6 +75,13 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
+//    private boolean checkPathExistence(HttpServletRequest request) {
+//        String servletPath = request.getServletPath();
+//        if (servletPath.contains("/swagger") || servletPath.contains("/v3/api-docs/**")) {
+//            return true;
+//        }
+//        return SecurityConfiguration.rotasMap.containsKey(servletPath);
+//    }
     private boolean isPublicRoute(String requestPath) {
         return SecurityConfiguration.rotasMap.containsKey(requestPath) &&
                 SecurityConfiguration.rotasMap.get(requestPath).isEmpty();

@@ -45,7 +45,7 @@
   },
   {
     "path": "/v1/produtos/",
-    "roles": ["CLIENTE"]
+    "roles": []
   },
   {
     "path": "/v1/produtos/{id}",

@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.produto.controller.produtos;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import onecenter.com.br.ecommerce.produto.dto.produtos.request.ProdutoRequest;
 import onecenter.com.br.ecommerce.produto.dto.produtos.response.ProdutosResponse;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
@@ -8,6 +9,7 @@ import onecenter.com.br.ecommerce.produto.service.imagem.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +27,8 @@ public class ProdutosController implements IProdutoController{
     private FileStorageService fileStorageService;
 
     @PostMapping(value = "/criar", consumes = {"multipart/form-data"})
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<ProdutosResponse> criarProduto(
             @RequestParam("nome") String nome,
             @RequestParam("preco") Double preco,
@@ -48,6 +52,8 @@ public class ProdutosController implements IProdutoController{
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('CLIENTE')")
+    @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<ProdutosEntity> obterProdutoPorId(@PathVariable Integer id) {
         ProdutosEntity response = produtosService.buscarProdutoComImagens(id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -55,6 +61,8 @@ public class ProdutosController implements IProdutoController{
 
 
     @PutMapping(value = "/atualizar-produto/{idProduto}", consumes = {"multipart/form-data"})
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<ProdutosResponse> atualizarProduto(
             @PathVariable Integer idProduto,
             @RequestParam("nome") String nome,
@@ -78,6 +86,8 @@ public class ProdutosController implements IProdutoController{
     }
 
     @DeleteMapping("/deletar-produto/{idProduto}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<Void> deletarProduto(@PathVariable Integer idProduto){
         produtosService.excluirProduto(idProduto);
         return ResponseEntity.status(HttpStatus.OK).build();
