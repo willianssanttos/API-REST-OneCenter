@@ -1,17 +1,19 @@
 package onecenter.com.br.ecommerce.pedidos.dto.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public class PedidoResponse {
 
-    private ProdutosEntity produtosEntity;
+    private Integer IdPedido;
+    private Integer IdPessoa;
+    private Integer IdProduto;
     private Integer quantidade;
+
 }

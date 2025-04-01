@@ -1,12 +1,15 @@
 package onecenter.com.br.ecommerce.produto.controller.produtos;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import onecenter.com.br.ecommerce.produto.dto.produtos.request.ProdutoRequest;
 import onecenter.com.br.ecommerce.produto.dto.produtos.response.ProdutosResponse;
+import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 import onecenter.com.br.ecommerce.produto.service.produtos.ProdutosService;
 import onecenter.com.br.ecommerce.produto.service.imagem.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/v1/produtos")
-public class ProdutosController {
+public class ProdutosController implements IProdutoController{
 
     @Autowired
     private ProdutosService produtosService;
@@ -24,17 +27,21 @@ public class ProdutosController {
     private FileStorageService fileStorageService;
 
     @PostMapping(value = "/criar", consumes = {"multipart/form-data"})
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<ProdutosResponse> criarProduto(
             @RequestParam("nome") String nome,
             @RequestParam("preco") Double preco,
-            @RequestParam("id_categoria") Integer idCategoria,
-            @RequestParam("produto_imagem") MultipartFile  imagem) {
+            @RequestParam("categoria") String nomeCategaria,
+            @RequestParam("descricaoProduto") String descricaoProduto,
+            @RequestParam("produto_imagem") MultipartFile  imagem){
 
         ProdutoRequest produto = new ProdutoRequest();
         produto.setNome(nome);
         produto.setPreco(preco);
-        produto.setId_categoria(idCategoria);
+        produto.setNomeCategoria(nomeCategaria);
         produto.setProduto_imagem(imagem);
+        produto.setDescricaoProduto(descricaoProduto);
 
         return new ResponseEntity<>(produtosService.criar(produto), HttpStatus.CREATED);
     }
@@ -44,13 +51,24 @@ public class ProdutosController {
         List<ProdutosResponse> response = produtosService.obterTodosProdutos();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('CLIENTE')")
+    @SecurityRequirement(name = "jwt_auth")
+    public ResponseEntity<ProdutosEntity> obterProdutoPorId(@PathVariable Integer id) {
+        ProdutosEntity response = produtosService.buscarProdutoComImagens(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
     @PutMapping(value = "/atualizar-produto/{idProduto}", consumes = {"multipart/form-data"})
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<ProdutosResponse> atualizarProduto(
             @PathVariable Integer idProduto,
             @RequestParam("nome") String nome,
             @RequestParam("preco") Double preco,
-            @RequestParam("id_categoria") Integer idCategoria,
+            @RequestParam("descricaoProduto") String descricaoProduto,
+            @RequestParam("categoria") String nomeCategaria,
             @RequestParam("produto_imagem") MultipartFile  imagem) throws IOException {
 
         String caminhoImagem = fileStorageService.salvarImagem(imagem);
@@ -59,14 +77,17 @@ public class ProdutosController {
         produto.setId_produto(idProduto);
         produto.setNome(nome);
         produto.setPreco(preco);
-        produto.setId_categoria(idCategoria);
-        produto.setProduto_imagem(caminhoImagem);
+        produto.setDescricaoProduto(descricaoProduto);
+        produto.setNomeCategoria(nomeCategaria);
+        produto.setProdutoImagem(caminhoImagem);
 
         ProdutosResponse response = produtosService.atualizarProduto(produto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/deletar-produto/{idProduto}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<Void> deletarProduto(@PathVariable Integer idProduto){
         produtosService.excluirProduto(idProduto);
         return ResponseEntity.status(HttpStatus.OK).build();

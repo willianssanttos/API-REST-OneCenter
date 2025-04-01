@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.produto.service.imagem;
 
+import onecenter.com.br.ecommerce.utils.Constantes;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -12,21 +13,31 @@ public class FileStorageService {
 
     public String salvarImagem(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
-            throw new IOException("Arquivo de imagem vazio!");
+            throw new IOException(Constantes.ArquivoImagemVazio);
         }
 
+        // Caminho do diretório
+        Path diretorioPath = Paths.get(diretorioUpload);
+
         // Criar diretório caso não exista
-        Files.createDirectories(Paths.get(diretorioUpload));
+        if (!Files.exists(diretorioPath)) {
+            Files.createDirectories(diretorioPath);
+        }
 
-        // Gerar um nome único para a imagem
+        // Caminho do arquivo no diretório
+        Path caminhoArquivoExistente = diretorioPath.resolve(file.getOriginalFilename());
+
+        // Se a imagem já existir, retorna o mesmo caminho
+        if (Files.exists(caminhoArquivoExistente)) {
+            return "/uploads/" + file.getOriginalFilename();
+        }
+
+        // Gerar um nome único para a imagem caso não exista
         String nomeArquivo = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        Path caminhoArquivo = Paths.get(diretorioUpload + nomeArquivo);
-
-        Files.createDirectories(caminhoArquivo.getParent());
-        Files.write(caminhoArquivo, file.getBytes());
+        Path caminhoArquivoNovo = diretorioPath.resolve(nomeArquivo);
 
         // Salvar o arquivo
-        Files.copy(file.getInputStream(), caminhoArquivo, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(file.getInputStream(), caminhoArquivoNovo, StandardCopyOption.REPLACE_EXISTING);
 
         return "/uploads/" + nomeArquivo;
     }

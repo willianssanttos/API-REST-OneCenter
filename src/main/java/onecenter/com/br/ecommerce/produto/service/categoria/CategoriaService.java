@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.produto.service.categoria;
 
+import onecenter.com.br.ecommerce.produto.entity.categoria.EnumCategoria;
 import onecenter.com.br.ecommerce.produto.exception.categoria.CategoriaException;
 import onecenter.com.br.ecommerce.produto.exception.categoria.CategoriaNotFoundException;
 import onecenter.com.br.ecommerce.produto.dto.categoria.request.CategoriaRequest;
@@ -26,7 +27,7 @@ public class CategoriaService {
         try {
 
             CategoriaEntity novaCategoria = CategoriaEntity.builder()
-                .nomeCategoria(categoria.getNome())
+                .nomeCategoria(EnumCategoria.valueOf(categoria.getNomeCategoria()).name())
                 .build();
             CategoriaEntity categoriaCriada = iCategoriaRepository.criarCategoria(novaCategoria);
             logger.info(Constantes.InfoRegistrar, categoria);
@@ -40,7 +41,7 @@ public class CategoriaService {
 
     private CategoriaResponse mapearCategoria(CategoriaEntity categoriaCriada){
         return CategoriaResponse.builder()
-                .nome(categoriaCriada.getNomeCategoria())
+                .nomeCategoria(EnumCategoria.valueOf(categoriaCriada.getNomeCategoria()).name())
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.config.exception.handler;
 
+import onecenter.com.br.ecommerce.pedidos.exception.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.EnderecoException;
 import onecenter.com.br.ecommerce.config.exception.entity.ApiError;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.*;
@@ -13,6 +14,7 @@ import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.ObterPessoaP
 import onecenter.com.br.ecommerce.produto.exception.*;
 import onecenter.com.br.ecommerce.produto.exception.categoria.CategoriaException;
 import onecenter.com.br.ecommerce.produto.exception.categoria.CategoriaNotFoundException;
+import onecenter.com.br.ecommerce.produto.exception.imagens.ImagensException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,13 +30,14 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({
             Exception.class,
+            ImagensException.class,
             ProdutoException.class,
             EnderecoException.class,
             CategoriaException.class,
             EditarPessoaException.class,
             EditarProdutoException.class,
             DeletarProdutoException.class,
-            ObterTodasPessoasException.class
+            ObterTodasPessoasNotFoundException.class
     })
     public ResponseEntity<ApiError> genericException(Exception ex){
         ApiError apiError = ApiError
@@ -48,11 +51,15 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler({
+            ObterLoginNotFoundException.class,
             CategoriaNotFoundException.class,
             ObterProdutosNotFundException.class,
             ImagemProdutoNotFoundException.class,
             ObterPessoaPorCpfNotFoundException.class,
-            ObterPessoaPorCnpjNotFoundException.class
+            ObterPessoaPorCnpjNotFoundException.class,
+            ErroLocalizarPessoaNotFoundException.class,
+            ErroLocalizarProdutoNotFoundException.class,
+            ErroAoLocalizarPedidoNotFoundException.class
     })
     public ResponseEntity<ApiError> notFoundException(RuntimeException ex) {
         ApiError apiError = ApiError

@@ -1,18 +1,17 @@
 package onecenter.com.br.ecommerce.produto.entity.imagens;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImagensProdutosEntity {
+public class ImagensProdutosEntity extends ProdutosEntity{
 
     private Integer id_imagem;
-    private ProdutosEntity id_produto;
     private String caminho;
 }

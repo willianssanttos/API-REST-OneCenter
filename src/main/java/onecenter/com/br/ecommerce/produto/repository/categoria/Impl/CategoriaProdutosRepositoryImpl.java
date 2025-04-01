@@ -57,13 +57,13 @@ public class CategoriaProdutosRepositoryImpl implements ICategoriaRepository {
 
     @Override
     @Transactional
-    public CategoriaEntity obterCategoriaPorId(Integer idCategoria){
+    public Integer obterCategoriaPorNome(String nomeCategoria) {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT * FROM categorias WHERE nr_id_categoria = ?";
-            logger.info(Constantes.InfoBuscar, idCategoria);
-            return jdbcTemplate.queryForObject(sql, new Object[] { idCategoria }, new  CategoriaRowMapper());
-        } catch (DataAccessException e){
+            String sql = "SELECT nr_id_categoria FROM categorias WHERE nm_nome = ?";
+            logger.info(Constantes.InfoBuscar, nomeCategoria);
+            return jdbcTemplate.queryForObject(sql, new Object[]{nomeCategoria}, Integer.class);
+        } catch (DataAccessException e) {
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             throw new CategoriaNotFoundException();
         }

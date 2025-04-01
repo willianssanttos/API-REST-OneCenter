@@ -1,5 +1,7 @@
 package onecenter.com.br.ecommerce.pessoa.service.pessoas.juridica;
 
+import onecenter.com.br.ecommerce.config.security.config.SecurityConfiguration;
+import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.CepValidacaoExcecao;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.BuscarEnderecoNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.*;
@@ -33,6 +35,8 @@ public class PessoaJuridicaService {
     private IPessoaRepository iPessoaRepository;
     @Autowired
     private IEnderecoRepository iEnderecoRepository;
+    @Autowired
+    private SecurityConfiguration securityConfiguration;
     @Autowired
     private IPessoaJuridicaRepository iPessoaJuridicaRepository;
 
@@ -85,9 +89,10 @@ public class PessoaJuridicaService {
             juridica.setUf(viaCep.getUf());
 
             PessoaEntity pessoa = PessoaEntity.builder()
+                    .role(String.valueOf(RolesEnum.ADMINISTRADOR))
                     .nome_razaosocial(juridica.getNome_razaosocial())
                     .email(juridica.getEmail())
-                    .senha(juridica.getSenha())
+                    .senha(securityConfiguration.passwordEncoder().encode(juridica.getSenha()))
                     .telefone(ValidarNumeroCelular.formatarNumeroCelular(juridica.getTelefone()))
                     .build();
 
@@ -122,15 +127,17 @@ public class PessoaJuridicaService {
 
     private PessoaJuridicaResponse mapearPessoaJuridica(PessoaJuridicaEntity juridica){
         try {
+            PessoaEntity pessoa = iPessoaRepository.buscarIdPessoa(juridica.getId_pessoa());
             EnderecoEntity endereco = iEnderecoRepository.obterEnderecoPorIdPessoa(juridica.getId_pessoa());
 
             return PessoaJuridicaResponse.builder()
                     .idPessoa(juridica.getId_pessoa())
-                    .nome_razaosocial(juridica.getNome_razaosocial())
+                    .role(pessoa.getRole())
+                    .nome_razaosocial(pessoa.getNome_razaosocial())
                     .cnpj(juridica.getCnpj())
                     .nome_fantasia(juridica.getNome_fantasia())
-                    .email(juridica.getEmail())
-                    .telefone(juridica.getTelefone())
+                    .email(pessoa.getEmail())
+                    .telefone(pessoa.getTelefone())
                     .rua(endereco.getRua())
                     .numero(endereco.getNumero())
                     .bairro(endereco.getBairro())
@@ -176,6 +183,7 @@ public class PessoaJuridicaService {
 
             return PessoaJuridicaResponse.builder()
                     .idPessoa(idPessoa)
+                    .role(editar.getRole())
                     .nome_razaosocial(editar.getNome_razaosocial())
                     .nome_fantasia(editar.getNome_fantasia())
                     .cnpj(editar.getCnpj())

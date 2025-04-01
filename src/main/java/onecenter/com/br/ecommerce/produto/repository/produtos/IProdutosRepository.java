@@ -8,9 +8,13 @@ import java.util.List;
 public interface IProdutosRepository {
 
     ProdutosEntity criar(ProdutosEntity produtos);
+
+    ProdutosEntity buscarIdProduto(Integer IdProduto);
+
+    List<String> buscarImagensProduto(Integer idProduto);
     List<ProdutosEntity> obterTodosProdutos();
 
-    ProdutosResponse atualizarProduto(ProdutosResponse editar);
+    ProdutosEntity atualizarProduto(ProdutosEntity editar);
 
     void excluirProduto(Integer idProduto);
 

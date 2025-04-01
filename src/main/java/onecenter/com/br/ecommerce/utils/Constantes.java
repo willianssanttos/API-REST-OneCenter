@@ -61,7 +61,15 @@ public class Constantes {
 
 
 
+    public static final String GerarToken = "Erro ao gerar token.";
 
+    public static final String RolesInvalido = "Role de acesso invalido!.";
+
+    public static final String GToken = "Token ausente.";
+
+    public static final String Token = "Token inválido ou expirado!";
+
+    public static final String erroLoginConta = "Usuário ou senha incorretos!";
 
 
 
@@ -76,6 +84,21 @@ public class Constantes {
     public static final String ErroEditarPessoa = "Não foi possivel editar os dados! Tente novamente mais tarde.";
 
     public static final String ErroEditarEndereco = "Não foi possivel alterar o endereço! Tente novamente mais tarde.";
+
+
+    //Erros de pedidos
+
+    public static final String ErroCadastrarPedido = "Erro ao realizar pedido! Tente novamente mais tarde.";
+
+    public static final String ErroLocalizarPedido = "Pedidos não localizados! Tente novamente mais tarde.";
+
+    public static final String ErroPessoaNãoEncontrada = "Não foi possivel localizar cliente!.";
+
+    public static final String ArquivoImagemVazio = "O arquivo da imagem está vazio!.";
+
+    public static final String ErroCadastraImagem = "Erro! Imagens não registradas no servidor!.";
+
+
 
 
 

@@ -1,6 +1,7 @@
 package onecenter.com.br.ecommerce.pessoa.service.pessoas.fisica;
 
-import onecenter.com.br.ecommerce.pessoa.exception.endereco.BuscarEnderecoNotFoundException;
+import onecenter.com.br.ecommerce.config.security.config.SecurityConfiguration;
+import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.CepValidacaoExcecao;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.fisica.PessoaFisicaRequest;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.response.fisica.PessoaFisicaResponse;
@@ -36,6 +37,9 @@ public class PessoaFisicaService {
 
     @Autowired
     private IEnderecoRepository iEnderecoRepository;
+
+    @Autowired
+    private SecurityConfiguration securityConfiguration;
 
     @Autowired
     private IPessoaFisicaRepository iPessoaFisicaRepository;
@@ -90,9 +94,10 @@ public class PessoaFisicaService {
                     fisica.setUf(viaCep.getUf());
 
             PessoaEntity pessoa = PessoaEntity.builder()
+                    .role(String.valueOf(RolesEnum.CLIENTE))
                     .nome_razaosocial(fisica.getNome_razaosocial())
                     .email(fisica.getEmail())
-                    .senha(fisica.getSenha())
+                    .senha(securityConfiguration.passwordEncoder().encode(fisica.getSenha()))
                     .telefone(ValidarNumeroCelular.formatarNumeroCelular(fisica.getTelefone()))
                     .build();
 
@@ -127,15 +132,17 @@ public class PessoaFisicaService {
 
     private PessoaFisicaResponse mapearPessoaFisica(PessoaFisicaEntity fisica){
         try {
+            PessoaEntity pessoa = iPessoaRepository.buscarIdPessoa(fisica.getIdPessoa());
             EnderecoEntity endereco = iEnderecoRepository.obterEnderecoPorIdPessoa(fisica.getId_pessoa());
 
             return PessoaFisicaResponse.builder()
                     .idPessoa(fisica.getId_pessoa())
-                    .nome_razaosocial(fisica.getNome_razaosocial())
+                    .role(pessoa.getRole())
+                    .nome_razaosocial(pessoa.getNome_razaosocial())
                     .cpf(fisica.getCpf())
                     .data_nascimento(Timestamp.valueOf(String.valueOf(fisica.getData_nascimento())))
-                    .email(fisica.getEmail())
-                    .telefone(fisica.getTelefone())
+                    .email(pessoa.getEmail())
+                    .telefone(pessoa.getTelefone())
                     .rua(endereco.getRua())
                     .numero(endereco.getNumero())
                     .bairro(endereco.getBairro())
@@ -145,7 +152,7 @@ public class PessoaFisicaService {
                     .build();
 
         } catch (Exception e){
-            throw new BuscarEnderecoNotFoundException();
+            throw new ObterTodasPessoasNotFoundException();
         }
     }
 
@@ -182,6 +189,7 @@ public class PessoaFisicaService {
 
             return PessoaFisicaResponse.builder()
                     .idPessoa(idPessoa)
+                    .role(editar.getRole())
                     .nome_razaosocial(editar.getNome_razaosocial())
                     .cpf(editar.getCpf())
                     .data_nascimento(editar.getData_nascimento())
