@@ -37,10 +37,6 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-//        if (!checkPathExistence(request)) {
-//            response.sendError(HttpStatus.NOT_FOUND.value());
-//            return;
-//        }
 
         String requestPath = request.getRequestURI();
 
@@ -75,16 +71,16 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-//    private boolean checkPathExistence(HttpServletRequest request) {
-//        String servletPath = request.getServletPath();
-//        if (servletPath.contains("/swagger") || servletPath.contains("/v3/api-docs/**")) {
-//            return true;
-//        }
-//        return SecurityConfiguration.rotasMap.containsKey(servletPath);
-//    }
     private boolean isPublicRoute(String requestPath) {
         return SecurityConfiguration.rotasMap.containsKey(requestPath) &&
-                SecurityConfiguration.rotasMap.get(requestPath).isEmpty();
+                SecurityConfiguration.rotasMap.get(requestPath).isEmpty() ||
+                isSwaggerRoute(requestPath);
+    }
+
+    private boolean isSwaggerRoute(String requestPath) {
+        return requestPath.startsWith("/swagger-ui") ||
+                requestPath.startsWith("/swagger-resources") ||
+                requestPath.startsWith("/v3/api-docs");
     }
 
     private String recoveryToken(HttpServletRequest request) {

@@ -1,7 +1,6 @@
 package onecenter.com.br.ecommerce.produto.service.produtos;
 
 import onecenter.com.br.ecommerce.produto.entity.categoria.EnumCategoria;
-import onecenter.com.br.ecommerce.produto.entity.imagens.ImagensProdutosEntity;
 import onecenter.com.br.ecommerce.produto.exception.DeletarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.EditarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.ObterProdutosNotFundException;

@@ -34,6 +34,15 @@ public class SecurityConfiguration {
     private UserAuthenticationFilter userAuthenticationFilter;
 
     private static final String ROTAS_JSON_PATH = "src/main/resources/rotas.json";
+
+    public static final String[] PERMISSAO_SEM_AUTORIZACAO = {
+            "/swagger-ui/**",
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v3/api-docs/**",
+            "/swagger-ui/index.html/",
+            "/webjars/**"
+    };
     public static Map<String, List<String>> rotasMap = new HashMap<>();
 
     static {
@@ -61,13 +70,7 @@ public class SecurityConfiguration {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> {
-                authorize.requestMatchers(
-                        "/swagger-ui/**",
-                        "/swagger-resources/**",
-                        "/swagger-ui.html",
-                        "/v3/api-docs/**",
-                        "/swagger-ui/index.html/"
-                ).permitAll();
+                authorize.requestMatchers(PERMISSAO_SEM_AUTORIZACAO).permitAll();
 
                 for (Map.Entry<String, List<String>> entry : rotasMap.entrySet()){
                     String path = entry.getKey();
