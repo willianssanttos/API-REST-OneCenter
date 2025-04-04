@@ -63,7 +63,7 @@ public class ProdutosController implements IProdutoController{
     @PutMapping(value = "/atualizar-produto/{idProduto}", consumes = {"multipart/form-data"})
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<ProdutosResponse> atualizarProduto(
+    public ResponseEntity atualizarProduto(
             @PathVariable Integer idProduto,
             @RequestParam("nome") String nome,
             @RequestParam("preco") Double preco,
@@ -81,8 +81,8 @@ public class ProdutosController implements IProdutoController{
         produto.setNomeCategoria(nomeCategaria);
         produto.setProdutoImagem(caminhoImagem);
 
-        ProdutosResponse response = produtosService.atualizarProduto(produto);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+       produtosService.atualizarProduto(produto);
+        return ResponseEntity.status(HttpStatus.OK).body(produto);
     }
 
     @DeleteMapping("/deletar-produto/{idProduto}")

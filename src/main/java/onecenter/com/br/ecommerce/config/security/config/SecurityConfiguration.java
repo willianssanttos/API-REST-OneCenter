@@ -41,7 +41,8 @@ public class SecurityConfiguration {
             "/swagger-ui.html",
             "/v3/api-docs/**",
             "/swagger-ui/index.html/",
-            "/webjars/**"
+            "/webjars/**",
+            "/uploads/**"
     };
     public static Map<String, List<String>> rotasMap = new HashMap<>();
 

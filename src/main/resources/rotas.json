@@ -1,5 +1,4 @@
 [
-
   {
     "path": "/v1/login/usuario",
     "roles": []
@@ -50,10 +49,14 @@
   },
   {
     "path": "/v1/produtos/{id}",
-    "roles": ["CLIENTE"]
+    "roles": []
   },
   {
     "path": "/v1/produtos/atualizar-produto/{idProduto}",
+    "roles": ["ADMINISTRADOR"]
+  },
+  {
+    "path": "/deletar-produto/{idProduto}",
     "roles": ["ADMINISTRADOR"]
   },
   {
