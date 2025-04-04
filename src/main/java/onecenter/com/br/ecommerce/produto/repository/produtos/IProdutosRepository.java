@@ -14,7 +14,7 @@ public interface IProdutosRepository {
     List<String> buscarImagensProduto(Integer idProduto);
     List<ProdutosEntity> obterTodosProdutos();
 
-    ProdutosEntity atualizarProduto(ProdutosEntity editar);
+    void atualizarProduto(ProdutosEntity editar);
 
     void excluirProduto(Integer idProduto);
 

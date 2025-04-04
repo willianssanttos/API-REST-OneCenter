@@ -80,7 +80,8 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     private boolean isSwaggerRoute(String requestPath) {
         return requestPath.startsWith("/swagger-ui") ||
                 requestPath.startsWith("/swagger-resources") ||
-                requestPath.startsWith("/v3/api-docs");
+                requestPath.startsWith("/v3/api-docs") ||
+                requestPath.startsWith("/uploads/");
     }
 
     private String recoveryToken(HttpServletRequest request) {

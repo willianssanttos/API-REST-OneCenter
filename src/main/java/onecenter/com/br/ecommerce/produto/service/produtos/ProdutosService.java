@@ -72,7 +72,6 @@ public class ProdutosService {
     public List<ProdutosResponse> obterTodosProdutos(){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-
             List<ProdutosEntity> produtos = iProdutosRepository.obterTodosProdutos();
             logger.info(Constantes.InfoBuscar);
             return produtos.stream().map(this::mapearProduto).collect(Collectors.toList());
@@ -107,7 +106,7 @@ public class ProdutosService {
         return produto;
     }
 
-    public ProdutosResponse atualizarProduto(ProdutosResponse editar){
+    public void atualizarProduto(ProdutosResponse editar){
         logger.info(Constantes.DebugEditarProcesso);
         try {
             Integer categoria = iCategoriaRepository.obterCategoriaPorNome(editar.getNomeCategoria());
@@ -121,8 +120,7 @@ public class ProdutosService {
                     .id_categoria(categoria)
                     .build();
             logger.info(Constantes.InfoEditar, editar);
-            ProdutosEntity produtoAtualizado = iProdutosRepository.atualizarProduto(atualizarProduto);
-            return mapearProduto(produtoAtualizado);
+            iProdutosRepository.atualizarProduto(atualizarProduto);
         } catch (Exception e){
             logger.error(Constantes.ErroEditarRegistroNoServidor);
             throw new EditarProdutoException();

@@ -31,7 +31,7 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     public ProdutosEntity criar(ProdutosEntity produtos) {
         logger.info(Constantes.DebugRegistroProcesso);
         try {
-            String sql = "INSERT INTO produtos (nm_nome, ds_preco, ds_descricao, ds_imagem_produto, fk_nr_id_categoria) VALUES (?,?,?,?,?) RETURNING nr_id_produto";
+            String sql = "SELECT inserir_produto(?, ?, ?, ?, ?)";
             Integer idProduto = jdbcTemplate.queryForObject(sql, Integer.class,
                     produtos.getNome(),
                     produtos.getPreco(),
@@ -53,7 +53,7 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     public ProdutosEntity buscarIdProduto(Integer IdProduto){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT * FROM produtos WHERE nr_id_produto = ?";
+            String sql = "SELECT * FROM buscar_produto_id(?)";
             return jdbcTemplate.queryForObject(sql,  new ProdutosRowMapper(), IdProduto);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
@@ -74,17 +74,10 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     public List<ProdutosEntity> obterTodosProdutos(){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT \n" +
-            "                p.nr_id_produto,\n" +
-            "                p.nm_nome,\n" +
-            "                p.ds_preco,\n" +
-            "                p.ds_descricao,\n" +
-            "                p.ds_imagem_produto,\n" +
-            "                c.nm_nome \n" +
-            "            FROM produtos p\n" +
-            "            LEFT JOIN categorias c ON p.fk_nr_id_categoria = c.nr_id_categoria";
-            logger.info(Constantes.InfoBuscar);
-            return jdbcTemplate.query(sql, new ProdutosRowMapper());
+            String sql = "SELECT * FROM obter_todos_produtos()";
+            List<ProdutosEntity> produtos = jdbcTemplate.query(sql, new ProdutosRowMapper());
+            logger.info(Constantes.InfoBuscar, produtos);
+            return produtos;
         } catch (DataAccessException e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             throw new ObterProdutosNotFundException();
@@ -93,27 +86,34 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
 
     @Override
     @Transactional
-    public ProdutosEntity atualizarProduto(ProdutosEntity editar){
+    public void atualizarProduto(ProdutosEntity editar) {
         logger.info(Constantes.DebugEditarProcesso);
         try {
-            String sql = "UPDATE produtos SET nm_nome = ?, ds_preco = ?, ds_descricao = ?, ds_imagem_produto = ?, fk_nr_id_categoria = ? WHERE nr_id_produto = ?";
-            jdbcTemplate.update(sql,editar.getNome(), editar.getPreco(), editar.getDescricaoProduto(), editar.getProduto_imagem(), editar.getId_categoria(), editar.getId_produto());
+            String sql = "SELECT atualizar_produto(?, ?, ?, ?, ?, ?)";
+            jdbcTemplate.query(sql, new Object[] {
+                    editar.getId_produto(),
+                    editar.getNome(),
+                    editar.getPreco(),
+                    editar.getDescricaoProduto(),
+                    editar.getProduto_imagem(),
+                    editar.getId_categoria()}, rs -> {}
+            );
             logger.info(Constantes.InfoEditar, editar);
-        } catch (DataAccessException e){
+        } catch (DataAccessException e) {
             logger.error(Constantes.ErroEditarRegistroNoServidor, e.getMessage());
             throw new EditarProdutoException();
         }
-        return editar;
     }
+
 
     @Override
     @Transactional
     public void excluirProduto(Integer idProduto){
         logger.info(Constantes.DebugDeletarProcesso);
         try {
-            String sql = "DELETE FROM produtos WHERE nr_id_produto = ?";
+            String sql = "CALL deletar_produto(?)";
             jdbcTemplate.update(sql, idProduto);
-            logger.info(Constantes.InfoDeletar);
+            logger.info(Constantes.InfoDeletar, idProduto);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroDeletarRegistroNoServidor, e.getMessage());
             throw new DeletarProdutoException();

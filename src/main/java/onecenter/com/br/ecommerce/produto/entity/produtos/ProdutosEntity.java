@@ -39,6 +39,4 @@ public class ProdutosEntity extends CategoriaEntity{
                 ", Descrição= '" + descricaoProduto + '\''+
                 '}';
     }
-
-
 }

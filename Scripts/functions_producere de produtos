@@ -1,0 +1,94 @@
+//Function para registrar produto
+CREATE OR REPLACE FUNCTION inserir_produto(
+    nome VARCHAR,
+    preco DOUBLE PRECISION,
+    descricao TEXT,
+    imagem VARCHAR,
+    id_categoria INTEGER
+) RETURNS INTEGER AS $$
+DECLARE
+    novo_id INTEGER;
+BEGIN
+    INSERT INTO produtos (nm_nome, ds_preco, ds_descricao, ds_imagem_produto, fk_nr_id_categoria)
+    VALUES (nome, preco, descricao, imagem, id_categoria)
+    RETURNING nr_id_produto INTO novo_id;
+
+    RETURN novo_id;
+END;
+$$ LANGUAGE plpgsql;
+
+//Function para buscar produto por ID
+CREATE OR REPLACE FUNCTION buscar_produto_id(id_produto INTEGER)
+RETURNS TABLE (
+    nr_id_produto INTEGER,
+    nm_nome VARCHAR,
+    ds_preco DOUBLE PRECISION,
+    ds_descricao TEXT,
+    ds_imagem_produto VARCHAR,
+    categoria_nome VARCHAR
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.nr_id_produto,
+        p.nm_nome,
+        p.ds_preco,
+        p.ds_descricao,
+        p.ds_imagem_produto,
+        c.nm_nome
+    FROM produtos p
+    INNER JOIN categorias c ON p.fk_nr_id_categoria = c.nr_id_categoria
+    WHERE p.nr_id_produto = buscar_produto_id.id_produto;
+END;
+$$ LANGUAGE plpgsql;
+
+//Function para carregar todos produtos
+CREATE OR REPLACE FUNCTION obter_todos_produtos()
+RETURNS TABLE (
+    nr_id_produto INTEGER,
+    nm_nome VARCHAR,
+    ds_preco DOUBLE PRECISION,
+    ds_descricao TEXT,
+    ds_imagem_produto VARCHAR,
+    categoria_nome VARCHAR
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.nr_id_produto,
+        p.nm_nome,
+        p.ds_preco,
+        p.ds_descricao,
+        p.ds_imagem_produto,
+        c.nm_nome
+    FROM produtos p
+    INNER JOIN categorias c ON p.fk_nr_id_categoria = c.nr_id_categoria;
+END;
+$$ LANGUAGE plpgsql;
+
+//Function para atualizar produto
+CREATE OR REPLACE FUNCTION atualizar_produto(
+	id_produto INTEGER,
+    nome VARCHAR,
+    preco DOUBLE PRECISION,
+    descricao TEXT,
+    imagem VARCHAR,
+    id_categoria INTEGER
+) RETURNS VOID AS $$
+BEGIN
+    UPDATE produtos
+    SET nm_nome = nome, ds_preco = preco, ds_descricao = descricao, ds_imagem_produto = imagem, fk_nr_id_categoria = id_categoria
+    WHERE nr_id_produto = id_produto;
+END;
+$$ LANGUAGE plpgsql;
+
+//Procedure para deletar produto
+CREATE OR REPLACE PROCEDURE deletar_produto(id_produto INTEGER)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM produtos WHERE nr_id_produto = id_produto;
+END;
+$$;
