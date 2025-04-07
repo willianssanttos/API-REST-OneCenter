@@ -1,0 +1,38 @@
+//Criar categoriarias para produtos
+CREATE OR REPLACE FUNCTION inserir_categoria(
+    nome_categoria VARCHAR
+) RETURNS INTEGER AS $$
+DECLARE
+    novo_id INTEGER;
+BEGIN
+    INSERT INTO categorias (nm_nome)
+    VALUES (nome_categoria)
+    RETURNING nr_id_categoria INTO novo_id;
+
+    RETURN novo_id;
+END;
+$$ LANGUAGE plpgsql;
+
+//Listar categorias criadas
+CREATE OR REPLACE FUNCTION listar_categorias()
+RETURNS TABLE (nr_id_categoria INTEGER, nm_nome VARCHAR) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT c.nr_id_categoria, c.nm_nome FROM categorias c;
+END;
+$$ LANGUAGE plpgsql;
+
+//Buscar categoria pelo id, retornando o nome da mesma
+CREATE OR REPLACE FUNCTION buscar_id_categoria_por_nome(
+    nome_categoria VARCHAR
+) RETURNS INTEGER AS $$
+DECLARE
+    id_categoria INTEGER;
+BEGIN
+    SELECT c.nr_id_categoria INTO id_categoria
+    FROM categorias
+    WHERE c.nm_nome = nome_categoria;
+
+    RETURN id_categoria;
+END;
+$$ LANGUAGE plpgsql;

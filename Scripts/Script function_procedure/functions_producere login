@@ -1,0 +1,22 @@
+CREATE OR REPLACE FUNCTION validar_usuario(p_email VARCHAR)
+RETURNS TABLE (
+    nr_id_pessoa INTEGER,
+    nm_roles VARCHAR,
+    nm_nome_razaosocial VARCHAR,
+    ds_email VARCHAR,
+    ds_senha VARCHAR,
+    ds_telefone VARCHAR
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.nr_id_pessoa,
+        p.nm_roles,
+        p.nm_nome_razaosocial,
+        p.ds_email,
+        p.ds_senha,
+        p.ds_telefone
+    FROM pessoas p
+    WHERE p.ds_email = p_email;
+END;
+$$ LANGUAGE plpgsql;

@@ -29,7 +29,7 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
     public EnderecoEntity salverEndereco(EnderecoEntity endereco) {
         logger.info(Constantes.DebugRegistroProcesso);
         try {
-            String sql = "INSERT INTO enderecos (nm_rua, ds_numero, ds_bairro, ds_cidade, ds_uf, ds_cep, fk_nr_id_pessoa) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING nr_id_endereco";
+            String sql = "SELECT inserir_endereco(?, ?, ?, ?, ?, ?, ?)";
             jdbcTemplate.queryForObject(sql, Integer.class,
                     endereco.getRua(),
                     endereco.getNumero(),
@@ -50,7 +50,7 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
     @Transactional
     public EnderecoEntity obterEnderecoPorIdPessoa(Integer idPessoa) {
         try {
-            String sql = "SELECT * FROM enderecos WHERE fk_nr_id_pessoa = ?";
+            String sql = "SELECT * FROM buscar_endereco_por_pessoa(?)";
             return jdbcTemplate.queryForObject(sql, new EnderecoRowMapper(), idPessoa);
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
@@ -63,7 +63,7 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
     public void atualizarEndereco(Integer idPessoa, PessoaRequest editar) {
         logger.info(Constantes.DebugEditarProcesso);
         try {
-            String sql = "UPDATE enderecos SET nm_rua = ?, ds_numero = ?, ds_bairro = ?, ds_cidade = ?, ds_cep = ?, ds_uf = ? WHERE fk_nr_id_pessoa = ?";
+            String sql = "SELECT atualizar_endereco_por_pessoa(?, ?, ?, ?, ?, ?)";
             jdbcTemplate.update(sql,
                     editar.getRua(),
                     editar.getNumero(),

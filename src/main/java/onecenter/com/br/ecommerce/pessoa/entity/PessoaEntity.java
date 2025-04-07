@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class PessoaEntity {
     private String senha;
     private String telefone;
     private List<RolesEntity> nomeRole = new ArrayList<>();
+    private EnderecoEntity endereco;
 
     @Override
     public String toString() {

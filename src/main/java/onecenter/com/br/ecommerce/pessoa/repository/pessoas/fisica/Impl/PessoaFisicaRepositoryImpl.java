@@ -79,27 +79,7 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
     public PessoaFisicaEntity buscarPorCpf(String CPF) {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = """
-            SELECT
-                p.nr_id_pessoa,
-                p.nm_nome_razaosocial,
-                p.ds_email,
-                p.ds_senha,
-                p.ds_telefone,
-                pf.ds_cpf,
-                pf.ds_data_nascimento,
-                e.nm_rua,
-                e.ds_numero,
-                e.ds_bairro,
-                e.ds_cidade,
-                e.ds_cep,
-                e.ds_uf
-            FROM pessoas p
-            LEFT JOIN pessoas_fisicas pf ON p.nr_id_pessoa = pf.fk_nr_id_pessoa
-            LEFT JOIN enderecos e ON p.nr_id_pessoa = e.fk_nr_id_pessoa
-            WHERE pf.ds_cpf = ?
-        """;
-
+            String sql = "SELECT * FROM buscar_pessoa_por_cpf(?)";
             logger.info(Constantes.InfoBuscar, CPF);
             return jdbcTemplate.queryForObject(sql, new Object[] { CPF }, new PessoaFisicaRowMapper());
         } catch (DataAccessException e) {

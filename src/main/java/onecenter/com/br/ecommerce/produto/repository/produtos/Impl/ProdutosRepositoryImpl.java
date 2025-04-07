@@ -65,7 +65,7 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     @Transactional
     public List<String> buscarImagensProduto(Integer idProduto) {
         String baseUrl = "http://localhost:8080";
-        String sql = "SELECT ds_caminho FROM imagens_produtos WHERE fk_nr_id_produto = ?";
+        String sql = "SELECT ds_caminho FROM buscar_imagens_produto(?)";
         return jdbcTemplate.query(sql, (rs, rowNum) -> baseUrl + rs.getString("ds_caminho"), idProduto);
     }
 

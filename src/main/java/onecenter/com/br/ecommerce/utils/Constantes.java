@@ -63,7 +63,7 @@ public class Constantes {
 
     public static final String GerarToken = "Erro ao gerar token.";
 
-    public static final String RolesInvalido = "Role de acesso invalido!.";
+    public static final String RolesInvalido = "Nivel de acesso invalido!(Defina como ADMINISTRADOR, MODERADOR OU CLIENTE).";
 
     public static final String GToken = "Token ausente.";
 

@@ -1,0 +1,15 @@
+//Inserir imagens do produto pelo ID
+CREATE OR REPLACE FUNCTION inserir_imagem_produto(
+    id_produto INTEGER,
+    caminho VARCHAR
+) RETURNS INTEGER AS $$
+DECLARE
+    novo_id INTEGER;
+BEGIN
+    INSERT INTO imagens_produtos (fk_nr_id_produto, ds_caminho)
+    VALUES (id_produto, caminho)
+    RETURNING nr_id_imagem INTO novo_id;
+
+    RETURN novo_id;
+END;
+$$ LANGUAGE plpgsql;

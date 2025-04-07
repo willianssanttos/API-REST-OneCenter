@@ -132,23 +132,19 @@ public class PessoaFisicaService {
 
     private PessoaFisicaResponse mapearPessoaFisica(PessoaFisicaEntity fisica){
         try {
-            PessoaEntity pessoa = iPessoaRepository.buscarIdPessoa(fisica.getIdPessoa());
-            EnderecoEntity endereco = iEnderecoRepository.obterEnderecoPorIdPessoa(fisica.getId_pessoa());
-
             return PessoaFisicaResponse.builder()
                     .idPessoa(fisica.getId_pessoa())
-                    .role(pessoa.getRole())
-                    .nome_razaosocial(pessoa.getNome_razaosocial())
+                    .role(fisica.getRole())
+                    .nome_razaosocial(fisica.getNome_razaosocial())
                     .cpf(fisica.getCpf())
                     .data_nascimento(Timestamp.valueOf(String.valueOf(fisica.getData_nascimento())))
-                    .email(pessoa.getEmail())
-                    .telefone(pessoa.getTelefone())
-                    .rua(endereco.getRua())
-                    .numero(endereco.getNumero())
-                    .bairro(endereco.getBairro())
-                    .localidade(endereco.getLocalidade())
-                    .cep(endereco.getCep())
-                    .uf(endereco.getUf())
+                    .email(fisica.getEmail())
+                    .telefone(fisica.getTelefone())
+                    .rua(fisica.getEndereco().getRua())
+                    .bairro(fisica.getEndereco().getBairro())
+                    .localidade(fisica.getEndereco().getLocalidade())
+                    .cep(fisica.getEndereco().getCep())
+                    .uf(fisica.getEndereco().getUf())
                     .build();
 
         } catch (Exception e){
@@ -163,7 +159,7 @@ public class PessoaFisicaService {
             logger.info(Constantes.InfoBuscar, CPF);
             return mapearPessoaFisica(pessoaFisica);
         } catch (Exception e){
-            logger.error(Constantes.ErroBuscarRegistroNoServidor);
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e);
             throw new ObterPessoaPorCpfNotFoundException();
         }
     }
