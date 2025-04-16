@@ -13,6 +13,7 @@ import onecenter.com.br.ecommerce.pessoa.dto.endereco.request.EnderecoRequest;
 public class PessoaRequest {
 
     private Integer IdPessoa;
+    private String rolePrincipal;
     private String nomeRazaosocial;
     private String email;
     private String senha;

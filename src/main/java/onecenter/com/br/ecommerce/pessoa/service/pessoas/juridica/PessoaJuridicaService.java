@@ -131,7 +131,6 @@ public class PessoaJuridicaService {
         try {
             return PessoaJuridicaResponse.builder()
                     .idPessoa(juridica.getIdPessoa())
-                    .rolePrincipal(juridica.getRolePrincipal())
                     .nomeRazaosocial(juridica.getNomeRazaosocial())
                     .cnpj(juridica.getCnpj())
                     .nome_fantasia(juridica.getNome_fantasia())

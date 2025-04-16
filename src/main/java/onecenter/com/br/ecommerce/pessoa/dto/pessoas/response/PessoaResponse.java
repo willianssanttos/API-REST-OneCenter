@@ -17,7 +17,6 @@ import java.util.List;
 public class PessoaResponse {
 
     private Integer idPessoa;
-    private String rolePrincipal;
     private String nomeRazaosocial;
     private String email;
     private String telefone;

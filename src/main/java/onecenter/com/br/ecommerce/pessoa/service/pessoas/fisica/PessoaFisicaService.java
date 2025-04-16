@@ -138,7 +138,6 @@ public class PessoaFisicaService {
         try {
             return PessoaFisicaResponse.builder()
                     .idPessoa(pessoaCriada.getIdPessoa())
-                    .rolePrincipal(pessoaCriada.getRolePrincipal())
                     .nomeRazaosocial(pessoaCriada.getNomeRazaosocial())
                     .cpf(fisicaCriada.getCpf())
                     .dataNascimento(Timestamp.valueOf(String.valueOf(fisicaCriada.getDataNascimento())))
