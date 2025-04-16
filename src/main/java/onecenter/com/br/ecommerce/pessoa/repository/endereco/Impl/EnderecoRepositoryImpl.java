@@ -27,11 +27,11 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
 
     @Override
     @Transactional
-    public EnderecoEntity salverEndereco(EnderecoEntity endereco) {
+    public EnderecoEntity salvarEndereco(EnderecoEntity endereco) {
         logger.info(Constantes.DebugRegistroProcesso);
         try {
             String sql = "SELECT inserir_endereco(?, ?, ?, ?, ?, ?, ?)";
-            jdbcTemplate.queryForObject(sql, Integer.class,
+            Integer idEndereco = jdbcTemplate.queryForObject(sql, Integer.class,
                     endereco.getRua(),
                     endereco.getNumero(),
                     endereco.getBairro(),
@@ -39,6 +39,7 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
                     endereco.getUf(),
                     endereco.getCep(),
                     endereco.getIdPessoa());
+            endereco.setIdEndereco(idEndereco);
             logger.info(Constantes.InfoRegistrar, endereco);
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
@@ -48,7 +49,7 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public EnderecoEntity obterEnderecoPorIdPessoa(Integer idPessoa) {
         try {
             String sql = "SELECT * FROM buscar_endereco_por_pessoa(?)";
@@ -74,7 +75,7 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
                     editar.getUf(),
                     idPessoa
             );
-            logger.info(Constantes.InfoBuscar, editar);
+            logger.info(Constantes.InfoEditar, editar);
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
             throw new AtualizarEnderecoException();

@@ -5,7 +5,7 @@ import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoEntity;
 
 public interface IEnderecoRepository {
 
-    EnderecoEntity salverEndereco(EnderecoEntity endereco);
+    EnderecoEntity salvarEndereco(EnderecoEntity endereco);
 
     EnderecoEntity obterEnderecoPorIdPessoa(Integer idPessoa);
 

@@ -1,7 +1,6 @@
 package onecenter.com.br.ecommerce.produto.repository.produtos.Impl;
 
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ErroLocalizarPessoaNotFoundException;
-import onecenter.com.br.ecommerce.produto.dto.produtos.request.ProdutoRequest;
 import onecenter.com.br.ecommerce.produto.exception.DeletarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.EditarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.ObterProdutosNotFundException;
@@ -50,7 +49,7 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public ProdutosEntity buscarIdProduto(Integer IdProduto){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
@@ -63,7 +62,7 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<String> buscarImagensProduto(Integer idProduto) {
         String baseUrl = "http://localhost:8080";
         String sql = "SELECT ds_caminho FROM buscar_imagens_produto(?)";
@@ -71,7 +70,7 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ProdutosEntity> obterTodosProdutos(){
         logger.info(Constantes.DebugBuscarProcesso);
         try {

@@ -46,7 +46,7 @@ public class PessoaJuridicaRepositoryImpl implements IPessoaJuridicaRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean verificarCnpjExistente(String CNPJ) {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
@@ -60,7 +60,7 @@ public class PessoaJuridicaRepositoryImpl implements IPessoaJuridicaRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Integer buscarIdPorCnpj(String CNPJ){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
@@ -75,7 +75,7 @@ public class PessoaJuridicaRepositoryImpl implements IPessoaJuridicaRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public PessoaJuridicaEntity buscarPorCnpj(String CNPJ){
         logger.info(Constantes.DebugBuscarProcesso);
         try {

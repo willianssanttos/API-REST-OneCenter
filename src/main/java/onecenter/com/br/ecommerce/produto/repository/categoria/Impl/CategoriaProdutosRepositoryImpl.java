@@ -42,7 +42,7 @@ public class CategoriaProdutosRepositoryImpl implements ICategoriaRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CategoriaEntity> obterTodasCategoria(){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
@@ -56,7 +56,7 @@ public class CategoriaProdutosRepositoryImpl implements ICategoriaRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Integer obterCategoriaPorNome(String nomeCategoria) {
         logger.info(Constantes.DebugBuscarProcesso);
         try {

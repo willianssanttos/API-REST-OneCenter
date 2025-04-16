@@ -5,7 +5,6 @@ import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ObterLoginNotFoundExc
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.PessoaException;
 import onecenter.com.br.ecommerce.pessoa.repository.mapper.PessoaRowMapper;
 import onecenter.com.br.ecommerce.produto.exception.EditarProdutoException;
-import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.PessoaRequest;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.pessoa.repository.pessoas.IPessoaRepository;
 import onecenter.com.br.ecommerce.utils.Constantes;
@@ -47,7 +46,7 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean verificarEmailExistente(String email) {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
@@ -61,7 +60,7 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public PessoaEntity buscarIdPessoa(Integer IdPessoa){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
@@ -94,7 +93,7 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public PessoaEntity obterLogin(String email){
         logger.info(Constantes.DebugBuscarProcesso);
         try {

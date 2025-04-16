@@ -26,6 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.sql.Timestamp;
 
 @Service
@@ -82,6 +84,7 @@ public class PessoaFisicaService {
         }
     }
 
+    @Transactional
     public PessoaFisicaResponse cadastrarPessoaFisica (PessoaFisicaRequest fisica){
         logger.info(Constantes.DebugRegistroProcesso);
 
@@ -124,7 +127,7 @@ public class PessoaFisicaService {
                     .uf(fisica.getEndereco().getUf())
                     .build();
 
-            EnderecoEntity enderecoCriado = iEnderecoRepository.salverEndereco(endereco);
+            EnderecoEntity enderecoCriado = iEnderecoRepository.salvarEndereco(endereco);
 
             logger.info(Constantes.InfoRegistrar, fisica);
             return mapearPessoaFisica(fisicaCriada, pessoaCriada, enderecoCriado);
@@ -153,7 +156,6 @@ public class PessoaFisicaService {
 
     private EnderecoResponse mapearEndereco(EnderecoBase endereco) {
         if (endereco == null) {
-            logger.warn("EnderecoBase recebido é null no método mapearEndereco.");
             return null;
         }
 
@@ -168,11 +170,12 @@ public class PessoaFisicaService {
     }
 
 
-    public PessoaFisicaResponse obterPorCpf(String CPF){
+    @Transactional(readOnly = true)
+    public PessoaFisicaResponse obterPorCpf(String cpf){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-             iPessoaFisicaRepository.buscarPorCpf(CPF);
-            logger.info(Constantes.InfoBuscar, CPF);
+             iPessoaFisicaRepository.buscarPorCpf(cpf);
+            logger.info(Constantes.InfoBuscar, cpf);
             return null;
         } catch (Exception e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e);
@@ -180,6 +183,7 @@ public class PessoaFisicaService {
         }
     }
 
+    @Transactional
     public PessoaFisicaResponse atualizarDados(PessoaFisicaRequest editar){
         logger.info(Constantes.DebugEditarProcesso);
         try {

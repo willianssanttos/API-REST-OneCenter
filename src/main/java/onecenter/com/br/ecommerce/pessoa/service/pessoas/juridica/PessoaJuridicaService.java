@@ -116,7 +116,7 @@ public class PessoaJuridicaService {
                     .uf(juridica.getEndereco().getUf())
                     .build();
 
-            iEnderecoRepository.salverEndereco(endereco);
+            iEnderecoRepository.salvarEndereco(endereco);
 
             iPessoaJuridicaRepository.criarJuridica(criarJuridica);
             logger.info(Constantes.InfoRegistrar, juridica);
