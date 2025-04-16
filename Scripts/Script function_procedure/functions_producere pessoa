@@ -1,3 +1,21 @@
+//Cadastrar pessoa no banco de dados
+CREATE OR REPLACE FUNCTION public.criar_pessoa(p_nm_roles character varying, p_nm_nome_razaosocial character varying, p_ds_email character varying, p_ds_senha character varying, p_ds_telefone character varying)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+    v_id_pessoa INTEGER;
+BEGIN
+    INSERT INTO pessoas (nm_roles, nm_nome_razaosocial, ds_email, ds_senha, ds_telefone)
+    VALUES (p_nm_roles, p_nm_nome_razaosocial, p_ds_email, p_ds_senha, p_ds_telefone)
+    RETURNING nr_id_pessoa INTO v_id_pessoa;
+
+    RETURN v_id_pessoa;
+END;
+$function$
+;
+
+Buscar dados da pessoa, pelo CPF
 CREATE OR REPLACE FUNCTION buscar_pessoa_por_cpf(p_cpf VARCHAR)
 RETURNS TABLE (
     nr_id_pessoa INTEGER,
@@ -36,3 +54,63 @@ BEGIN
     WHERE pf.ds_cpf = p_cpf;
 END;
 $$ LANGUAGE plpgsql;
+
+//Verificar se o email ja existe no banco de dados
+CREATE OR REPLACE FUNCTION verificar_email_existe(p_email TEXT)
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM pessoas WHERE ds_email = TRIM(LOWER(p_email))
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+//buscar informação da pessoa pelo id
+
+CREATE OR REPLACE FUNCTION buscar_pessoa_por_id(p_id INTEGER)
+RETURNS TABLE (
+    nr_id_pessoa INTEGER,
+    nm_roles VARCHAR,
+    nm_nome_razaosocial VARCHAR,
+    ds_email VARCHAR,
+    ds_senha VARCHAR,
+    ds_telefone VARCHAR
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.nr_id_pessoa,
+        p.nm_roles,
+        p.nm_nome_razaosocial,
+        p.ds_email,
+        p.ds_senha,
+        p.ds_telefone
+    FROM pessoas p
+    WHERE p.nr_id_pessoa = p_id;
+END;
+$$ LANGUAGE plpgsql;
+
+//Editar dados da pessoa
+
+CREATE OR REPLACE FUNCTION atualizar_pessoa(
+    p_nr_id_pessoa INTEGER,
+    p_nm_nome_razaosocial VARCHAR,
+    p_ds_email VARCHAR,
+    p_ds_senha VARCHAR,
+    p_ds_telefone VARCHAR
+)
+RETURNS INTEGER AS $$
+BEGIN
+    UPDATE pessoas
+    SET nm_nome_razaosocial = p_nm_nome_razaosocial,
+        ds_email = p_ds_email,
+        ds_senha = p_ds_senha,
+        ds_telefone = p_ds_telefone
+    WHERE nr_id_pessoa = p_nr_id_pessoa;
+
+    RETURN 1; -- sucesso
+END;
+$$ LANGUAGE plpgsql;
+
+

@@ -1,0 +1,13 @@
+CREATE OR REPLACE FUNCTION verificar_cpf_existe(p_cpf VARCHAR)
+RETURNS BOOLEAN AS $$
+DECLARE
+    existe BOOLEAN;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1 FROM pessoas_fisicas WHERE ds_cpf = p_cpf
+    ) INTO existe;
+
+    RETURN existe;
+END;
+$$ LANGUAGE plpgsql;
+
