@@ -1,11 +1,14 @@
 package onecenter.com.br.ecommerce.pessoa.repository.pessoas.fisica.Impl;
 
+import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.EditarPessoaException;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ErroLocalizarPessoaNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.PessoaException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.ObterPessoaPorCpfNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.fisica.PessoaFisicaRequest;
 import onecenter.com.br.ecommerce.pessoa.entity.fisica.PessoaFisicaEntity;
 import onecenter.com.br.ecommerce.pessoa.repository.mapper.PessoaFisicaRowMapper;
+import onecenter.com.br.ecommerce.pessoa.repository.mapper.PessoaRowMapper;
 import onecenter.com.br.ecommerce.pessoa.repository.pessoas.fisica.IPessoaFisicaRepository;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import org.slf4j.Logger;
@@ -33,8 +36,8 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
             String sql = "INSERT INTO pessoas_fisicas (ds_cpf, ds_data_nascimento, fk_nr_id_pessoa) VALUES (?,?,?) RETURNING nr_id_pessoa_fisica";
              jdbcTemplate.queryForObject(sql, Integer.class,
                     fisica.getCpf(),
-                    fisica.getData_nascimento(),
-                    fisica.getId_pessoa()
+                    fisica.getDataNascimento(),
+                    fisica.getIdPessoa()
             );
             logger.info(Constantes.InfoRegistrar, fisica);
         } catch (DataAccessException e) {
@@ -90,15 +93,29 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
 
     @Override
     @Transactional
-     public void atualizarPessoaFisica(Integer idPessoa, PessoaFisicaRequest editar) {
+    public PessoaFisicaEntity buscarIdPessoa(Integer IdPessoa){
+        logger.info(Constantes.DebugBuscarProcesso);
+        try {
+            String sql = "SELECT * FROM pessoas WHERE nr_id_pessoa = ?";
+            return jdbcTemplate.queryForObject(sql, new PessoaFisicaRowMapper(), IdPessoa);
+        } catch (DataAccessException e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
+            throw new ErroLocalizarPessoaNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+     public PessoaFisicaEntity atualizarPessoaFisica(PessoaFisicaEntity editar) {
         logger.info(Constantes.DebugEditarProcesso);
         try {
             String sql = "UPDATE pessoas_fisicas SET ds_cpf = ?, ds_data_nascimento = ? WHERE fk_nr_id_pessoa = ?";
-            jdbcTemplate.update(sql, editar.getCpf(), editar.getData_nascimento(), idPessoa);
+            jdbcTemplate.update(sql, editar.getCpf(), editar.getDataNascimento(), editar.getIdPessoa());
             logger.info(Constantes.InfoEditar, editar);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroEditarRegistroNoServidor, e.getMessage());
             throw new EditarPessoaException();
         }
+        return editar;
     }
 }

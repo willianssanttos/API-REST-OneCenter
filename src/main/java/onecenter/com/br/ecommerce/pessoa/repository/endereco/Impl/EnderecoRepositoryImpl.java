@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.pessoa.repository.endereco.Impl;
 
+import onecenter.com.br.ecommerce.pessoa.dto.endereco.request.EnderecoRequest;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.AtualizarEnderecoException;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.BuscarEnderecoNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.EnderecoException;
@@ -37,7 +38,7 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
                     endereco.getLocalidade(),
                     endereco.getUf(),
                     endereco.getCep(),
-                    endereco.getId_pessoa());
+                    endereco.getIdPessoa());
             logger.info(Constantes.InfoRegistrar, endereco);
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
@@ -60,10 +61,10 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
 
     @Override
     @Transactional
-    public void atualizarEndereco(Integer idPessoa, PessoaRequest editar) {
+    public void atualizarEndereco(Integer idPessoa, EnderecoRequest editar) {
         logger.info(Constantes.DebugEditarProcesso);
         try {
-            String sql = "SELECT atualizar_endereco_por_pessoa(?, ?, ?, ?, ?, ?)";
+            String sql = "CALL atualizar_endereco_por_pessoa(?, ?, ?, ?, ?, ?, ?)";
             jdbcTemplate.update(sql,
                     editar.getRua(),
                     editar.getNumero(),
@@ -71,7 +72,8 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
                     editar.getLocalidade(),
                     editar.getCep(),
                     editar.getUf(),
-                    idPessoa);
+                    idPessoa
+            );
             logger.info(Constantes.InfoBuscar, editar);
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());

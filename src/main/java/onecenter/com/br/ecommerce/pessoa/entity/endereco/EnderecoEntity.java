@@ -11,9 +11,10 @@ import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class EnderecoEntity  extends PessoaEntity {
+public class EnderecoEntity implements EnderecoBase {
 
     private Integer idEndereco;
+    private Integer idPessoa;
     private String rua;
     private String numero;
     private String bairro;
@@ -24,7 +25,6 @@ public class EnderecoEntity  extends PessoaEntity {
     @Override
     public String toString() {
         return "EnderecoEntity{" +
-                "idEndereco=" + idEndereco +
                 ", Locradouro='" + rua + '\'' +
                 ", numero='" + numero + '\'' +
                 ", bairro='" + bairro + '\'' +

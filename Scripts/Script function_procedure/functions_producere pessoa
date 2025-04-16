@@ -1,0 +1,38 @@
+CREATE OR REPLACE FUNCTION buscar_pessoa_por_cpf(p_cpf VARCHAR)
+RETURNS TABLE (
+    nr_id_pessoa INTEGER,
+    nm_roles VARCHAR,
+    nm_nome_razaosocial VARCHAR,
+    ds_email VARCHAR,
+    ds_telefone VARCHAR,
+    ds_cpf VARCHAR,
+    ds_data_nascimento DATE,
+    nm_rua VARCHAR,
+    ds_numero VARCHAR,
+    ds_bairro VARCHAR,
+    ds_cidade VARCHAR,
+    ds_cep VARCHAR,
+    ds_uf VARCHAR
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.nr_id_pessoa,
+		p.nm_roles,
+        p.nm_nome_razaosocial,
+        p.ds_email,
+        p.ds_telefone,
+        pf.ds_cpf,
+        pf.ds_data_nascimento,
+        e.nm_rua,
+        e.ds_numero,
+        e.ds_bairro,
+        e.ds_cidade,
+        e.ds_cep,
+        e.ds_uf
+    FROM pessoas p
+    LEFT JOIN pessoas_fisicas pf ON p.nr_id_pessoa = pf.fk_nr_id_pessoa
+    LEFT JOIN enderecos e ON p.nr_id_pessoa = e.fk_nr_id_pessoa
+    WHERE pf.ds_cpf = p_cpf;
+END;
+$$ LANGUAGE plpgsql;

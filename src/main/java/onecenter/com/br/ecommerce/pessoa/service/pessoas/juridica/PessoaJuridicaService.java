@@ -1,6 +1,8 @@
 package onecenter.com.br.ecommerce.pessoa.service.pessoas.juridica;
 
 import onecenter.com.br.ecommerce.config.security.config.SecurityConfiguration;
+import onecenter.com.br.ecommerce.pessoa.dto.endereco.response.EnderecoResponse;
+import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoBase;
 import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.CepValidacaoExcecao;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.BuscarEnderecoNotFoundException;
@@ -56,7 +58,7 @@ public class PessoaJuridicaService {
             throw new EmailExistenteException();
         }
 
-        if(!ValidarNome.validarNome(pessoaJuridica.getNome_razaosocial())){
+        if(!ValidarNome.validarNome(pessoaJuridica.getNomeRazaosocial())){
             throw new NomeValidacaoException();
         }
 
@@ -67,7 +69,7 @@ public class PessoaJuridicaService {
         if (!ValidarSenha.validarSenha(pessoaJuridica.getSenha())){
             throw new SenhaValidacaoException();
         }
-        if (!ValidarCEP.validarCep(pessoaJuridica.getCep())){
+        if (!ValidarCEP.validarCep(pessoaJuridica.getEndereco().getCep())){
             throw new CepValidacaoExcecao();
         }
 
@@ -82,15 +84,15 @@ public class PessoaJuridicaService {
 
         try {
 
-            ViaCepResponse viaCep = apiViaCepService.consultarCep(juridica.getCep());
-            juridica.setRua(viaCep.getLogradouro());
-            juridica.setBairro(viaCep.getBairro());
-            juridica.setLocalidade(viaCep.getLocalidade());
-            juridica.setUf(viaCep.getUf());
+            ViaCepResponse viaCep = apiViaCepService.consultarCep(juridica.getEndereco().getCep());
+            juridica.getEndereco().setRua(viaCep.getLogradouro());
+            juridica.getEndereco().setBairro(viaCep.getBairro());
+            juridica.getEndereco().setLocalidade(viaCep.getLocalidade());
+            juridica.getEndereco().setUf(viaCep.getUf());
 
             PessoaEntity pessoa = PessoaEntity.builder()
-                    .role(String.valueOf(RolesEnum.ADMINISTRADOR))
-                    .nome_razaosocial(juridica.getNome_razaosocial())
+                    .rolePrincipal(String.valueOf(RolesEnum.ADMINISTRADOR))
+                    .nomeRazaosocial(juridica.getNomeRazaosocial())
                     .email(juridica.getEmail())
                     .senha(securityConfiguration.passwordEncoder().encode(juridica.getSenha()))
                     .telefone(ValidarNumeroCelular.formatarNumeroCelular(juridica.getTelefone()))
@@ -99,19 +101,19 @@ public class PessoaJuridicaService {
             PessoaEntity pessoaCriada = iPessoaRepository.criarPessoa(pessoa);
 
             PessoaJuridicaEntity criarJuridica = PessoaJuridicaEntity.builder()
-                    .id_pessoa(pessoaCriada.getId_pessoa())
+                    .idPessoa(pessoaCriada.getIdPessoa())
                     .cnpj(juridica.getCnpj())
                     .nome_fantasia(juridica.getNome_fantasia())
                     .build();
 
             EnderecoEntity endereco = EnderecoEntity.builder()
-                    .id_pessoa(pessoaCriada.getId_pessoa())
-                    .rua(juridica.getRua())
-                    .numero(juridica.getNumero())
-                    .bairro(juridica.getBairro())
-                    .localidade(juridica.getLocalidade())
-                    .cep(juridica.getCep())
-                    .uf(juridica.getUf())
+                    .idPessoa(pessoaCriada.getIdPessoa())
+                    .rua(juridica.getEndereco().getRua())
+                    .numero(juridica.getEndereco().getNumero())
+                    .bairro(juridica.getEndereco().getBairro())
+                    .localidade(juridica.getEndereco().getLocalidade())
+                    .cep(juridica.getEndereco().getCep())
+                    .uf(juridica.getEndereco().getUf())
                     .build();
 
             iEnderecoRepository.salverEndereco(endereco);
@@ -127,29 +129,35 @@ public class PessoaJuridicaService {
 
     private PessoaJuridicaResponse mapearPessoaJuridica(PessoaJuridicaEntity juridica){
         try {
-            PessoaEntity pessoa = iPessoaRepository.buscarIdPessoa(juridica.getId_pessoa());
-            EnderecoEntity endereco = iEnderecoRepository.obterEnderecoPorIdPessoa(juridica.getId_pessoa());
-
             return PessoaJuridicaResponse.builder()
-                    .idPessoa(juridica.getId_pessoa())
-                    .role(pessoa.getRole())
-                    .nome_razaosocial(pessoa.getNome_razaosocial())
+                    .idPessoa(juridica.getIdPessoa())
+                    .rolePrincipal(juridica.getRolePrincipal())
+                    .nomeRazaosocial(juridica.getNomeRazaosocial())
                     .cnpj(juridica.getCnpj())
                     .nome_fantasia(juridica.getNome_fantasia())
-                    .email(pessoa.getEmail())
-                    .telefone(pessoa.getTelefone())
-                    .rua(endereco.getRua())
-                    .numero(endereco.getNumero())
-                    .bairro(endereco.getBairro())
-                    .localidade(endereco.getLocalidade())
-                    .cep(endereco.getCep())
-                    .uf(endereco.getUf())
+                    .email(juridica.getEmail())
+                    .telefone(juridica.getTelefone())
+                    .endereco(mapearEndereco(juridica.getEndereco()))
                     .build();
 
         } catch (Exception e){
             throw new BuscarEnderecoNotFoundException();
         }
     }
+
+    private EnderecoResponse mapearEndereco(EnderecoBase endereco){
+        if(endereco == null) return null;
+
+        return EnderecoResponse.builder()
+                .rua(endereco.getRua())
+                .numero(endereco.getNumero())
+                .bairro(endereco.getBairro())
+                .localidade(endereco.getLocalidade())
+                .cep(endereco.getCep())
+                .uf(endereco.getUf())
+                .build();
+    }
+
 
     public PessoaJuridicaResponse obterPorCnpj(String CNPJ){
         logger.info(Constantes.DebugBuscarProcesso);
@@ -162,44 +170,36 @@ public class PessoaJuridicaService {
             throw new ObterPessoaPorCnpjNotFoundException();
         }
     }
-    public PessoaJuridicaResponse atualizarDados(PessoaJuridicaRequest editar){
-        logger.info(Constantes.DebugEditarProcesso);
-        try {
-            Integer idPessoa = iPessoaJuridicaRepository.buscarIdPorCnpj(editar.getCnpj());
-            if (idPessoa == null){
-                throw new EditarPessoaException();
-            }
-
-            iPessoaRepository.atualizarPessoa(idPessoa, editar);
-            iPessoaJuridicaRepository.atualizarPessoaJuridica(idPessoa, editar);
-
-            ViaCepResponse viaCep = apiViaCepService.consultarCep(editar.getCep());
-            editar.setRua(viaCep.getLogradouro());
-            editar.setBairro(viaCep.getBairro());
-            editar.setLocalidade(viaCep.getLocalidade());
-            editar.setUf(viaCep.getUf());
-
-            iEnderecoRepository.atualizarEndereco(idPessoa, editar);
-
-            return PessoaJuridicaResponse.builder()
-                    .idPessoa(idPessoa)
-                    .role(editar.getRole())
-                    .nome_razaosocial(editar.getNome_razaosocial())
-                    .nome_fantasia(editar.getNome_fantasia())
-                    .cnpj(editar.getCnpj())
-                    .email(editar.getEmail())
-                    .telefone(editar.getTelefone())
-                    .rua(editar.getRua())
-                    .numero(editar.getNumero())
-                    .bairro(editar.getBairro())
-                    .localidade(editar.getLocalidade())
-                    .cep(editar.getCep())
-                    .uf(editar.getUf())
-                    .build();
-
-        }catch (Exception e){
-            logger.error(Constantes.ErroEditarRegistroNoServidor, e);
-            throw new EditarPessoaException();
-        }
-    }
+//    public PessoaJuridicaResponse atualizarDados(PessoaJuridicaRequest editar){
+//        logger.info(Constantes.DebugEditarProcesso);
+//        try {
+//            Integer idPessoa = iPessoaJuridicaRepository.buscarIdPorCnpj(editar.getCnpj());
+//            if (idPessoa == null){
+//                throw new EditarPessoaException();
+//            }
+//
+//            ViaCepResponse viaCep = apiViaCepService.consultarCep(editar.getEndereco().getCep());
+//            editar.getEndereco().setRua(viaCep.getLogradouro());
+//            editar.getEndereco().setBairro(viaCep.getBairro());
+//            editar.getEndereco().setLocalidade(viaCep.getLocalidade());
+//            editar.getEndereco().setUf(viaCep.getUf());
+//
+//            iEnderecoRepository.atualizarEndereco(idPessoa, editar.getEndereco());
+//
+//            return PessoaJuridicaResponse.builder()
+//                    .idPessoa(idPessoa)
+//                    //.nomeRole(editar.getEndereco().getRoles())
+//                    .nomeRazaosocial(editar.getNomeRazaosocial())
+//                    .nome_fantasia(editar.getNome_fantasia())
+//                    .cnpj(editar.getCnpj())
+//                    .email(editar.getEmail())
+//                    .telefone(editar.getTelefone())
+//                    .endereco(mapearEndereco(editar.getEndereco()))
+//                    .build();
+//
+//        }catch (Exception e){
+//            logger.error(Constantes.ErroEditarRegistroNoServidor, e);
+//            throw new EditarPessoaException();
+//        }
+//    }
 }

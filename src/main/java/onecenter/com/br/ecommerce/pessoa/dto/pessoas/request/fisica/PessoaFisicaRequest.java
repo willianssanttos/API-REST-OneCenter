@@ -15,7 +15,8 @@ import java.sql.Timestamp;
 
 public class PessoaFisicaRequest extends PessoaRequest {
 
-    private Integer pessoa_fisica;
+
     private String cpf;
-    private Timestamp data_nascimento;
+    private Timestamp dataNascimento;
+
 }

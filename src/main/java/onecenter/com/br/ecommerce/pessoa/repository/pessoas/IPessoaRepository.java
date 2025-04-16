@@ -9,6 +9,6 @@ public interface IPessoaRepository {
     PessoaEntity obterLogin(String email);
     boolean verificarEmailExistente(String email);
     PessoaEntity buscarIdPessoa(Integer IdPessoa);
-    void atualizarPessoa(Integer idPessoa, PessoaRequest editar);
+    PessoaEntity atualizarPessoa( PessoaEntity editar);
 
 }

@@ -34,7 +34,7 @@ public class PessoaJuridicaRepositoryImpl implements IPessoaJuridicaRepository {
             Integer idJuridico = jdbcTemplate.queryForObject(sql, Integer.class,
                     juridica.getNome_fantasia(),
                     juridica.getCnpj(),
-                    juridica.getId_pessoa()
+                    juridica.getIdPessoa()
             );
             juridica.setId_pessoa_juridica(idJuridico);
             logger.info(Constantes.InfoRegistrar, juridica);

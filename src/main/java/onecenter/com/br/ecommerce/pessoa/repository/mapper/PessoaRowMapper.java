@@ -2,27 +2,25 @@ package onecenter.com.br.ecommerce.pessoa.repository.mapper;
 
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.pessoa.entity.RolesEntity;
-import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 
 public class PessoaRowMapper implements RowMapper<PessoaEntity> {
 
     @Override
-    public PessoaEntity mapRow(ResultSet rs, int rowNum) throws SQLException{
+    public PessoaEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-        PessoaEntity pessoa = new PessoaEntity();
-        RolesEntity role = new RolesEntity();
-
-        pessoa.setId_pessoa(rs.getInt(1));
-        role.setNomeRole(RolesEnum.valueOf(rs.getString(2).toUpperCase()));
-        pessoa.getNomeRole().add(role);
-        pessoa.setNome_razaosocial(rs.getString(3));
-        pessoa.setEmail(rs.getString(4));
-        pessoa.setSenha(rs.getString(5));
-        pessoa.setTelefone(rs.getString(6));
-        return pessoa;
+        RolesEntity role = new RoleRowMapper().mapRow(rs, rowNum);
+        return PessoaEntity.builder()
+                .idPessoa(rs.getInt(1))
+                .roles(Collections.singletonList(role))
+                .nomeRazaosocial(rs.getString(3))
+                .email(rs.getString(4))
+                .senha(rs.getString(5))
+                .telefone(rs.getString(6))
+                .build();
     }
 }

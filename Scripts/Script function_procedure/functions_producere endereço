@@ -1,0 +1,74 @@
+//Inserir endereço
+CREATE OR REPLACE FUNCTION inserir_endereco(
+    p_rua VARCHAR,
+    p_numero VARCHAR,
+    p_bairro VARCHAR,
+    p_cidade VARCHAR,
+    p_uf VARCHAR,
+    p_cep VARCHAR,
+    p_id_pessoa INTEGER
+) RETURNS INTEGER AS $$
+DECLARE
+    novo_id INTEGER;
+BEGIN
+    INSERT INTO enderecos (nm_rua, ds_numero, ds_bairro, ds_cidade, ds_uf, ds_cep, fk_nr_id_pessoa)
+    VALUES (p_rua, p_numero, p_bairro, p_cidade, p_uf, p_cep, p_id_pessoa)
+    RETURNING nr_id_endereco INTO novo_id;
+
+    RETURN novo_id;
+END;
+$$ LANGUAGE plpgsql;
+
+//buscar endereço da pessoa por id
+CREATE OR REPLACE FUNCTION buscar_endereco_por_pessoa(p_id_pessoa INTEGER)
+RETURNS TABLE (
+    nr_id_endereco INTEGER,
+    nm_rua VARCHAR,
+    ds_numero VARCHAR,
+    ds_bairro VARCHAR,
+    ds_cidade VARCHAR,
+    ds_uf VARCHAR,
+    ds_cep VARCHAR,
+    fk_nr_id_pessoa INTEGER
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        nr_id_endereco,
+        nm_rua,
+        ds_numero,
+        ds_bairro,
+        ds_cidade,
+        ds_uf,
+        ds_cep,
+        fk_nr_id_pessoa
+    FROM enderecos
+    WHERE fk_nr_id_pessoa = p_id_pessoa;
+END;
+$$ LANGUAGE plpgsql;
+
+//editar informaçoes do endereço
+
+CREATE OR REPLACE PROCEDURE atualizar_endereco_por_pessoa(
+    IN p_rua VARCHAR,
+    IN p_numero VARCHAR,
+    IN p_bairro VARCHAR,
+    IN p_cidade VARCHAR,
+    IN p_cep VARCHAR,
+    IN p_uf VARCHAR,
+    IN p_id_pessoa INTEGER
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE enderecos
+    SET
+        nm_rua = p_rua,
+        ds_numero = p_numero,
+        ds_bairro = p_bairro,
+        ds_cidade = p_cidade,
+        ds_cep = p_cep,
+        ds_uf = p_uf
+    WHERE fk_nr_id_pessoa = p_id_pessoa;
+END;
+$$;

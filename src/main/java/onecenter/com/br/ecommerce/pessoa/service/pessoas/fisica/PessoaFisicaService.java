@@ -1,6 +1,8 @@
 package onecenter.com.br.ecommerce.pessoa.service.pessoas.fisica;
 
 import onecenter.com.br.ecommerce.config.security.config.SecurityConfiguration;
+import onecenter.com.br.ecommerce.pessoa.dto.endereco.response.EnderecoResponse;
+import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoBase;
 import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.CepValidacaoExcecao;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.fisica.PessoaFisicaRequest;
@@ -60,7 +62,7 @@ public class PessoaFisicaService {
             throw new EmailExistenteException();
         }
 
-        if(!ValidarNome.validarNome(pessoaFisica.getNome_razaosocial())){
+        if(!ValidarNome.validarNome(pessoaFisica.getNomeRazaosocial())){
             throw new NomeValidacaoException();
         }
 
@@ -71,7 +73,7 @@ public class PessoaFisicaService {
         if (!ValidarSenha.validarSenha(pessoaFisica.getSenha())){
             throw new SenhaValidacaoException();
         }
-        if (!ValidarCEP.validarCep(pessoaFisica.getCep())){
+        if (!ValidarCEP.validarCep(pessoaFisica.getEndereco().getCep())){
             throw new CepValidacaoExcecao();
         }
 
@@ -87,15 +89,16 @@ public class PessoaFisicaService {
 
         try {
 
-            ViaCepResponse viaCep = apiViaCepService.consultarCep(fisica.getCep());
-                    fisica.setRua(viaCep.getLogradouro());
-                    fisica.setBairro(viaCep.getBairro());
-                    fisica.setLocalidade(viaCep.getLocalidade());
-                    fisica.setUf(viaCep.getUf());
+            ViaCepResponse viaCep = apiViaCepService.consultarCep(fisica.getEndereco().getCep());
+            fisica.getEndereco().setRua(viaCep.getLogradouro());
+            fisica.getEndereco().setBairro(viaCep.getBairro());
+            fisica.getEndereco().setLocalidade(viaCep.getLocalidade());
+            fisica.getEndereco().setUf(viaCep.getUf());
+
 
             PessoaEntity pessoa = PessoaEntity.builder()
-                    .role(String.valueOf(RolesEnum.CLIENTE))
-                    .nome_razaosocial(fisica.getNome_razaosocial())
+                    .rolePrincipal(String.valueOf(RolesEnum.CLIENTE))
+                    .nomeRazaosocial(fisica.getNomeRazaosocial())
                     .email(fisica.getEmail())
                     .senha(securityConfiguration.passwordEncoder().encode(fisica.getSenha()))
                     .telefone(ValidarNumeroCelular.formatarNumeroCelular(fisica.getTelefone()))
@@ -104,47 +107,44 @@ public class PessoaFisicaService {
             PessoaEntity pessoaCriada = iPessoaRepository.criarPessoa(pessoa);
 
             PessoaFisicaEntity criarFisica = PessoaFisicaEntity.builder()
-                    .id_pessoa(pessoaCriada.getId_pessoa())
+                    .idPessoa(pessoaCriada.getIdPessoa())
                     .cpf(fisica.getCpf())
-                    .data_nascimento(fisica.getData_nascimento())
+                    .dataNascimento(fisica.getDataNascimento())
                     .build();
+
+            PessoaFisicaEntity fisicaCriada = iPessoaFisicaRepository.criarFisica(criarFisica);
 
             EnderecoEntity endereco = EnderecoEntity.builder()
-                    .id_pessoa(pessoaCriada.getId_pessoa())
-                    .rua(fisica.getRua())
-                    .numero(fisica.getNumero())
-                    .bairro(fisica.getBairro())
-                    .localidade(fisica.getLocalidade())
-                    .cep(fisica.getCep())
-                    .uf(fisica.getUf())
+                    .idPessoa(pessoaCriada.getIdPessoa())
+                    .rua(fisica.getEndereco().getRua())
+                    .numero(fisica.getEndereco().getNumero())
+                    .bairro(fisica.getEndereco().getBairro())
+                    .localidade(fisica.getEndereco().getLocalidade())
+                    .cep(fisica.getEndereco().getCep())
+                    .uf(fisica.getEndereco().getUf())
                     .build();
 
-            iEnderecoRepository.salverEndereco(endereco);
+            EnderecoEntity enderecoCriado = iEnderecoRepository.salverEndereco(endereco);
 
-            iPessoaFisicaRepository.criarFisica(criarFisica);
             logger.info(Constantes.InfoRegistrar, fisica);
-            return mapearPessoaFisica(criarFisica);
+            return mapearPessoaFisica(fisicaCriada, pessoaCriada, enderecoCriado);
         } catch (Exception e){
             logger.error(Constantes.ErroRegistrarNoServidor);
             throw new PessoaException();
         }
     }
 
-    private PessoaFisicaResponse mapearPessoaFisica(PessoaFisicaEntity fisica){
+    private PessoaFisicaResponse mapearPessoaFisica(PessoaFisicaEntity fisicaCriada, PessoaEntity pessoaCriada, EnderecoEntity enderecoCriado ){
         try {
             return PessoaFisicaResponse.builder()
-                    .idPessoa(fisica.getId_pessoa())
-                    .role(fisica.getRole())
-                    .nome_razaosocial(fisica.getNome_razaosocial())
-                    .cpf(fisica.getCpf())
-                    .data_nascimento(Timestamp.valueOf(String.valueOf(fisica.getData_nascimento())))
-                    .email(fisica.getEmail())
-                    .telefone(fisica.getTelefone())
-                    .rua(fisica.getEndereco().getRua())
-                    .bairro(fisica.getEndereco().getBairro())
-                    .localidade(fisica.getEndereco().getLocalidade())
-                    .cep(fisica.getEndereco().getCep())
-                    .uf(fisica.getEndereco().getUf())
+                    .idPessoa(pessoaCriada.getIdPessoa())
+                    .rolePrincipal(pessoaCriada.getRolePrincipal())
+                    .nomeRazaosocial(pessoaCriada.getNomeRazaosocial())
+                    .cpf(fisicaCriada.getCpf())
+                    .dataNascimento(Timestamp.valueOf(String.valueOf(fisicaCriada.getDataNascimento())))
+                    .email(pessoaCriada.getEmail())
+                    .telefone(pessoaCriada.getTelefone())
+                    .endereco(mapearEndereco(enderecoCriado))
                     .build();
 
         } catch (Exception e){
@@ -152,12 +152,29 @@ public class PessoaFisicaService {
         }
     }
 
+    private EnderecoResponse mapearEndereco(EnderecoBase endereco) {
+        if (endereco == null) {
+            logger.warn("EnderecoBase recebido é null no método mapearEndereco.");
+            return null;
+        }
+
+        return EnderecoResponse.builder()
+                .rua(endereco.getRua())
+                .numero(endereco.getNumero())
+                .bairro(endereco.getBairro())
+                .localidade(endereco.getLocalidade())
+                .cep(endereco.getCep())
+                .uf(endereco.getUf())
+                .build();
+    }
+
+
     public PessoaFisicaResponse obterPorCpf(String CPF){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            PessoaFisicaEntity pessoaFisica = iPessoaFisicaRepository.buscarPorCpf(CPF);
+             iPessoaFisicaRepository.buscarPorCpf(CPF);
             logger.info(Constantes.InfoBuscar, CPF);
-            return mapearPessoaFisica(pessoaFisica);
+            return null;
         } catch (Exception e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e);
             throw new ObterPessoaPorCpfNotFoundException();
@@ -172,31 +189,41 @@ public class PessoaFisicaService {
                 throw new EditarPessoaException();
             }
 
-            iPessoaRepository.atualizarPessoa(idPessoa, editar);
-            iPessoaFisicaRepository.atualizarPessoaFisica(idPessoa, editar);
+            ViaCepResponse viaCep = apiViaCepService.consultarCep(editar.getEndereco().getCep());
+            editar.getEndereco().setRua(viaCep.getLogradouro());
+            editar.getEndereco().setBairro(viaCep.getBairro());
+            editar.getEndereco().setLocalidade(viaCep.getLocalidade());
+            editar.getEndereco().setUf(viaCep.getUf());
 
-            ViaCepResponse viaCep = apiViaCepService.consultarCep(editar.getCep());
-            editar.setRua(viaCep.getLogradouro());
-            editar.setBairro(viaCep.getBairro());
-            editar.setLocalidade(viaCep.getLocalidade());
-            editar.setUf(viaCep.getUf());
+            PessoaEntity pessoa = PessoaEntity.builder()
+                    .idPessoa(idPessoa)
+                    .nomeRazaosocial(editar.getNomeRazaosocial())
+                    .email(editar.getEmail())
+                    .senha(securityConfiguration.passwordEncoder().encode(editar.getSenha()))
+                    .telefone(ValidarNumeroCelular.formatarNumeroCelular(editar.getTelefone()))
+                    .build();
 
-            iEnderecoRepository.atualizarEndereco(idPessoa, editar);
+            PessoaEntity pessoaAtualizada = iPessoaRepository.atualizarPessoa(pessoa);
 
+            PessoaFisicaEntity criarFisica = PessoaFisicaEntity.builder()
+                    .idPessoa(pessoaAtualizada.getIdPessoa())
+                    .cpf(editar.getCpf())
+                    .dataNascimento(editar.getDataNascimento())
+                    .build();
+
+            iPessoaFisicaRepository.atualizarPessoaFisica(criarFisica);
+
+            iEnderecoRepository.atualizarEndereco(idPessoa, editar.getEndereco());
+
+            logger.info(Constantes.InfoEditar, editar);
             return PessoaFisicaResponse.builder()
                     .idPessoa(idPessoa)
-                    .role(editar.getRole())
-                    .nome_razaosocial(editar.getNome_razaosocial())
+                    .nomeRazaosocial(editar.getNomeRazaosocial())
                     .cpf(editar.getCpf())
-                    .data_nascimento(editar.getData_nascimento())
                     .email(editar.getEmail())
+                    .dataNascimento(editar.getDataNascimento())
                     .telefone(editar.getTelefone())
-                    .rua(editar.getRua())
-                    .numero(editar.getNumero())
-                    .bairro(editar.getBairro())
-                    .localidade(editar.getLocalidade())
-                    .cep(editar.getCep())
-                    .uf(editar.getUf())
+                    .endereco(mapearEndereco(editar.getEndereco()))
                     .build();
 
         }catch (Exception e){

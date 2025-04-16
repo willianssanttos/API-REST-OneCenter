@@ -3,7 +3,6 @@ package onecenter.com.br.ecommerce.pessoa.repository.pessoas.Impl;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ErroLocalizarPessoaNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ObterLoginNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.PessoaException;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.ObterPessoaPorCpfNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.repository.mapper.PessoaRowMapper;
 import onecenter.com.br.ecommerce.produto.exception.EditarProdutoException;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.PessoaRequest;
@@ -30,15 +29,15 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
     public PessoaEntity criarPessoa(PessoaEntity pessoa){
         logger.info(Constantes.DebugRegistroProcesso);
         try{
-            String sql = "INSERT INTO pessoas (nm_roles, nm_nome_razaosocial, ds_email, ds_senha, ds_telefone) VALUES (?,?,?,?,?) RETURNING nr_id_pessoa";
+            String sql = "SELECT criar_pessoa(?, ?, ?, ?, ?)";
             Integer idPessoa = jdbcTemplate.queryForObject(sql, Integer.class,
-                    pessoa.getRole(),
-                    pessoa.getNome_razaosocial(),
+                    pessoa.getRolePrincipal(),
+                    pessoa.getNomeRazaosocial(),
                     pessoa.getEmail(),
                     pessoa.getSenha(),
                     pessoa.getTelefone()
             );
-            pessoa.setId_pessoa(idPessoa);
+            pessoa.setIdPessoa(idPessoa);
             logger.info(Constantes.InfoRegistrar, pessoa);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
@@ -76,22 +75,22 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
 
     @Override
     @Transactional
-    public void atualizarPessoa(Integer idPessoa, PessoaRequest editar) {
+    public PessoaEntity atualizarPessoa( PessoaEntity editar) {
         logger.info(Constantes.DebugEditarProcesso);
         try {
-            String sql = "UPDATE pessoas SET nm_roles = ?, nm_nome_razaosocial = ?, ds_email = ?, ds_senha = ?, ds_telefone = ? WHERE nr_id_pessoa = ?";
+            String sql = "UPDATE pessoas SET nm_nome_razaosocial = ?, ds_email = ?, ds_senha = ?, ds_telefone = ? WHERE nr_id_pessoa = ?";
             jdbcTemplate.update(sql,
-                    editar.getRole(),
-                    editar.getNome_razaosocial(),
+                    editar.getNomeRazaosocial(),
                     editar.getEmail(),
                     editar.getSenha(),
                     editar.getTelefone(),
-                    idPessoa);
+                    editar.getIdPessoa());
             logger.info(Constantes.InfoEditar, editar);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroEditarRegistroNoServidor, e.getMessage());
             throw new EditarProdutoException();
         }
+        return editar;
     }
 
     @Override

@@ -15,21 +15,21 @@ import java.util.List;
 @NoArgsConstructor
 public class PessoaEntity {
 
-    private Integer id_pessoa;
-    private String role;
-    private String nome_razaosocial;
+    private Integer idPessoa;
+    private String rolePrincipal;
+    private String nomeRazaosocial;
     private String email;
     private String senha;
     private String telefone;
-    private List<RolesEntity> nomeRole = new ArrayList<>();
     private EnderecoEntity endereco;
+    private List<RolesEntity> roles = new ArrayList<>();
 
     @Override
     public String toString() {
         return "PessoaEntity{" +
-                "ID= " + id_pessoa +
-                ", Role = '" + role + '\'' +
-                ", Nome= '" + nome_razaosocial + '\'' +
+                "ID= " + idPessoa +
+                ", Role = '" + roles + '\'' +
+                ", Nome= '" + nomeRazaosocial + '\'' +
                 ", Email= '" + email + '\'' +
                 ", Senha= '" + senha + '\'' +
                 ", Telefone= '" + telefone + '\'' +
