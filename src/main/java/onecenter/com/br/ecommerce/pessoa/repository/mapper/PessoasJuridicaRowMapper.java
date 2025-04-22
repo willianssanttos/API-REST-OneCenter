@@ -1,9 +1,8 @@
 package onecenter.com.br.ecommerce.pessoa.repository.mapper;
 
-import onecenter.com.br.ecommerce.pessoa.entity.RolesEntity;
+import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoEntity;
 import onecenter.com.br.ecommerce.pessoa.entity.juridica.PessoaJuridicaEntity;
-import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -13,26 +12,20 @@ public class PessoasJuridicaRowMapper implements RowMapper<PessoaJuridicaEntity>
 
     @Override
     public PessoaJuridicaEntity mapRow(ResultSet rs, int rowNum) throws SQLException{
-        PessoaJuridicaEntity pessoa = new PessoaJuridicaEntity();
-        pessoa.setIdPessoa(rs.getInt(1));
 
-        RolesEntity role = new RolesEntity();
-        role.setNomeRole(RolesEnum.valueOf(rs.getString(2).toUpperCase()));
-        pessoa.getRoles().add(role);
-        pessoa.setNomeRazaosocial(rs.getString(3));
-        pessoa.setEmail(rs.getString(4));
-        pessoa.setTelefone(rs.getString(5));
-        pessoa.setCnpj(rs.getString(6));
-        pessoa.setNome_fantasia(rs.getString(7));
+        PessoaEntity pessoa = new PessoaRowMapper().mapRow(rs, rowNum);
+        EnderecoEntity endereco = new EnderecoRowMapper().mapRow(rs, rowNum);
 
-        EnderecoEntity endereco = new EnderecoEntity();
-        endereco.setRua(rs.getString(8));
-        endereco.setNumero(rs.getString(9));
-        endereco.setBairro(rs.getString(10));
-        endereco.setLocalidade(rs.getString(11));
-        endereco.setUf(rs.getString(12));
-        endereco.setCep(rs.getString(13));
-        pessoa.setEndereco(endereco);
-        return pessoa;
+        return PessoaJuridicaEntity.builder()
+                .idPessoa(pessoa.getIdPessoa())
+                .roles(pessoa.getRoles())
+                .nomeRazaosocial(pessoa.getNomeRazaosocial())
+                .email(pessoa.getEmail())
+                .senha(pessoa.getSenha())
+                .telefone(pessoa.getTelefone())
+                .endereco(endereco)
+                .cnpj(rs.getString(13))
+                .nomeFantasia(rs.getString(14))
+                .build();
     }
 }

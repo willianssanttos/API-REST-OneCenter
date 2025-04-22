@@ -174,9 +174,20 @@ public class PessoaFisicaService {
     public PessoaFisicaResponse obterPorCpf(String cpf){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-             iPessoaFisicaRepository.buscarPorCpf(cpf);
+             PessoaFisicaEntity buscarCPF = iPessoaFisicaRepository.buscarPorCpf(cpf);
+
+             PessoaEntity pessoa = PessoaEntity.builder()
+                     .idPessoa(buscarCPF.getIdPessoa())
+                     .nomeRazaosocial(buscarCPF.getNomeRazaosocial())
+                     .email(buscarCPF.getEmail())
+                     .telefone(buscarCPF.getTelefone())
+                     .build();
+
+             EnderecoEntity endereco = buscarCPF.getEndereco();
+
+
             logger.info(Constantes.InfoBuscar, cpf);
-            return null;
+            return mapearPessoaFisica(buscarCPF, pessoa, endereco);
         } catch (Exception e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e);
             throw new ObterPessoaPorCpfNotFoundException();

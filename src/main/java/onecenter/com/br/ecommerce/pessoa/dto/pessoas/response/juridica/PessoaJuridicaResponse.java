@@ -13,6 +13,6 @@ import onecenter.com.br.ecommerce.pessoa.dto.pessoas.response.PessoaResponse;
 
 public class PessoaJuridicaResponse extends PessoaResponse {
 
-    private String nome_fantasia;
+    private String nomeFantasia;
     private String cnpj;
 }

@@ -12,7 +12,6 @@ import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.PessoaRequest;
 @NoArgsConstructor
 public class PessoaJuridicaRequest extends PessoaRequest {
 
-    private Integer id_pessoa_juridica;
-    private String nome_fantasia;
+    private String nomeFantasia;
     private String cnpj;
 }

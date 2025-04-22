@@ -29,11 +29,7 @@
   },
   {
     "path": "/v1/pessoa/juridica/buscar/{CNPJ}",
-    "roles": ["CLIENTE"]
-  },
-  {
-    "path": "/v1/pessoa/juridica/buscar/{CNPJ}",
-    "roles": ["CLIENTE"]
+    "roles": ["ADMINISTRADOR"]
   },
   {
     "path": "/v1/categoria/criar-categoria",

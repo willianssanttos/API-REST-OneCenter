@@ -11,13 +11,12 @@ public class EnderecoRowMapper implements RowMapper<EnderecoEntity> {
     @Override
     public EnderecoEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
         return EnderecoEntity.builder()
-                .idEndereco(rs.getInt(1))
-                .rua(rs.getString(2))
-                .numero(rs.getString(3))
-                .bairro(rs.getString(4))
-                .localidade(rs.getString(5))
-                .cep(rs.getString(6))
-                .uf(rs.getString(7))
+                .rua(rs.getString(7))
+                .numero(rs.getString(8))
+                .bairro(rs.getString(9))
+                .localidade(rs.getString(10))
+                .cep(rs.getString(11))
+                .uf(rs.getString(12))
                 .build();
     }
 }

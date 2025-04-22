@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PessoaJuridicaService {
@@ -77,6 +78,8 @@ public class PessoaJuridicaService {
             throw new NumeroCelularValidacaoException();
         }
     }
+
+    @Transactional
     public PessoaJuridicaResponse cadastrarPessoaJuridica (PessoaJuridicaRequest juridica){
         logger.info(Constantes.DebugRegistroProcesso);
 
@@ -103,8 +106,10 @@ public class PessoaJuridicaService {
             PessoaJuridicaEntity criarJuridica = PessoaJuridicaEntity.builder()
                     .idPessoa(pessoaCriada.getIdPessoa())
                     .cnpj(juridica.getCnpj())
-                    .nome_fantasia(juridica.getNome_fantasia())
+                    .nomeFantasia(juridica.getNomeFantasia())
                     .build();
+
+            PessoaJuridicaEntity juridicaCriada = iPessoaJuridicaRepository.criarJuridica(criarJuridica);
 
             EnderecoEntity endereco = EnderecoEntity.builder()
                     .idPessoa(pessoaCriada.getIdPessoa())
@@ -116,27 +121,26 @@ public class PessoaJuridicaService {
                     .uf(juridica.getEndereco().getUf())
                     .build();
 
-            iEnderecoRepository.salvarEndereco(endereco);
+            EnderecoEntity enderecoCriado = iEnderecoRepository.salvarEndereco(endereco);
 
-            iPessoaJuridicaRepository.criarJuridica(criarJuridica);
             logger.info(Constantes.InfoRegistrar, juridica);
-            return mapearPessoaJuridica(criarJuridica);
+            return mapearPessoaJuridica(juridicaCriada, pessoaCriada, enderecoCriado);
         } catch (Exception e){
             logger.error(Constantes.ErroRegistrarNoServidor);
             throw new PessoaException();
         }
     }
 
-    private PessoaJuridicaResponse mapearPessoaJuridica(PessoaJuridicaEntity juridica){
+    private PessoaJuridicaResponse mapearPessoaJuridica(PessoaJuridicaEntity juridicaCriada, PessoaEntity pessoaCriada, EnderecoEntity enderecoCriado){
         try {
             return PessoaJuridicaResponse.builder()
-                    .idPessoa(juridica.getIdPessoa())
-                    .nomeRazaosocial(juridica.getNomeRazaosocial())
-                    .cnpj(juridica.getCnpj())
-                    .nome_fantasia(juridica.getNome_fantasia())
-                    .email(juridica.getEmail())
-                    .telefone(juridica.getTelefone())
-                    .endereco(mapearEndereco(juridica.getEndereco()))
+                    .idPessoa(pessoaCriada.getIdPessoa())
+                    .nomeRazaosocial(pessoaCriada.getNomeRazaosocial())
+                    .cnpj(juridicaCriada.getCnpj())
+                    .nomeFantasia(juridicaCriada.getNomeFantasia())
+                    .email(pessoaCriada.getEmail())
+                    .telefone(pessoaCriada.getTelefone())
+                    .endereco(mapearEndereco(enderecoCriado))
                     .build();
 
         } catch (Exception e){
@@ -145,7 +149,9 @@ public class PessoaJuridicaService {
     }
 
     private EnderecoResponse mapearEndereco(EnderecoBase endereco){
-        if(endereco == null) return null;
+        if(endereco == null) {
+            return null;
+        }
 
         return EnderecoResponse.builder()
                 .rua(endereco.getRua())
@@ -157,48 +163,77 @@ public class PessoaJuridicaService {
                 .build();
     }
 
-
-    public PessoaJuridicaResponse obterPorCnpj(String CNPJ){
+    @Transactional(readOnly = true)
+    public PessoaJuridicaResponse obterPorCnpj(String cnpj){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            PessoaJuridicaEntity pessoaJuridica = iPessoaJuridicaRepository.buscarPorCnpj(CNPJ);
-            logger.info(Constantes.InfoBuscar, CNPJ);
-            return mapearPessoaJuridica(pessoaJuridica);
+            PessoaJuridicaEntity buscarCNPJ = iPessoaJuridicaRepository.buscarPorCnpj(cnpj);
+
+            PessoaEntity pessoa = PessoaEntity.builder()
+                    .idPessoa(buscarCNPJ.getIdPessoa())
+                    .nomeRazaosocial(buscarCNPJ.getNomeRazaosocial())
+                    .email(buscarCNPJ.getEmail())
+                    .telefone(buscarCNPJ.getTelefone())
+                    .build();
+
+            EnderecoEntity endereco = buscarCNPJ.getEndereco();
+
+            logger.info(Constantes.InfoBuscar, cnpj);
+            return mapearPessoaJuridica(buscarCNPJ, pessoa, endereco);
         } catch (Exception e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor);
             throw new ObterPessoaPorCnpjNotFoundException();
         }
     }
-//    public PessoaJuridicaResponse atualizarDados(PessoaJuridicaRequest editar){
-//        logger.info(Constantes.DebugEditarProcesso);
-//        try {
-//            Integer idPessoa = iPessoaJuridicaRepository.buscarIdPorCnpj(editar.getCnpj());
-//            if (idPessoa == null){
-//                throw new EditarPessoaException();
-//            }
-//
-//            ViaCepResponse viaCep = apiViaCepService.consultarCep(editar.getEndereco().getCep());
-//            editar.getEndereco().setRua(viaCep.getLogradouro());
-//            editar.getEndereco().setBairro(viaCep.getBairro());
-//            editar.getEndereco().setLocalidade(viaCep.getLocalidade());
-//            editar.getEndereco().setUf(viaCep.getUf());
-//
-//            iEnderecoRepository.atualizarEndereco(idPessoa, editar.getEndereco());
-//
-//            return PessoaJuridicaResponse.builder()
-//                    .idPessoa(idPessoa)
-//                    //.nomeRole(editar.getEndereco().getRoles())
-//                    .nomeRazaosocial(editar.getNomeRazaosocial())
-//                    .nome_fantasia(editar.getNome_fantasia())
-//                    .cnpj(editar.getCnpj())
-//                    .email(editar.getEmail())
-//                    .telefone(editar.getTelefone())
-//                    .endereco(mapearEndereco(editar.getEndereco()))
-//                    .build();
-//
-//        }catch (Exception e){
-//            logger.error(Constantes.ErroEditarRegistroNoServidor, e);
-//            throw new EditarPessoaException();
-//        }
-//    }
+    @Transactional
+    public PessoaJuridicaResponse atualizarDados(PessoaJuridicaRequest editar){
+        logger.info(Constantes.DebugEditarProcesso);
+        try {
+            Integer idPessoa = iPessoaJuridicaRepository.buscarIdPorCnpj(editar.getCnpj());
+            if (idPessoa == null){
+                throw new EditarPessoaException();
+            }
+
+            ViaCepResponse viaCep = apiViaCepService.consultarCep(editar.getEndereco().getCep());
+            editar.getEndereco().setRua(viaCep.getLogradouro());
+            editar.getEndereco().setBairro(viaCep.getBairro());
+            editar.getEndereco().setLocalidade(viaCep.getLocalidade());
+            editar.getEndereco().setUf(viaCep.getUf());
+
+            PessoaEntity pessoa = PessoaEntity.builder()
+                    .idPessoa(idPessoa)
+                    .nomeRazaosocial(editar.getNomeRazaosocial())
+                    .email(editar.getEmail())
+                    .senha(securityConfiguration.passwordEncoder().encode(editar.getSenha()))
+                    .telefone(ValidarNumeroCelular.formatarNumeroCelular(editar.getTelefone()))
+                    .build();
+
+            PessoaEntity pessoaAtualizada = iPessoaRepository.atualizarPessoa(pessoa);
+
+            PessoaJuridicaEntity atualizarJuridico = PessoaJuridicaEntity.builder()
+                    .idPessoa(pessoaAtualizada.getIdPessoa())
+                    .cnpj(editar.getCnpj())
+                    .nomeFantasia(editar.getNomeFantasia())
+                    .build();
+
+            iPessoaJuridicaRepository.atualizarPessoaJuridica(atualizarJuridico);
+
+            iEnderecoRepository.atualizarEndereco(idPessoa, editar.getEndereco());
+
+            logger.info(Constantes.InfoEditar, editar);
+            return PessoaJuridicaResponse.builder()
+                    .idPessoa(idPessoa)
+                    .nomeRazaosocial(editar.getNomeRazaosocial())
+                    .nomeFantasia(editar.getNomeFantasia())
+                    .cnpj(editar.getCnpj())
+                    .email(editar.getEmail())
+                    .telefone(editar.getTelefone())
+                    .endereco(mapearEndereco(editar.getEndereco()))
+                    .build();
+
+        }catch (Exception e){
+            logger.error(Constantes.ErroEditarRegistroNoServidor, e);
+            throw new EditarPessoaException();
+        }
+    }
 }

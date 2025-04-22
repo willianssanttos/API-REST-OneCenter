@@ -14,6 +14,7 @@ public class PessoaRowMapper implements RowMapper<PessoaEntity> {
     public PessoaEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
 
         RolesEntity role = new RoleRowMapper().mapRow(rs, rowNum);
+
         return PessoaEntity.builder()
                 .idPessoa(rs.getInt(1))
                 .roles(Collections.singletonList(role))

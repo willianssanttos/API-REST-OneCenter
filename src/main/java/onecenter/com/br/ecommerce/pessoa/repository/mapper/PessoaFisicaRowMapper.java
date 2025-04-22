@@ -25,8 +25,8 @@ public class PessoaFisicaRowMapper implements RowMapper<PessoaFisicaEntity> {
                 .senha(pessoa.getSenha())
                 .telefone(pessoa.getTelefone())
                 .endereco(endereco)
-                .cpf(rs.getString(2))
-                .dataNascimento(rs.getTimestamp(3))
+                .cpf(rs.getString(13))
+                .dataNascimento(rs.getTimestamp(14))
                 .build();
     }
 }
