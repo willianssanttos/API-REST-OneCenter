@@ -12,7 +12,6 @@ import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoBase;
 @NoArgsConstructor
 public class EnderecoRequest implements EnderecoBase {
 
-    private Integer idEndereco;
     private String rua;
     private String numero;
     private String bairro;

@@ -2,7 +2,6 @@ package onecenter.com.br.ecommerce.pessoa.repository.pessoas.Impl;
 
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.*;
 import onecenter.com.br.ecommerce.pessoa.repository.mapper.PessoaRowMapper;
-import onecenter.com.br.ecommerce.produto.exception.EditarProdutoException;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.pessoa.repository.pessoas.IPessoaRepository;
 import onecenter.com.br.ecommerce.utils.Constantes;
