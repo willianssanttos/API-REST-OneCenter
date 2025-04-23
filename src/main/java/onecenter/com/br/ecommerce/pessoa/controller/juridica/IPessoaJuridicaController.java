@@ -24,7 +24,7 @@ public interface IPessoaJuridicaController {
             @ApiResponse(responseCode = "200", description = "Cliente recuperado com sucesso!"),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor ao localizar cliente!")
     })
-    ResponseEntity<PessoaJuridicaResponse> buscarPorCnpj(@PathVariable String CNPJ);
+    ResponseEntity<PessoaJuridicaResponse> buscarPorCnpj(@PathVariable String cnpj);
 
     @Operation(summary = "Operação para atualizar dados pessoa juridica")
     @ApiResponses(value = {
@@ -32,5 +32,5 @@ public interface IPessoaJuridicaController {
             @ApiResponse(responseCode = "400", description = "Erro ao atualizar dados!"),
             @ApiResponse(responseCode = "500", description = "Erro interno ao atualizar dados!")
     })
-    ResponseEntity<PessoaJuridicaResponse> alterarDados(@PathVariable String CNPJ, @RequestBody PessoaJuridicaRequest editar);
+    ResponseEntity<PessoaJuridicaResponse> alterarDados(@PathVariable String cnpj, @RequestBody PessoaJuridicaRequest editar);
 }

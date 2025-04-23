@@ -24,7 +24,7 @@ public interface IPessoaFisicaController {
             @ApiResponse(responseCode = "200", description = "Cliente recuperado com sucesso!"),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor ao localizar cliente!")
     })
-    ResponseEntity<PessoaFisicaResponse> buscarPorCpf(@PathVariable String CPF);
+    ResponseEntity<PessoaFisicaResponse> buscarPorCpf(@PathVariable String cpf);
 
     @Operation(summary = "Operação para atualizar dados pessoa fisica")
     @ApiResponses(value = {
@@ -32,5 +32,5 @@ public interface IPessoaFisicaController {
             @ApiResponse(responseCode = "400", description = "Erro ao atualizar dados!"),
             @ApiResponse(responseCode = "500", description = "Erro interno ao atualizar dados!")
     })
-    ResponseEntity<PessoaFisicaResponse> alterarDados(@PathVariable String CPF, @RequestBody PessoaFisicaRequest editar);
+    ResponseEntity<PessoaFisicaResponse> alterarDados(@PathVariable String cpf, @RequestBody PessoaFisicaRequest editar);
 }

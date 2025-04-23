@@ -1,7 +1,6 @@
 package onecenter.com.br.ecommerce.pessoa.repository.pessoas.fisica.Impl;
 
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.EditarPessoaException;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ErroLocalizarPessoaNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.PessoaException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.CpfExistenteException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.ObterPessoaPorCpfNotFoundException;
@@ -31,7 +30,7 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
         logger.info(Constantes.DebugRegistroProcesso);
 
         try {
-            String sql = "INSERT INTO pessoas_fisicas (ds_cpf, ds_data_nascimento, fk_nr_id_pessoa) VALUES (?,?,?) RETURNING nr_id_pessoa_fisica";
+            String sql = "SELECT inserir_pessoa_fisica (?,?,?)";
              Integer idFisico = jdbcTemplate.queryForObject(sql, Integer.class,
                     fisica.getCpf(),
                     fisica.getDataNascimento(),
@@ -66,9 +65,7 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
     public Integer buscarIdPorCpf(String cpf){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT p.nr_id_pessoa FROM pessoas p " +
-                    "INNER JOIN pessoas_fisicas pf ON p.nr_id_pessoa = pf.fk_nr_id_pessoa " +
-                    "WHERE pf.ds_cpf = ?";
+            String sql = "SELECT * FROM buscar_id_pessoa_por_cpf(?)";
             return jdbcTemplate.queryForObject(sql, Integer.class, cpf);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
@@ -91,25 +88,14 @@ public class PessoaFisicaRepositoryImpl implements IPessoaFisicaRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public PessoaFisicaEntity buscarIdPessoa(Integer IdPessoa){
-        logger.info(Constantes.DebugBuscarProcesso);
-        try {
-            String sql = "SELECT * FROM pessoas WHERE nr_id_pessoa = ?";
-            return jdbcTemplate.queryForObject(sql, new PessoaFisicaRowMapper(), IdPessoa);
-        } catch (DataAccessException e){
-            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
-            throw new ErroLocalizarPessoaNotFoundException();
-        }
-    }
-
-    @Override
     @Transactional
      public PessoaFisicaEntity atualizarPessoaFisica(PessoaFisicaEntity editar) {
         logger.info(Constantes.DebugEditarProcesso);
         try {
-            String sql = "UPDATE pessoas_fisicas SET ds_cpf = ?, ds_data_nascimento = ? WHERE fk_nr_id_pessoa = ?";
-            jdbcTemplate.update(sql, editar.getCpf(), editar.getDataNascimento(), editar.getIdPessoa());
+            String sql = "SELECT atualizar_pessoa_fisica(?, ?, ?)";
+            jdbcTemplate.queryForObject(sql, new Object[]{
+                    editar.getCpf(), editar.getDataNascimento(), editar.getIdPessoa()
+            }, Integer.class );
             logger.info(Constantes.InfoEditar, editar);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroEditarRegistroNoServidor, e.getMessage());

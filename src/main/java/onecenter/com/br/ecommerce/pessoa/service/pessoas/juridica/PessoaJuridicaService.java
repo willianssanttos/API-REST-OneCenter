@@ -185,6 +185,7 @@ public class PessoaJuridicaService {
             throw new ObterPessoaPorCnpjNotFoundException();
         }
     }
+
     @Transactional
     public PessoaJuridicaResponse atualizarDados(PessoaJuridicaRequest editar){
         logger.info(Constantes.DebugEditarProcesso);
@@ -231,7 +232,7 @@ public class PessoaJuridicaService {
                     .endereco(mapearEndereco(editar.getEndereco()))
                     .build();
 
-        }catch (Exception e){
+        }   catch (Exception e) {
             logger.error(Constantes.ErroEditarRegistroNoServidor, e);
             throw new EditarPessoaException();
         }

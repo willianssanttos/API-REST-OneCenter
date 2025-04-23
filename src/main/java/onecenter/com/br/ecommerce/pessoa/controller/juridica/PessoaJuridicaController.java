@@ -22,23 +22,23 @@ public class PessoaJuridicaController implements  IPessoaJuridicaController{
         return new ResponseEntity<>(pessoaJuridicaService.cadastrarPessoaJuridica(pessoaJuridica), HttpStatus.CREATED);
     }
 
-    @GetMapping("/buscar/{CNPJ}")
+    @GetMapping("/buscar/{cnpj}")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<PessoaJuridicaResponse> buscarPorCnpj(@PathVariable String CNPJ){
-        if (CNPJ.length() == 14){
-            PessoaJuridicaResponse response = pessoaJuridicaService.obterPorCnpj(CNPJ);
+    public ResponseEntity<PessoaJuridicaResponse> buscarPorCnpj(@PathVariable String cnpj){
+        if (cnpj.length() == 14){
+            PessoaJuridicaResponse response = pessoaJuridicaService.obterPorCnpj(cnpj);
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @PutMapping("/atualizar-dados/{CNPJ}")
+    @PutMapping("/atualizar-dados/{cnpj}")
     @PreAuthorize("hasRole('CLIENTE')")
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<PessoaJuridicaResponse> alterarDados(@PathVariable String CNPJ, @RequestBody PessoaJuridicaRequest editar){
-        if( CNPJ.length() == 14){
-            editar.setCnpj(CNPJ);
+    public ResponseEntity<PessoaJuridicaResponse> alterarDados(@PathVariable String cnpj, @RequestBody PessoaJuridicaRequest editar){
+        if( cnpj.length() == 14){
+            editar.setCnpj(cnpj);
             PessoaJuridicaResponse response = pessoaJuridicaService.atualizarDados(editar);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
