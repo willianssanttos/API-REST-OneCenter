@@ -39,8 +39,8 @@ public class PessoaJuridicaController implements  IPessoaJuridicaController{
     public ResponseEntity<PessoaJuridicaResponse> alterarDados(@PathVariable String CNPJ, @RequestBody PessoaJuridicaRequest editar){
         if( CNPJ.length() == 14){
             editar.setCnpj(CNPJ);
-           // PessoaJuridicaResponse response = pessoaJuridicaService.atualizarDados(editar);
-          //  return ResponseEntity.status(HttpStatus.OK).body(response);
+            PessoaJuridicaResponse response = pessoaJuridicaService.atualizarDados(editar);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
         return ResponseEntity.badRequest().build();
     }
