@@ -28,7 +28,7 @@ public class PessoaJuridicaRepositoryImpl implements IPessoaJuridicaRepository {
     public PessoaJuridicaEntity criarJuridica(PessoaJuridicaEntity juridica){
         logger.info(Constantes.DebugRegistroProcesso);
         try {
-            String sql = "INSERT INTO pessoas_juridicas (nm_nome_fantasia, ds_cnpj, fk_nr_id_pessoa) VALUES (?,?,?) RETURNING nr_id_pessoa_juridica";
+            String sql = "SELECT inserir_pessoa_juridica(?, ?, ?)";
 
             Integer idJuridico = jdbcTemplate.queryForObject(sql, Integer.class,
                     juridica.getNomeFantasia(),
@@ -46,12 +46,12 @@ public class PessoaJuridicaRepositoryImpl implements IPessoaJuridicaRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean verificarCnpjExistente(String CNPJ) {
+    public boolean verificarCnpjExistente(String cnpj) {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT COUNT(*) FROM pessoas_juridicas WHERE ds_cnpj = ?";
-            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, CNPJ);
-            return count != null && count > 0;
+            String sql = "SELECT verificar_cnpj_existe(?)";
+            Boolean existeCNPJ = jdbcTemplate.queryForObject(sql, Boolean.class, cnpj);
+            return Boolean.TRUE.equals(existeCNPJ);
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             return false;
@@ -60,13 +60,11 @@ public class PessoaJuridicaRepositoryImpl implements IPessoaJuridicaRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public Integer buscarIdPorCnpj(String CNPJ){
+    public Integer buscarIdPorCnpj(String cnpj){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT p.nr_id_pessoa FROM pessoas p " +
-                    "INNER JOIN pessoas_juridicas pj ON p.nr_id_pessoa = pj.fk_nr_id_pessoa " +
-                    "WHERE pj.ds_cnpj = ?";
-            return jdbcTemplate.queryForObject(sql, Integer.class, CNPJ);
+            String sql = "SELECT buscar_id_pessoa_por_cnpj(?)";
+            return jdbcTemplate.queryForObject(sql, Integer.class, cnpj);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             throw new ObterPessoaPorCnpjNotFoundException();
@@ -75,12 +73,12 @@ public class PessoaJuridicaRepositoryImpl implements IPessoaJuridicaRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public PessoaJuridicaEntity buscarPorCnpj(String CNPJ){
+    public PessoaJuridicaEntity buscarPorCnpj(String cnpj){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
             String sql = "SELECT * FROM buscar_pessoa_por_cnpj(?)";
-            logger.info(Constantes.InfoBuscar, CNPJ);
-            return jdbcTemplate.queryForObject(sql, new Object[] { CNPJ }, new PessoasJuridicaRowMapper());
+            logger.info(Constantes.InfoBuscar, cnpj);
+            return jdbcTemplate.queryForObject(sql, new Object[] { cnpj }, new PessoasJuridicaRowMapper());
         } catch (DataAccessException e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e);
             throw new ObterPessoaPorCnpjNotFoundException();
@@ -92,8 +90,10 @@ public class PessoaJuridicaRepositoryImpl implements IPessoaJuridicaRepository {
     public PessoaJuridicaEntity atualizarPessoaJuridica(PessoaJuridicaEntity editar) {
         logger.info(Constantes.DebugEditarProcesso);
         try {
-            String sql = "UPDATE pessoas_juridicas SET ds_cnpj = ?, nm_nome_fantasia = ? WHERE fk_nr_id_pessoa = ?";
-            jdbcTemplate.update(sql, editar.getCnpj(), editar.getNomeFantasia(), editar.getIdPessoa());
+            String sql = "SELECT atualizar_pessoa_juridica(?, ?, ?)";
+            jdbcTemplate.queryForObject(sql, new Object[]{
+                    editar.getCnpj(), editar.getNomeFantasia(), editar.getIdPessoa()
+            }, Integer.class);
             logger.info(Constantes.InfoEditar, editar);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroEditarRegistroNoServidor, e.getMessage());

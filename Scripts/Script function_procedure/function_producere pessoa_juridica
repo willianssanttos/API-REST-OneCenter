@@ -1,3 +1,26 @@
+//Cadastrar dados pessoa juridica
+
+CREATE OR REPLACE FUNCTION public.inserir_pessoa_juridica(
+    p_nome_fantasia VARCHAR,
+    p_cnpj VARCHAR,
+    p_id_pessoa INTEGER
+)
+RETURNS INTEGER
+LANGUAGE plpgsql
+AS $function$
+DECLARE
+    v_id_pessoa_juridica INTEGER;
+BEGIN
+    INSERT INTO pessoas_juridicas (nm_nome_fantasia, ds_cnpj, fk_nr_id_pessoa)
+    VALUES (p_nome_fantasia, p_cnpj, p_id_pessoa)
+    RETURNING nr_id_pessoa_juridica INTO v_id_pessoa_juridica;
+
+    RETURN v_id_pessoa_juridica;
+END;
+$function$;
+
+//Localizar pessoa juridica pelo cnpj
+
 CREATE OR REPLACE FUNCTION buscar_pessoa_por_cnpj(cnpj_param VARCHAR)
 RETURNS TABLE (
     nr_id_pessoa INTEGER,
@@ -37,6 +60,56 @@ BEGIN
     LEFT JOIN pessoas_juridicas pj ON p.nr_id_pessoa = pj.fk_nr_id_pessoa
     LEFT JOIN enderecos e ON p.nr_id_pessoa = e.fk_nr_id_pessoa
     WHERE pj.ds_cnpj = cnpj_param;
+END;
+$$ LANGUAGE plpgsql;
+
+//Validar se CNPJ ja esta cadastrado na base de dados
+
+CREATE OR REPLACE FUNCTION verificar_cnpj_existe(p_cnpj VARCHAR)
+RETURNS BOOLEAN AS $$
+DECLARE
+    existe BOOLEAN;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1 FROM pessoas_juridicas WHERE ds_cnpj = p_cnpj
+    ) INTO existe;
+
+    RETURN existe;
+END;
+$$ LANGUAGE plpgsql;
+
+//Buscar dados pessoa juridica para atualizar dados na base de dados
+
+CREATE OR REPLACE FUNCTION buscar_id_pessoa_por_cnpj(p_cnpj VARCHAR)
+RETURNS INTEGER AS $$
+DECLARE
+    v_id_pessoa INTEGER;
+BEGIN
+    SELECT p.nr_id_pessoa
+    INTO v_id_pessoa
+    FROM pessoas p
+    INNER JOIN pessoas_juridicas pj ON p.nr_id_pessoa = pj.fk_nr_id_pessoa
+    WHERE pj.ds_cnpj = p_cnpj;
+
+    RETURN v_id_pessoa;
+END;
+$$ LANGUAGE plpgsql;
+
+//Realizar atualização dos dados pessoa juridica
+
+CREATE OR REPLACE FUNCTION atualizar_pessoa_juridica(
+    p_cnpj VARCHAR,
+    p_nome_fantasia VARCHAR,
+    p_fk_nr_id_pessoa INTEGER
+)
+RETURNS INTEGER AS $$
+BEGIN
+    UPDATE pessoas_juridicas
+    SET ds_cnpj = p_cnpj,
+        nm_nome_fantasia = p_nome_fantasia
+    WHERE fk_nr_id_pessoa = p_fk_nr_id_pessoa;
+
+    RETURN p_fk_nr_id_pessoa;
 END;
 $$ LANGUAGE plpgsql;
 
