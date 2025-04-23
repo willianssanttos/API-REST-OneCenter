@@ -43,6 +43,17 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+//Carregar todas as imagens relacionada ao produto pelo ID do mesmo
+CREATE OR REPLACE FUNCTION buscar_imagens_produto(id_produto INTEGER)
+RETURNS TABLE (ds_caminho VARCHAR) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT ip.ds_caminho
+    FROM imagens_produtos ip
+    WHERE ip.fk_nr_id_produto = id_produto;
+END;
+$$ LANGUAGE plpgsq
+
 //Function para carregar todos produtos
 CREATE OR REPLACE FUNCTION obter_todos_produtos()
 RETURNS TABLE (

@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.produto.repository.produtos;
 
+import onecenter.com.br.ecommerce.produto.dto.produtos.request.ProdutoRequest;
 import onecenter.com.br.ecommerce.produto.dto.produtos.response.ProdutosResponse;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 

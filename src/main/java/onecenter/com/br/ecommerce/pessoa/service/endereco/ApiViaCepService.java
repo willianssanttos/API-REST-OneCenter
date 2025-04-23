@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.BuscarEnderecoNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.dto.endereco.ApiViaCep.ViaCepResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -14,6 +15,7 @@ import java.net.URLConnection;
 @Service
 public class ApiViaCepService {
 
+    @Transactional(readOnly = true)
     public ViaCepResponse consultarCep(String cep) {
         try {
             // Cria a URL para a consulta do CEP

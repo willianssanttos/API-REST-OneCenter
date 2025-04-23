@@ -9,8 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Repository
 public class ImagensProdutosRepositoryImpl implements IImagensProdutosRepository {
 
@@ -21,7 +19,7 @@ public class ImagensProdutosRepositoryImpl implements IImagensProdutosRepository
     @Transactional
     public ImagensProdutosEntity cadastrarImgans(ImagensProdutosEntity imagens){
         try {
-            String sql = "INSERT INTO imagens_produtos (fk_nr_id_produto, ds_caminho) VALUES (?,?) RETURNING nr_id_imagem";
+            String sql = "SELECT inserir_imagem_produto(?,?)";
             Integer idImagem = jdbcTemplate.queryForObject(sql, Integer.class, imagens.getId_produto(), imagens.getCaminho());
             imagens.setId_imagem(idImagem);
         } catch (DataAccessException ex){
@@ -29,8 +27,5 @@ public class ImagensProdutosRepositoryImpl implements IImagensProdutosRepository
         }
         return imagens;
     }
-
-
-
 
 }

@@ -5,16 +5,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import onecenter.com.br.ecommerce.pessoa.dto.endereco.response.EnderecoResponse;
+import onecenter.com.br.ecommerce.pessoa.entity.RolesEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PessoaResponse extends EnderecoResponse {
+public class PessoaResponse {
 
     private Integer idPessoa;
-    private String role;
-    private String nome_razaosocial;
+    private String nomeRazaosocial;
     private String email;
     private String telefone;
+    private EnderecoResponse endereco;
 }

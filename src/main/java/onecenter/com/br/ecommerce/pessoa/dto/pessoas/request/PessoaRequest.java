@@ -10,12 +10,14 @@ import onecenter.com.br.ecommerce.pessoa.dto.endereco.request.EnderecoRequest;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PessoaRequest extends EnderecoRequest {
+public class PessoaRequest {
 
-    private Integer id_pessoa;
-    private String role;
-    private String nome_razaosocial;
+    private Integer IdPessoa;
+    private String rolePrincipal;
+    private String nomeRazaosocial;
     private String email;
     private String senha;
     private String telefone;
+    private EnderecoRequest endereco;
+
 }

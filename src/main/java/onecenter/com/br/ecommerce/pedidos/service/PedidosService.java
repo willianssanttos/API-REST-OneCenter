@@ -41,7 +41,7 @@ public class PedidosService {
 
             PedidosEntity inserirPedido = PedidosEntity.builder()
                     .id_produto(idProduto.getId_produto())
-                    .IdPessoa(idPessoa.getId_pessoa())
+                    .IdPessoa(idPessoa.getIdPessoa())
                     .quantidade(pedido.getQuantidade())
                     .build();
 
@@ -61,7 +61,7 @@ public class PedidosService {
 
         return PedidoResponse.builder()
                 .IdPedido(pedido.getIdPedido())
-                .IdPessoa(idPessoa.getId_pessoa())
+                .IdPessoa(idPessoa.getIdPessoa())
                 .IdProduto(idProduto.getId_produto())
                 .quantidade(pedido.getQuantidade())
                 .build();

@@ -12,15 +12,15 @@ import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 @NoArgsConstructor
 public class PessoaJuridicaEntity extends PessoaEntity {
 
-    private Integer id_pessoa_juridica;
-    private String nome_fantasia;
+    private Integer idPessoaJuridica;
+    private String nomeFantasia;
     private String cnpj;
 
     @Override
     public String toString() {
         return "PessoaJuridicaEntity{" +
-                "ID= " + id_pessoa_juridica +
-                ", Nome Fantasia= '" + nome_fantasia + '\'' +
+                "ID= " + idPessoaJuridica +
+                ", Nome Fantasia= '" + nomeFantasia + '\'' +
                 '}';
     }
 }

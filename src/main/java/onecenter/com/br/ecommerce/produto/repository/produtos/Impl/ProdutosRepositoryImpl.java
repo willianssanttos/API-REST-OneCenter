@@ -49,7 +49,7 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public ProdutosEntity buscarIdProduto(Integer IdProduto){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
@@ -62,15 +62,15 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<String> buscarImagensProduto(Integer idProduto) {
         String baseUrl = "http://localhost:8080";
-        String sql = "SELECT ds_caminho FROM imagens_produtos WHERE fk_nr_id_produto = ?";
+        String sql = "SELECT ds_caminho FROM buscar_imagens_produto(?)";
         return jdbcTemplate.query(sql, (rs, rowNum) -> baseUrl + rs.getString("ds_caminho"), idProduto);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ProdutosEntity> obterTodosProdutos(){
         logger.info(Constantes.DebugBuscarProcesso);
         try {

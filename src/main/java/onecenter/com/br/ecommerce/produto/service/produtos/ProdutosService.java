@@ -100,10 +100,15 @@ public class ProdutosService {
     }
 
     public ProdutosEntity buscarProdutoComImagens(Integer idProduto) {
-        ProdutosEntity produto = obterProdutoPorId(idProduto);
-        List<String> imagens = buscarImagensProduto(idProduto);
-        produto.setImagens(imagens);
-        return produto;
+        try {
+            ProdutosEntity produto = obterProdutoPorId(idProduto);
+            List<String> imagens = buscarImagensProduto(idProduto);
+            produto.setImagens(imagens);
+            return produto;
+        }catch (Exception e){
+            throw new ObterProdutosNotFundException();
+        }
+
     }
 
     public void atualizarProduto(ProdutosResponse editar){

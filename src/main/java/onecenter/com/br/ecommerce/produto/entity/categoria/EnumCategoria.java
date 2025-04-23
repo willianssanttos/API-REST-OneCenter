@@ -4,6 +4,8 @@ public enum EnumCategoria {
 
     Eletronicos,
     Jogos,
-    Console
+    Console,
+
+    Camiseta
 
 }

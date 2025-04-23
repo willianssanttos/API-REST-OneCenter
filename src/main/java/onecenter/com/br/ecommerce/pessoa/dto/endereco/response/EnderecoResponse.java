@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoBase;
 
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EnderecoResponse {
+public class EnderecoResponse implements EnderecoBase {
 
     private String rua;
     private String numero;

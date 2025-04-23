@@ -12,6 +12,14 @@
     "roles": []
   },
   {
+    "path": "/v1/produtos/",
+    "roles": []
+  },
+  {
+    "path": "/v1/produtos/{id}",
+    "roles": []
+  },
+  {
     "path": "/v1/pessoa/fisica/buscar/{CPF}",
     "roles": ["ADMINISTRADOR"]
   },
@@ -21,11 +29,7 @@
   },
   {
     "path": "/v1/pessoa/juridica/buscar/{CNPJ}",
-    "roles": ["CLIENTE"]
-  },
-  {
-    "path": "/v1/pessoa/juridica/buscar/{CNPJ}",
-    "roles": ["CLIENTE"]
+    "roles": ["ADMINISTRADOR"]
   },
   {
     "path": "/v1/categoria/criar-categoria",
@@ -42,14 +46,6 @@
   {
     "path": "/v1/produtos/criar",
     "roles": ["ADMINISTRADOR"]
-  },
-  {
-    "path": "/v1/produtos/",
-    "roles": []
-  },
-  {
-    "path": "/v1/produtos/{id}",
-    "roles": []
   },
   {
     "path": "/v1/produtos/atualizar-produto/{idProduto}",

@@ -1,12 +1,7 @@
 package onecenter.com.br.ecommerce.pessoa.repository.pessoas.Impl;
 
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ErroLocalizarPessoaNotFoundException;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ObterLoginNotFoundException;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.PessoaException;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.ObterPessoaPorCpfNotFoundException;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.*;
 import onecenter.com.br.ecommerce.pessoa.repository.mapper.PessoaRowMapper;
-import onecenter.com.br.ecommerce.produto.exception.EditarProdutoException;
-import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.PessoaRequest;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.pessoa.repository.pessoas.IPessoaRepository;
 import onecenter.com.br.ecommerce.utils.Constantes;
@@ -30,15 +25,15 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
     public PessoaEntity criarPessoa(PessoaEntity pessoa){
         logger.info(Constantes.DebugRegistroProcesso);
         try{
-            String sql = "INSERT INTO pessoas (nm_roles, nm_nome_razaosocial, ds_email, ds_senha, ds_telefone) VALUES (?,?,?,?,?) RETURNING nr_id_pessoa";
+            String sql = "SELECT criar_pessoa(?, ?, ?, ?, ?)";
             Integer idPessoa = jdbcTemplate.queryForObject(sql, Integer.class,
-                    pessoa.getRole(),
-                    pessoa.getNome_razaosocial(),
+                    pessoa.getRolePrincipal(),
+                    pessoa.getNomeRazaosocial(),
                     pessoa.getEmail(),
                     pessoa.getSenha(),
                     pessoa.getTelefone()
             );
-            pessoa.setId_pessoa(idPessoa);
+            pessoa.setIdPessoa(idPessoa);
             logger.info(Constantes.InfoRegistrar, pessoa);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
@@ -48,25 +43,25 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean verificarEmailExistente(String email) {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT COUNT(*) FROM pessoas WHERE ds_email = ?";
-            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, email);
-            return count != null && count > 0;
+            String sql = "SELECT verificar_email_existe(?)";
+            Boolean existeEmail = jdbcTemplate.queryForObject(sql, Boolean.class, email);
+            return Boolean.TRUE.equals(existeEmail);
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
-            return false;
+            throw new EmailExistenteException();
         }
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public PessoaEntity buscarIdPessoa(Integer IdPessoa){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT * FROM pessoas WHERE nr_id_pessoa = ?";
+            String sql = "SELECT * FROM buscar_pessoa_por_id(?)";
             return jdbcTemplate.queryForObject(sql, new PessoaRowMapper(), IdPessoa);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
@@ -76,30 +71,31 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
 
     @Override
     @Transactional
-    public void atualizarPessoa(Integer idPessoa, PessoaRequest editar) {
+    public PessoaEntity atualizarPessoa( PessoaEntity editar) {
         logger.info(Constantes.DebugEditarProcesso);
         try {
-            String sql = "UPDATE pessoas SET nm_roles = ?, nm_nome_razaosocial = ?, ds_email = ?, ds_senha = ?, ds_telefone = ? WHERE nr_id_pessoa = ?";
-            jdbcTemplate.update(sql,
-                    editar.getRole(),
-                    editar.getNome_razaosocial(),
+            String sql = "SELECT atualizar_pessoa(?, ?, ?, ?, ?)";
+            jdbcTemplate.queryForObject(sql, Integer.class,
+                    editar.getIdPessoa(),
+                    editar.getNomeRazaosocial(),
                     editar.getEmail(),
                     editar.getSenha(),
-                    editar.getTelefone(),
-                    idPessoa);
+                    editar.getTelefone()
+            );
             logger.info(Constantes.InfoEditar, editar);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroEditarRegistroNoServidor, e.getMessage());
-            throw new EditarProdutoException();
+            throw new EditarPessoaException();
         }
+        return editar;
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public PessoaEntity obterLogin(String email){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT * FROM pessoas WHERE ds_email = ?";
+            String sql = "SELECT * FROM validar_usuario(?)";
             return jdbcTemplate.queryForObject(sql, new Object[] { email }, new PessoaRowMapper());
 
         } catch (DataAccessException e){

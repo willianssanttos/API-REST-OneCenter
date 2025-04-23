@@ -12,6 +12,6 @@ import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
 @Builder
 public class RolesEntity {
 
-    private Integer idRole;
     private RolesEnum nomeRole;
+
 }

@@ -28,7 +28,7 @@ public class CategoriaProdutosRepositoryImpl implements ICategoriaRepository {
     public CategoriaEntity criarCategoria( CategoriaEntity categoria){
         logger.info(Constantes.DebugRegistroProcesso);
         try {
-            String sql = "INSERT INTO categorias (nm_nome) VALUES (?) RETURNING nr_id_categoria";
+            String sql = "SELECT inserir_categoria(?)";
             Integer idCategoria = jdbcTemplate.queryForObject(sql, Integer.class,
                     categoria.getNomeCategoria()
             );
@@ -42,11 +42,11 @@ public class CategoriaProdutosRepositoryImpl implements ICategoriaRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CategoriaEntity> obterTodasCategoria(){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT * FROM categorias";
+            String sql = "SELECT * FROM listar_categorias()";
             logger.info(Constantes.InfoBuscar);
             return jdbcTemplate.query(sql, new CategoriaRowMapper());
         } catch (DataAccessException e){
@@ -56,11 +56,11 @@ public class CategoriaProdutosRepositoryImpl implements ICategoriaRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Integer obterCategoriaPorNome(String nomeCategoria) {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT nr_id_categoria FROM categorias WHERE nm_nome = ?";
+            String sql = "SELECT * FROM buscar_id_categoria_por_nome(?)";
             logger.info(Constantes.InfoBuscar, nomeCategoria);
             return jdbcTemplate.queryForObject(sql, new Object[]{nomeCategoria}, Integer.class);
         } catch (DataAccessException e) {

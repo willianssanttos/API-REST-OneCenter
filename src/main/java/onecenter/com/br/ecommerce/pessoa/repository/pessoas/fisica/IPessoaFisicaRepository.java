@@ -9,9 +9,11 @@ public interface IPessoaFisicaRepository {
 
     boolean verificarCpfExistente(String CPF);
 
+    PessoaFisicaEntity buscarIdPessoa(Integer IdPessoa);
+
     Integer buscarIdPorCpf(String CPF);
 
     PessoaFisicaEntity buscarPorCpf(String CPF);
 
-    void atualizarPessoaFisica(Integer idPessoa, PessoaFisicaRequest editar);
+    PessoaFisicaEntity atualizarPessoaFisica(PessoaFisicaEntity editar);
 }

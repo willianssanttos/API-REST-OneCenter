@@ -15,17 +15,16 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class PessoaFisicaEntity extends PessoaEntity {
 
-    private Integer idPessoa_Fisica;
-    private Integer idPessoa;
+    private Integer idPessoaFisica;
     private String cpf;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private Timestamp data_nascimento;
+    private Timestamp dataNascimento;
 
 
     @Override
     public String toString() {
         return "PessoaFisicaEntity{" +
-                " Data de Nascimento= " + data_nascimento +
+                " Data de Nascimento= " + dataNascimento +
                 '}';
     }
 

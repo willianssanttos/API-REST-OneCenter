@@ -1,5 +1,7 @@
 package onecenter.com.br.ecommerce.pessoa.repository.mapper;
 
+import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
+import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoEntity;
 import onecenter.com.br.ecommerce.pessoa.entity.juridica.PessoaJuridicaEntity;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -10,14 +12,20 @@ public class PessoasJuridicaRowMapper implements RowMapper<PessoaJuridicaEntity>
 
     @Override
     public PessoaJuridicaEntity mapRow(ResultSet rs, int rowNum) throws SQLException{
-        PessoaJuridicaEntity pessoa = new PessoaJuridicaEntity();
-        pessoa.setId_pessoa(rs.getInt(1));
-        pessoa.setNome_razaosocial(rs.getString(2));
-        pessoa.setEmail(rs.getString(3));
-        pessoa.setSenha(rs.getString(4));
-        pessoa.setTelefone(rs.getString(5));
-        pessoa.setCnpj(rs.getString(6));
-        pessoa.setNome_fantasia(rs.getString(7));
-        return pessoa;
+
+        PessoaEntity pessoa = new PessoaRowMapper().mapRow(rs, rowNum);
+        EnderecoEntity endereco = new EnderecoRowMapper().mapRow(rs, rowNum);
+
+        return PessoaJuridicaEntity.builder()
+                .idPessoa(pessoa.getIdPessoa())
+                .roles(pessoa.getRoles())
+                .nomeRazaosocial(pessoa.getNomeRazaosocial())
+                .email(pessoa.getEmail())
+                .senha(pessoa.getSenha())
+                .telefone(pessoa.getTelefone())
+                .endereco(endereco)
+                .cnpj(rs.getString(13))
+                .nomeFantasia(rs.getString(14))
+                .build();
     }
 }

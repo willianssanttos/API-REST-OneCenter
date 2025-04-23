@@ -52,8 +52,6 @@ public class ProdutosController implements IProdutoController{
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('CLIENTE')")
-    @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<ProdutosEntity> obterProdutoPorId(@PathVariable Integer id) {
         ProdutosEntity response = produtosService.buscarProdutoComImagens(id);
         return ResponseEntity.status(HttpStatus.OK).body(response);

@@ -18,6 +18,6 @@ public class PessoaFisicaResponse extends PessoaResponse{
 
     private String cpf;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private Timestamp data_nascimento;
+    private Timestamp dataNascimento;
 
 }
