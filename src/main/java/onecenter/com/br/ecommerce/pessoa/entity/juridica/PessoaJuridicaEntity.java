@@ -19,7 +19,7 @@ public class PessoaJuridicaEntity extends PessoaEntity {
     @Override
     public String toString() {
         return "PessoaJuridicaEntity{" +
-                "ID= " + idPessoaJuridica +
+                " ID= " + idPessoaJuridica +
                 ", Nome Fantasia= '" + nomeFantasia + '\'' +
                 '}';
     }

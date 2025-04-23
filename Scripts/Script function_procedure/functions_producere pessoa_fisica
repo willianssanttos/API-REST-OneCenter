@@ -1,3 +1,26 @@
+//Realiza o cadastro da pessoa fisica na base de dados
+
+CREATE OR REPLACE FUNCTION public.inserir_pessoa_fisica(
+    p_cpf VARCHAR,
+    p_data_nascimento DATE,
+    p_fk_id_pessoa INTEGER
+)
+RETURNS INTEGER
+LANGUAGE plpgsql
+AS $function$
+DECLARE
+    v_id_pessoa_fisica INTEGER;
+BEGIN
+    INSERT INTO pessoas_fisicas (ds_cpf, ds_data_nascimento, fk_nr_id_pessoa)
+    VALUES (p_cpf, p_data_nascimento, p_fk_id_pessoa)
+    RETURNING nr_id_pessoa_fisica INTO v_id_pessoa_fisica;
+
+    RETURN v_id_pessoa_fisica;
+END;
+$function$;
+
+//Verifica se ja tem o cpf do cliente ja cadastrado na base de dados
+
 CREATE OR REPLACE FUNCTION verificar_cpf_existe(p_cpf VARCHAR)
 RETURNS BOOLEAN AS $$
 DECLARE
@@ -10,4 +33,44 @@ BEGIN
     RETURN existe;
 END;
 $$ LANGUAGE plpgsql;
+
+//Busca o id da pessoa fisica, pelo cpf
+
+CREATE OR REPLACE FUNCTION public.buscar_id_pessoa_por_cpf(
+    p_cpf VARCHAR
+)
+RETURNS INTEGER
+LANGUAGE plpgsql
+AS $function$
+DECLARE
+    v_id_pessoa INTEGER;
+BEGIN
+    SELECT p.nr_id_pessoa
+    INTO v_id_pessoa
+    FROM pessoas p
+    INNER JOIN pessoas_fisicas pf ON p.nr_id_pessoa = pf.fk_nr_id_pessoa
+    WHERE pf.ds_cpf = p_cpf;
+
+    RETURN v_id_pessoa;
+END;
+$function$;
+
+//Realizar atualização dos dados de pessoa fisica
+
+CREATE OR REPLACE FUNCTION atualizar_pessoa_fisica(
+    p_cpf VARCHAR,
+    p_data_nascimento DATE,
+    p_id_pessoa INTEGER
+) RETURNS INTEGER AS $$
+BEGIN
+    UPDATE pessoas_fisicas
+    SET ds_cpf = p_cpf,
+        ds_data_nascimento = p_data_nascimento
+    WHERE fk_nr_id_pessoa = p_id_pessoa;
+
+    RETURN p_id_pessoa;
+END;
+$$ LANGUAGE plpgsql;
+
+
 

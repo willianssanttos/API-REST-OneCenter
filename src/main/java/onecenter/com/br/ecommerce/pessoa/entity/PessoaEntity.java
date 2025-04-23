@@ -27,8 +27,7 @@ public class PessoaEntity {
     @Override
     public String toString() {
         return "PessoaEntity{" +
-                "ID= " + idPessoa +
-                ", Role = '" + roles + '\'' +
+                " ID= " + idPessoa +
                 ", Nome= '" + nomeRazaosocial + '\'' +
                 ", Email= '" + email + '\'' +
                 ", Senha= '" + senha + '\'' +

@@ -4,7 +4,6 @@ import onecenter.com.br.ecommerce.pessoa.dto.endereco.request.EnderecoRequest;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.AtualizarEnderecoException;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.BuscarEnderecoNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.EnderecoException;
-import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.PessoaRequest;
 import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoEntity;
 import onecenter.com.br.ecommerce.pessoa.repository.endereco.IEnderecoRepository;
 import onecenter.com.br.ecommerce.pessoa.repository.mapper.EnderecoRowMapper;

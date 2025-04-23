@@ -5,10 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import onecenter.com.br.ecommerce.pessoa.dto.endereco.response.EnderecoResponse;
-import onecenter.com.br.ecommerce.pessoa.entity.RolesEntity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @SuperBuilder

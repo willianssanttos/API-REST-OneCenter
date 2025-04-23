@@ -22,23 +22,23 @@ public class PessoaFisicaController implements IPessoaFisicaController{
         return new ResponseEntity<>(pessoaFisicaService.cadastrarPessoaFisica(pessoaFisica), HttpStatus.CREATED);
     }
 
-    @GetMapping("/buscar/{CPF}")
+    @GetMapping("/buscar/{cpf}")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<PessoaFisicaResponse> buscarPorCpf(@PathVariable String CPF){
-        if(CPF.length() == 11){
-           PessoaFisicaResponse response = pessoaFisicaService.obterPorCpf(CPF);
+    public ResponseEntity<PessoaFisicaResponse> buscarPorCpf(@PathVariable String cpf){
+        if(cpf.length() == 11){
+           PessoaFisicaResponse response = pessoaFisicaService.obterPorCpf(cpf);
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @PutMapping("/atualizar-dados/{CPF}")
+    @PutMapping("/atualizar-dados/{cpf}")
     @PreAuthorize("hasRole('CLIENTE')")
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<PessoaFisicaResponse> alterarDados(@PathVariable String CPF, @RequestBody PessoaFisicaRequest editar) {
-        if (CPF.length() == 11) {
-            editar.setCpf(CPF);
+    public ResponseEntity<PessoaFisicaResponse> alterarDados(@PathVariable String cpf, @RequestBody PessoaFisicaRequest editar) {
+        if (cpf.length() == 11) {
+            editar.setCpf(cpf);
             PessoaFisicaResponse response = pessoaFisicaService.atualizarDados(editar);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
