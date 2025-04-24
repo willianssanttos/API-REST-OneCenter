@@ -6,6 +6,7 @@ import onecenter.com.br.ecommerce.produto.exception.EditarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.ObterProdutosNotFundException;
 import onecenter.com.br.ecommerce.produto.exception.ProdutoException;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
+import onecenter.com.br.ecommerce.produto.exception.imagens.ErroLocalizarImagemNotFoundException;
 import onecenter.com.br.ecommerce.produto.repository.mapper.ProdutosRowMapper;
 import onecenter.com.br.ecommerce.produto.repository.produtos.IProdutosRepository;
 import onecenter.com.br.ecommerce.utils.Constantes;
@@ -64,9 +65,15 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     @Override
     @Transactional(readOnly = true)
     public List<String> buscarImagensProduto(Integer idProduto) {
-        String baseUrl = "http://localhost:8080";
-        String sql = "SELECT ds_caminho FROM buscar_imagens_produto(?)";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> baseUrl + rs.getString("ds_caminho"), idProduto);
+        logger.info(Constantes.DebugBuscarProcesso);
+        try {
+            String baseUrl = "http://localhost:8080";
+            String sql = "SELECT ds_caminho FROM buscar_imagens_produto(?)";
+            return jdbcTemplate.query(sql, (rs, rowNum) -> baseUrl + rs.getString("ds_caminho"), idProduto);
+        } catch (DataAccessException e) {
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
+            throw new ErroLocalizarImagemNotFoundException();
+        }
     }
 
     @Override

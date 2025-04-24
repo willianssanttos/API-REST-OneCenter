@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,13 +36,12 @@ public class ProdutosService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProdutosService.class);
 
+    @Transactional
     public ProdutosResponse criar(ProdutoRequest produto){
         logger.info(Constantes.DebugRegistroProcesso);
        try {
-
            Integer categoria = iCategoriaRepository.obterCategoriaPorNome(produto.getNomeCategoria());
            String caminhoImagem = fileStorageService.salvarImagem(produto.getProduto_imagem());
-
            ProdutosEntity novoProduto = ProdutosEntity.builder()
                .nome(produto.getNome())
                .preco(produto.getPreco())
@@ -48,10 +49,10 @@ public class ProdutosService {
                .produto_imagem(caminhoImagem)
                .id_categoria(categoria)
                .build();
+
            ProdutosEntity produtoInserido = iProdutosRepository.criar(novoProduto);
            logger.info(Constantes.InfoRegistrar, produto);
            return mapearProduto(produtoInserido);
-
        } catch (Exception e){
            logger.error(Constantes.ErroRegistrarNoServidor);
            throw new ProdutoException();
@@ -69,53 +70,63 @@ public class ProdutosService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<ProdutosResponse> obterTodosProdutos(){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
             List<ProdutosEntity> produtos = iProdutosRepository.obterTodosProdutos();
             logger.info(Constantes.InfoBuscar);
             return produtos.stream().map(this::mapearProduto).collect(Collectors.toList());
-
         } catch (Exception e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor);
             throw new ObterProdutosNotFundException();
         }
     }
 
+    @Transactional(readOnly = true)
     public ProdutosEntity obterProdutoPorId( Integer idProduto){
+        logger.info(Constantes.DebugBuscarProcesso);
         try {
             logger.info(Constantes.InfoBuscar, idProduto);
             return iProdutosRepository.buscarIdProduto(idProduto);
         } catch (Exception e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor);
             throw new ObterProdutosNotFundException();
         }
     }
 
+    @Transactional(readOnly = true)
     public List<String> buscarImagensProduto(Integer idProduto){
+        logger.info(Constantes.DebugBuscarProcesso);
         try {
+            logger.info(Constantes.InfoBuscar, idProduto);
             return iProdutosRepository.buscarImagensProduto(idProduto);
         } catch (Exception ex){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor);
             throw new ImagensException();
         }
     }
 
+    @Transactional(readOnly = true)
     public ProdutosEntity buscarProdutoComImagens(Integer idProduto) {
+        logger.info(Constantes.DebugBuscarProcesso);
         try {
             ProdutosEntity produto = obterProdutoPorId(idProduto);
             List<String> imagens = buscarImagensProduto(idProduto);
             produto.setImagens(imagens);
+            logger.info(Constantes.InfoBuscar, idProduto);
             return produto;
         }catch (Exception e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor);
             throw new ObterProdutosNotFundException();
         }
-
     }
 
+    @Transactional
     public void atualizarProduto(ProdutosResponse editar){
         logger.info(Constantes.DebugEditarProcesso);
         try {
             Integer categoria = iCategoriaRepository.obterCategoriaPorNome(editar.getNomeCategoria());
-
             ProdutosEntity atualizarProduto = ProdutosEntity.builder()
                     .id_produto(editar.getId_produto())
                     .nome(editar.getNome())
@@ -132,6 +143,7 @@ public class ProdutosService {
         }
     }
 
+    @Transactional
     public void excluirProduto(Integer idProduto){
         logger.info(Constantes.DebugDeletarProcesso);
         try {

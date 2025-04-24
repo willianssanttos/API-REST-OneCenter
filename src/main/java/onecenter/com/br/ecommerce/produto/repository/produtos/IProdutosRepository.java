@@ -13,6 +13,7 @@ public interface IProdutosRepository {
     ProdutosEntity buscarIdProduto(Integer IdProduto);
 
     List<String> buscarImagensProduto(Integer idProduto);
+
     List<ProdutosEntity> obterTodosProdutos();
 
     void atualizarProduto(ProdutosEntity editar);

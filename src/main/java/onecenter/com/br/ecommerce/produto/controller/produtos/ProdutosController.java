@@ -79,7 +79,7 @@ public class ProdutosController implements IProdutoController{
         produto.setNomeCategoria(nomeCategaria);
         produto.setProdutoImagem(caminhoImagem);
 
-       produtosService.atualizarProduto(produto);
+        produtosService.atualizarProduto(produto);
         return ResponseEntity.status(HttpStatus.OK).body(produto);
     }
 

@@ -50,11 +50,12 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
     @Override
     @Transactional(readOnly = true)
     public EnderecoEntity obterEnderecoPorIdPessoa(Integer idPessoa) {
+        logger.info(Constantes.DebugBuscarProcesso);
         try {
             String sql = "SELECT * FROM buscar_endereco_por_pessoa(?)";
             return jdbcTemplate.queryForObject(sql, new EnderecoRowMapper(), idPessoa);
         } catch (DataAccessException e) {
-            logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             throw new BuscarEnderecoNotFoundException();
         }
     }
@@ -76,7 +77,7 @@ public class EnderecoRepositoryImpl implements IEnderecoRepository {
             );
             logger.info(Constantes.InfoEditar, editar);
         } catch (DataAccessException e) {
-            logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
+            logger.error(Constantes.ErroEditarRegistroNoServidor, e.getMessage());
             throw new AtualizarEnderecoException();
         }
     }

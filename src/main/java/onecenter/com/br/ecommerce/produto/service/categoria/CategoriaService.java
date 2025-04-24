@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class CategoriaService {
     private ICategoriaRepository iCategoriaRepository;
     private static final Logger logger = LoggerFactory.getLogger(CategoriaService.class);
 
+    @Transactional
     public CategoriaResponse criar(CategoriaRequest categoria){
         logger.info(Constantes.DebugRegistroProcesso);
         try {
@@ -45,6 +47,7 @@ public class CategoriaService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<CategoriaEntity> obterCategoria(){
         logger.info(Constantes.DebugBuscarProcesso);
         try {

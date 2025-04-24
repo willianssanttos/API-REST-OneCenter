@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica;
+package onecenter.com.br.ecommerce.pessoa.exception.pessoas;
 
 import onecenter.com.br.ecommerce.utils.Constantes;
 

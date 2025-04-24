@@ -3,10 +3,12 @@ package onecenter.com.br.ecommerce.config.exception.handler;
 import onecenter.com.br.ecommerce.pedidos.exception.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.EnderecoException;
 import onecenter.com.br.ecommerce.config.exception.entity.ApiError;
+import onecenter.com.br.ecommerce.pessoa.exception.login.ObterLoginNotFoundException;
+import onecenter.com.br.ecommerce.pessoa.exception.login.SenhaValidacaoException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.*;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.CpfExistenteException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.CpfValidacaoException;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.NumeroCelularValidacaoException;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.NumeroCelularValidacaoException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.ObterPessoaPorCpfNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.CnpjExistenteException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.CnpjValidacaoException;
@@ -14,6 +16,8 @@ import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.ObterPessoaP
 import onecenter.com.br.ecommerce.produto.exception.*;
 import onecenter.com.br.ecommerce.produto.exception.categoria.CategoriaException;
 import onecenter.com.br.ecommerce.produto.exception.categoria.CategoriaNotFoundException;
+import onecenter.com.br.ecommerce.produto.exception.imagens.ErroLocalizarImagemNotFoundException;
+import onecenter.com.br.ecommerce.produto.exception.imagens.ImagemProdutoNotFoundException;
 import onecenter.com.br.ecommerce.produto.exception.imagens.ImagensException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,9 +61,10 @@ public class RestExceptionHandler {
             ImagemProdutoNotFoundException.class,
             ObterPessoaPorCpfNotFoundException.class,
             ObterPessoaPorCnpjNotFoundException.class,
+            ErroLocalizarImagemNotFoundException.class,
             ErroLocalizarPessoaNotFoundException.class,
             ErroLocalizarProdutoNotFoundException.class,
-            ErroAoLocalizarPedidoNotFoundException.class
+            ErroAoLocalizarPedidoNotFoundException.class,
     })
     public ResponseEntity<ApiError> notFoundException(RuntimeException ex) {
         ApiError apiError = ApiError
