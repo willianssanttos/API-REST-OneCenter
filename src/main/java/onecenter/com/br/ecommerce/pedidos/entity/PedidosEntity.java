@@ -10,7 +10,7 @@ import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PedidosEntity extends ProdutosEntity{
+public class  PedidosEntity extends ProdutosEntity{
 
     private Integer IdPedido;
     private Integer IdPessoa;

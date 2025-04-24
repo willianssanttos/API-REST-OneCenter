@@ -27,7 +27,7 @@ public class PessoaJuridicaController implements  IPessoaJuridicaController{
     @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<PessoaJuridicaResponse> buscarPorCnpj(@PathVariable String cnpj){
         if (cnpj.length() == 14){
-            PessoaJuridicaResponse response = pessoaJuridicaService.obterPorCnpj(cnpj);
+            PessoaJuridicaResponse response = pessoaJuridicaService.buscarPorCnpj(cnpj);
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

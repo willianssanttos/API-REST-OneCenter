@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.pessoa.repository.pessoas.Impl;
 
+import onecenter.com.br.ecommerce.pessoa.exception.login.ObterLoginNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.*;
 import onecenter.com.br.ecommerce.pessoa.repository.mapper.PessoaRowMapper;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
@@ -97,7 +98,6 @@ public class PessoaRepositoryImpl implements IPessoaRepository {
         try {
             String sql = "SELECT * FROM validar_usuario(?)";
             return jdbcTemplate.queryForObject(sql, new Object[] { email }, new PessoaRowMapper());
-
         } catch (DataAccessException e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             throw new ObterLoginNotFoundException();

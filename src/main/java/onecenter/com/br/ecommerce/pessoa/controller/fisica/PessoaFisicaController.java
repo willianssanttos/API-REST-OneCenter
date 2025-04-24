@@ -27,7 +27,7 @@ public class PessoaFisicaController implements IPessoaFisicaController{
     @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<PessoaFisicaResponse> buscarPorCpf(@PathVariable String cpf){
         if(cpf.length() == 11){
-           PessoaFisicaResponse response = pessoaFisicaService.obterPorCpf(cpf);
+           PessoaFisicaResponse response = pessoaFisicaService.buscarPorCpf(cpf);
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

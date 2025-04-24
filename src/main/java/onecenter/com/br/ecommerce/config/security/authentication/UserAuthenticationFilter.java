@@ -12,7 +12,7 @@ import onecenter.com.br.ecommerce.config.exception.entity.ApiError;
 import onecenter.com.br.ecommerce.config.security.config.SecurityConfiguration;
 import onecenter.com.br.ecommerce.config.security.userdetails.UserDetailsImpl;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.TokenException;
+import onecenter.com.br.ecommerce.pessoa.exception.login.TokenException;
 import onecenter.com.br.ecommerce.pessoa.repository.pessoas.IPessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

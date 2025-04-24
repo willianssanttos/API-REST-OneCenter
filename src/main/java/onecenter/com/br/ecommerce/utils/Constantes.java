@@ -18,21 +18,22 @@ public class Constantes {
 
     //Mensagens de erro do servidor
     public static final String ErroRegistrarNoServidor = "Erro ao salvar o produto '{}'. Motivo: {}";
+
     public static final String ErroBuscarRegistroNoServidor = "Erro ao realizar buscar do registro '{}' no servidor! Motivo: {}";
     public static final String ErroEditarRegistroNoServidor = "Erro ao atualizar registro '{}' no servidor! Motivo: {}";
     public static final String ErroDeletarRegistroNoServidor = "Erro ao deletar registro '{}' no servidor! Motivo: {}";
 
 
     //Mensagem de erro de produtos
-    public static final String ErroCadastrarProduto = "Não foi possivel cadastrar o produto!";
-    public static final String ErroBuscarProduto = "Produtos não encontrados!";
-    public static final String ErroDeletarProduto = "Erro ao deletar o produto!";
-    public static final String ErroEditarProduto = "Erro ao realizar alteração das informações do produto!";
+    public static final String ErroCadastrarProduto = "Não foi possivel cadastrar o produto! Tente novamente mais tarde.";
+    public static final String ErroBuscarProduto = "Produtos não encontrados! Tente novamente mais tarde.";
+    public static final String ErroDeletarProduto = "Erro ao deletar o produto! Tente novamente mais tarde.";
+    public static final String ErroEditarProduto = "Erro ao realizar alteração das informações do produto! Tente novamente mais tarde.";
 
 
 
     //Mensagem de erro categoria de produtos
-    public static final String ErroCadastrarCategoria = "Categoria não cadastrada!";
+    public static final String ErroCadastrarCategoria = "Erro ao cadastrar Categoria! Tente novamente mais tarde.";
     public static final String ErroBuscarCategoria = "Categoria não encontrada!";
 
 
@@ -46,43 +47,29 @@ public class Constantes {
     public static final String cadastroEmail = "Insira um E-mail válido!";
     public static final String cadastroCelular = "Insira o número de celular ou número fixo com DDD(dois digitos, ex: 11912341234)";
     public static final String cadastroSenha = "Senha inválida. A senha deve ter no mínimo 8 caracteres, contendo letras, números e pelo menos um caractere especial (@, #, %, &, $).";
-    public static final String EmailJaCadastrado = "Esse e-mail, já foi cadastrado!";
-    public static final String CpfInvalido = "Esse CPF, esta invalido verifique o número digitado!";
-    public static final String CPFJaCadastrado = "Esse CPF, já foi cadastrado!";
-
-    public static final String CnpjJaCadastrado = "Esse CNPJ, já foi cadastrado!";
-
-    public static final String CNPJInvalido = "Esse CNPJ está invalido, verifique o número digitado!";
-
+    public static final String EmailJaCadastrado = "Esse e-mail já foi cadastrado!";
+    public static final String CpfInvalido = "Esse CPF esta invalido! Verifique o número digitado!";
+    public static final String CPFJaCadastrado = "Esse CPF já foi cadastrado!";
+    public static final String CnpjJaCadastrado = "Esse CNPJ já foi cadastrado!";
+    public static final String CNPJInvalido = "Esse CNPJ está invalido! Verifique o número digitado!";
     public static final String CepInvalido = "Esse CEP é inválido! Verifique o número digitado!";
-    public static final String DataNascimentoInvalida = "Verifiquei a Data de nascimento, a mesma esta inválida!";
+    public static final String DataNascimentoInvalida = "Verifique a Data de nascimento, a mesma esta inválida!";
     public static final String ErroCadastrarEndereco = "Erro ao registrar o endereço informado!";
     public static final String ErroEnderecoNaoEncontrado = "Esse endereço, não foi encontrado com o cep informado!";
-
-
-
     public static final String GerarToken = "Erro ao gerar token.";
-
     public static final String RolesInvalido = "Nivel de acesso invalido!(Defina como ADMINISTRADOR, MODERADOR OU CLIENTE).";
-
     public static final String GToken = "Token ausente.";
-
     public static final String Token = "Token inválido ou expirado!";
-
     public static final String erroLoginConta = "Usuário ou senha incorretos!";
 
 
 
     // Mensagem de erro de pessoas
     public static final String ErroCadastrarPessoa = "Erro ao realizar o cadastro de usuário! Tente novamente mais tarde.";
-
-    public static final String ErroBuscarCpfPessoa = "CPF do cliente não encontrado!";
-
-    public static final String ErroBuscarCnpjPessoa = "CNPJ do cliente não encontrado!";
+    public static final String ErroBuscarCpfPessoa = "CPF não encontrado!";
+    public static final String ErroBuscarCnpjPessoa = "CNPJ não encontrado!";
     public static final String ErroListaCliente = "Lista de cliente não encontrada!";
-
     public static final String ErroEditarPessoa = "Não foi possivel editar os dados! Tente novamente mais tarde.";
-
     public static final String ErroEditarEndereco = "Não foi possivel alterar o endereço! Tente novamente mais tarde.";
 
 
@@ -96,7 +83,9 @@ public class Constantes {
 
     public static final String ArquivoImagemVazio = "O arquivo da imagem está vazio!.";
 
-    public static final String ErroCadastraImagem = "Erro! Imagens não registradas no servidor!.";
+    public static final String ErroCadastraImagem = "Erro ao realizar o cadastro da imagem! Tente novamente mais tarde.";
+
+    public static final String ErroLocalizarImagems = "Não foi possivel localizar imagem!.";
 
 
 

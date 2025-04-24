@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.pessoa.exception.pessoas;
+package onecenter.com.br.ecommerce.pessoa.exception.login;
 
 import onecenter.com.br.ecommerce.utils.Constantes;
 

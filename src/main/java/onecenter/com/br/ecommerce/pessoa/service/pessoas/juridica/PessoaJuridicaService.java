@@ -5,9 +5,9 @@ import onecenter.com.br.ecommerce.pessoa.dto.endereco.response.EnderecoResponse;
 import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoBase;
 import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.CepValidacaoExcecao;
-import onecenter.com.br.ecommerce.pessoa.exception.endereco.BuscarEnderecoNotFoundException;
+import onecenter.com.br.ecommerce.pessoa.exception.login.SenhaValidacaoException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.*;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.NumeroCelularValidacaoException;
+import onecenter.com.br.ecommerce.pessoa.exception.pessoas.NumeroCelularValidacaoException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.CnpjExistenteException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.CnpjValidacaoException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.ObterPessoaPorCnpjNotFoundException;
@@ -132,20 +132,15 @@ public class PessoaJuridicaService {
     }
 
     private PessoaJuridicaResponse mapearPessoaJuridica(PessoaJuridicaEntity juridicaCriada, PessoaEntity pessoaCriada, EnderecoEntity enderecoCriado){
-        try {
-            return PessoaJuridicaResponse.builder()
-                    .idPessoa(pessoaCriada.getIdPessoa())
-                    .nomeRazaosocial(pessoaCriada.getNomeRazaosocial())
-                    .cnpj(juridicaCriada.getCnpj())
-                    .nomeFantasia(juridicaCriada.getNomeFantasia())
-                    .email(pessoaCriada.getEmail())
-                    .telefone(pessoaCriada.getTelefone())
-                    .endereco(mapearEndereco(enderecoCriado))
-                    .build();
-
-        } catch (Exception e){
-            throw new BuscarEnderecoNotFoundException();
-        }
+        return PessoaJuridicaResponse.builder()
+                .idPessoa(pessoaCriada.getIdPessoa())
+                .nomeRazaosocial(pessoaCriada.getNomeRazaosocial())
+                .cnpj(juridicaCriada.getCnpj())
+                .nomeFantasia(juridicaCriada.getNomeFantasia())
+                .email(pessoaCriada.getEmail())
+                .telefone(pessoaCriada.getTelefone())
+                .endereco(mapearEndereco(enderecoCriado))
+                .build();
     }
 
     private EnderecoResponse mapearEndereco(EnderecoBase endereco){
@@ -164,7 +159,7 @@ public class PessoaJuridicaService {
     }
 
     @Transactional(readOnly = true)
-    public PessoaJuridicaResponse obterPorCnpj(String cnpj){
+    public PessoaJuridicaResponse buscarPorCnpj(String cnpj){
         logger.info(Constantes.DebugBuscarProcesso);
         try {
             PessoaJuridicaEntity buscarCNPJ = iPessoaJuridicaRepository.buscarPorCnpj(cnpj);
