@@ -12,7 +12,7 @@ import onecenter.com.br.ecommerce.produto.dto.categoria.response.CategoriaRespon
 @NoArgsConstructor
 public class ProdutosResponse extends CategoriaResponse {
 
-    private Integer id_produto;
+    private Integer idProduto;
     private String nome;
     private String descricaoProduto;
     private String nomeCategoria;

@@ -72,7 +72,7 @@ public class ProdutosController implements IProdutoController{
         String caminhoImagem = fileStorageService.salvarImagem(imagem);
 
         ProdutosResponse produto = new ProdutosResponse();
-        produto.setId_produto(idProduto);
+        produto.setIdProduto(idProduto);
         produto.setNome(nome);
         produto.setPreco(preco);
         produto.setDescricaoProduto(descricaoProduto);

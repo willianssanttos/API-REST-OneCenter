@@ -46,7 +46,7 @@ public class ProdutosService {
                .nome(produto.getNome())
                .preco(produto.getPreco())
                .descricaoProduto(produto.getDescricaoProduto())
-               .produto_imagem(caminhoImagem)
+               .produtoImagem(caminhoImagem)
                .id_categoria(categoria)
                .build();
 
@@ -61,10 +61,10 @@ public class ProdutosService {
 
     private ProdutosResponse mapearProduto(ProdutosEntity produtoInserido){
         return ProdutosResponse.builder()
-                .id_produto(produtoInserido.getId_produto())
+                .idProduto(produtoInserido.getIdProduto())
                 .nome(produtoInserido.getNome())
                 .preco(produtoInserido.getPreco())
-                .produtoImagem(String.valueOf(produtoInserido.getProduto_imagem()))
+                .produtoImagem(String.valueOf(produtoInserido.getProdutoImagem()))
                 .descricaoProduto(produtoInserido.getDescricaoProduto())
                 .nomeCategoria(EnumCategoria.valueOf(produtoInserido.getNomeCategoria()).name())
                 .build();
@@ -128,11 +128,11 @@ public class ProdutosService {
         try {
             Integer categoria = iCategoriaRepository.obterCategoriaPorNome(editar.getNomeCategoria());
             ProdutosEntity atualizarProduto = ProdutosEntity.builder()
-                    .id_produto(editar.getId_produto())
+                    .idProduto(editar.getIdProduto())
                     .nome(editar.getNome())
                     .preco(editar.getPreco())
                     .descricaoProduto(editar.getDescricaoProduto())
-                    .produto_imagem(editar.getProdutoImagem())
+                    .produtoImagem(editar.getProdutoImagem())
                     .id_categoria(categoria)
                     .build();
             logger.info(Constantes.InfoEditar, editar);

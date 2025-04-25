@@ -26,7 +26,7 @@ public class ImagensProdutosRepositoryImpl implements IImagensProdutosRepository
         logger.info(Constantes.DebugRegistroProcesso);
         try {
             String sql = "SELECT inserir_imagem_produto(?,?)";
-            Integer idImagem = jdbcTemplate.queryForObject(sql, Integer.class, imagens.getId_produto(), imagens.getCaminho());
+            Integer idImagem = jdbcTemplate.queryForObject(sql, Integer.class, imagens.getIdProduto(), imagens.getCaminho());
             imagens.setId_imagem(idImagem);
             logger.info(Constantes.InfoRegistrar, imagens);
         } catch (DataAccessException e){

@@ -37,10 +37,10 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
                     produtos.getNome(),
                     produtos.getPreco(),
                     produtos.getDescricaoProduto(),
-                    produtos.getProduto_imagem(),
+                    produtos.getProdutoImagem(),
                     produtos.getId_categoria()
             );
-            produtos.setId_produto(idProduto);
+            produtos.setIdProduto(idProduto);
             logger.info(Constantes.InfoRegistrar, produtos);
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
@@ -98,11 +98,11 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
         try {
             String sql = "SELECT atualizar_produto(?, ?, ?, ?, ?, ?)";
             jdbcTemplate.query(sql, new Object[] {
-                    editar.getId_produto(),
+                    editar.getIdProduto(),
                     editar.getNome(),
                     editar.getPreco(),
                     editar.getDescricaoProduto(),
-                    editar.getProduto_imagem(),
+                    editar.getProdutoImagem(),
                     editar.getId_categoria()}, rs -> {}
             );
             logger.info(Constantes.InfoEditar, editar);

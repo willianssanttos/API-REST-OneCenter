@@ -14,11 +14,11 @@ import java.util.List;
 @NoArgsConstructor
 public class ProdutosEntity extends CategoriaEntity{
 
-    private Integer id_produto;
+    private Integer idProduto;
     private String nome;
     private Double preco;
     private String descricaoProduto;
-    private String produto_imagem;
+    private String produtoImagem;
     private List<String> imagens;
 
     public List<String> getImagens() {
@@ -32,10 +32,10 @@ public class ProdutosEntity extends CategoriaEntity{
     @Override
     public String toString() {
         return "ProdutosEntity{" +
-                "ID= " + id_produto +
+                "ID= " + idProduto +
                 ", Nome= '" + nome + '\'' +
                 ", Preço= " + preco +
-                ", Imagem= '" + produto_imagem + '\'' +
+                ", Imagem= '" + produtoImagem + '\'' +
                 ", Descrição= '" + descricaoProduto + '\''+
                 '}';
     }

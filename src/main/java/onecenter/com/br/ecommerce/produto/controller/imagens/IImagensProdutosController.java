@@ -22,7 +22,7 @@ public interface IImagensProdutosController {
             @RequestParam("produto_imagem") MultipartFile imagens) {
 
         ImagensProdutosRequest imagem = new ImagensProdutosRequest();
-        imagem.setId_produto(id_produtos);
+        imagem.setIdProduto(id_produtos);
         imagem.setCaminho(imagens);
         return null;
     }

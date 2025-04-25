@@ -30,7 +30,7 @@ public class ImagemProdutoService {
             String caminhoImagem = fileStorageService.salvarImagem(imagens.getCaminho());
 
             ImagensProdutosEntity registrar = ImagensProdutosEntity.builder()
-                    .id_produto(imagens.getId_produto())
+                    .idProduto(imagens.getIdProduto())
                     .caminho(caminhoImagem)
                     .build();
 
@@ -46,7 +46,7 @@ public class ImagemProdutoService {
     private ImagensProdutosResponse mapearImagem(ImagensProdutosEntity imagens){
         return ImagensProdutosResponse.builder()
                 .id_imagem(imagens.getId_imagem())
-                .id_produto(imagens.getId_produto())
+                .idProduto(imagens.getIdProduto())
                 .caminho(imagens.getCaminho())
                 .build();
     }
