@@ -1,8 +1,7 @@
 package onecenter.com.br.ecommerce.pessoa.service.pessoas.fisica;
 
+import onecenter.com.br.ecommerce.pessoa.dto.endereco.mapper.EnderecoDtoMapper;
 import onecenter.com.br.ecommerce.config.security.config.SecurityConfiguration;
-import onecenter.com.br.ecommerce.pessoa.dto.endereco.response.EnderecoResponse;
-import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoBase;
 import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.CepValidacaoExcecao;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.fisica.PessoaFisicaRequest;
@@ -33,6 +32,9 @@ import java.sql.Timestamp;
 
 @Service
 public class PessoaFisicaService {
+
+    @Autowired
+    private EnderecoDtoMapper enderecoDtoMapper;
 
     @Autowired
     private ApiViaCepService apiViaCepService;
@@ -146,25 +148,9 @@ public class PessoaFisicaService {
                 .dataNascimento(Timestamp.valueOf(String.valueOf(fisicaCriada.getDataNascimento())))
                 .email(pessoaCriada.getEmail())
                 .telefone(pessoaCriada.getTelefone())
-                .endereco(mapearEndereco(enderecoCriado))
+                .endereco(enderecoDtoMapper.mapear(enderecoCriado))
                 .build();
     }
-
-    private EnderecoResponse mapearEndereco(EnderecoBase endereco) {
-        if (endereco == null) {
-            return null;
-        }
-
-        return EnderecoResponse.builder()
-                .rua(endereco.getRua())
-                .numero(endereco.getNumero())
-                .bairro(endereco.getBairro())
-                .localidade(endereco.getLocalidade())
-                .cep(endereco.getCep())
-                .uf(endereco.getUf())
-                .build();
-    }
-
 
     @Transactional(readOnly = true)
     public PessoaFisicaResponse buscarPorCpf(String cpf){
@@ -179,7 +165,7 @@ public class PessoaFisicaService {
                      .telefone(buscarCPF.getTelefone())
                      .build();
 
-             EnderecoEntity endereco = buscarCPF.getEndereco();
+            EnderecoEntity endereco = buscarCPF.getEndereco();
 
             logger.info(Constantes.InfoBuscar, cpf);
             return mapearPessoaFisica(buscarCPF, pessoa, endereco);
@@ -232,7 +218,7 @@ public class PessoaFisicaService {
                     .email(editar.getEmail())
                     .dataNascimento(editar.getDataNascimento())
                     .telefone(editar.getTelefone())
-                    .endereco(mapearEndereco(editar.getEndereco()))
+                    .endereco(enderecoDtoMapper.mapear(editar.getEndereco()))
                     .build();
 
         }catch (Exception e){

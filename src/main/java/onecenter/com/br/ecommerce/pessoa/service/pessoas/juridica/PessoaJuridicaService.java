@@ -1,8 +1,7 @@
 package onecenter.com.br.ecommerce.pessoa.service.pessoas.juridica;
 
+import onecenter.com.br.ecommerce.pessoa.dto.endereco.mapper.EnderecoDtoMapper;
 import onecenter.com.br.ecommerce.config.security.config.SecurityConfiguration;
-import onecenter.com.br.ecommerce.pessoa.dto.endereco.response.EnderecoResponse;
-import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoBase;
 import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.CepValidacaoExcecao;
 import onecenter.com.br.ecommerce.pessoa.exception.login.SenhaValidacaoException;
@@ -31,6 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PessoaJuridicaService {
+
+    @Autowired
+    private EnderecoDtoMapper enderecoDtoMapper;
 
     @Autowired
     private ApiViaCepService apiViaCepService;
@@ -139,22 +141,7 @@ public class PessoaJuridicaService {
                 .nomeFantasia(juridicaCriada.getNomeFantasia())
                 .email(pessoaCriada.getEmail())
                 .telefone(pessoaCriada.getTelefone())
-                .endereco(mapearEndereco(enderecoCriado))
-                .build();
-    }
-
-    private EnderecoResponse mapearEndereco(EnderecoBase endereco){
-        if(endereco == null) {
-            return null;
-        }
-
-        return EnderecoResponse.builder()
-                .rua(endereco.getRua())
-                .numero(endereco.getNumero())
-                .bairro(endereco.getBairro())
-                .localidade(endereco.getLocalidade())
-                .cep(endereco.getCep())
-                .uf(endereco.getUf())
+                .endereco(enderecoDtoMapper.mapear(enderecoCriado))
                 .build();
     }
 
@@ -224,7 +211,7 @@ public class PessoaJuridicaService {
                     .cnpj(editar.getCnpj())
                     .email(editar.getEmail())
                     .telefone(editar.getTelefone())
-                    .endereco(mapearEndereco(editar.getEndereco()))
+                    .endereco(enderecoDtoMapper.mapear(editar.getEndereco()))
                     .build();
 
         }   catch (Exception e) {

@@ -2,6 +2,7 @@ package onecenter.com.br.ecommerce.pessoa.repository.mapper;
 
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.pessoa.entity.RolesEntity;
+import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoEntity;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

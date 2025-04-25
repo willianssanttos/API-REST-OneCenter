@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class ProdutoRequest extends CategoriaRequest {
 
-    private Integer id_produto;
+    private Integer idProduto;
     private String nome;
     private Double preco;
     private String descricaoProduto;
