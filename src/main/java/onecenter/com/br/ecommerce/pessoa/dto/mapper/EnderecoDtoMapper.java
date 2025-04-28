@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.pessoa.dto.endereco.mapper;
+package onecenter.com.br.ecommerce.pessoa.dto.mapper;
 
 import onecenter.com.br.ecommerce.pessoa.dto.endereco.response.EnderecoResponse;
 import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoBase;

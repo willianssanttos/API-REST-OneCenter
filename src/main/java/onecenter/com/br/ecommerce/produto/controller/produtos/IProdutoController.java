@@ -67,7 +67,7 @@ public interface IProdutoController {
             @RequestParam("produto_imagem") MultipartFile  imagem) throws IOException {
 
         ProdutosResponse produto = new ProdutosResponse();
-        produto.setId_produto(idProduto);
+        produto.setIdProduto(idProduto);
         produto.setNome(nome);
         produto.setPreco(preco);
         produto.setDescricaoProduto(descricaoProduto);
