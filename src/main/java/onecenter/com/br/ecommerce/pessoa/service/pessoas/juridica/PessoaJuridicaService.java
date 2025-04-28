@@ -31,11 +31,9 @@ public class PessoaJuridicaService {
     @Autowired
     private ApiViaCepService apiViaCepService;
     @Autowired
-    private IPessoaRepository iPessoaRepository;
-    @Autowired
     private EnderecoDtoMapper enderecoDtoMapper;
     @Autowired
-    private ValidarDadosPessoa validarDadosPessoa;
+    private IPessoaRepository iPessoaRepository;
     @Autowired
     private IEnderecoRepository iEnderecoRepository;
     @Autowired
@@ -48,8 +46,6 @@ public class PessoaJuridicaService {
     @Transactional
     public PessoaJuridicaResponse cadastrarPessoaJuridica (PessoaJuridicaRequest juridica){
         logger.info(Constantes.DebugRegistroProcesso);
-
-        validarDadosPessoa.validar(juridica);
 
         try {
 
