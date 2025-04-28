@@ -32,11 +32,9 @@ public class PessoaFisicaService {
     @Autowired
     private ApiViaCepService apiViaCepService;
     @Autowired
-    private EnderecoDtoMapper enderecoDtoMapper;
-    @Autowired
     private IPessoaRepository iPessoaRepository;
     @Autowired
-    private ValidarDadosPessoa validarDadosPessoa;
+    private EnderecoDtoMapper enderecoDtoMapper;
     @Autowired
     private IEnderecoRepository iEnderecoRepository;
     @Autowired
@@ -49,8 +47,6 @@ public class PessoaFisicaService {
     @Transactional
     public PessoaFisicaResponse cadastrarPessoaFisica (PessoaFisicaRequest fisica){
         logger.info(Constantes.DebugRegistroProcesso);
-
-        validarDadosPessoa.validar(fisica);
 
         try {
 
@@ -98,7 +94,6 @@ public class PessoaFisicaService {
             throw new PessoaException();
         }
     }
-
 
     @Transactional(readOnly = true)
     public PessoaFisicaResponse buscarPorCpf(String cpf){

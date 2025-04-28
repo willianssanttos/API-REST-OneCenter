@@ -44,7 +44,7 @@ public class Constantes {
     //Mensagem validação
 
     public static final String cadastroNome = "Nome invalido! O nome deve conter somente letras, com no minimo 2 e no máximo 100 caracteres!";
-    public static final String cadastroEmail = "Insira um E-mail válido!";
+    public static final String cadastroEmail = "Esse E-mail é inválido! Verifique o E-mail digitado.";
     public static final String cadastroCelular = "Insira o número de celular ou número fixo com DDD(dois digitos, ex: 11912341234)";
     public static final String cadastroSenha = "Senha inválida. A senha deve ter no mínimo 8 caracteres, contendo letras, números e pelo menos um caractere especial (@, #, %, &, $).";
     public static final String EmailJaCadastrado = "Esse e-mail já foi cadastrado!";
