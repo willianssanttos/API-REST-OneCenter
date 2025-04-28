@@ -1,14 +1,10 @@
 package onecenter.com.br.ecommerce.pessoa.service.pessoas.juridica;
 
-import onecenter.com.br.ecommerce.pessoa.dto.endereco.mapper.EnderecoDtoMapper;
+import onecenter.com.br.ecommerce.pessoa.dto.mapper.EnderecoDtoMapper;
 import onecenter.com.br.ecommerce.config.security.config.SecurityConfiguration;
+import onecenter.com.br.ecommerce.pessoa.dto.mapper.PessoaDtoMapper;
 import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
-import onecenter.com.br.ecommerce.pessoa.exception.endereco.CepValidacaoExcecao;
-import onecenter.com.br.ecommerce.pessoa.exception.login.SenhaValidacaoException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.*;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.NumeroCelularValidacaoException;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.CnpjExistenteException;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.CnpjValidacaoException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.juridico.ObterPessoaPorCnpjNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.dto.endereco.ApiViaCep.ViaCepResponse;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.juridico.PessoaJuridicaRequest;
@@ -30,14 +26,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PessoaJuridicaService {
-
     @Autowired
-    private EnderecoDtoMapper enderecoDtoMapper;
-
+    private PessoaDtoMapper pessoaDtoMapper;
     @Autowired
     private ApiViaCepService apiViaCepService;
     @Autowired
     private IPessoaRepository iPessoaRepository;
+    @Autowired
+    private EnderecoDtoMapper enderecoDtoMapper;
+    @Autowired
+    private ValidarDadosPessoa validarDadosPessoa;
     @Autowired
     private IEnderecoRepository iEnderecoRepository;
     @Autowired
@@ -47,45 +45,11 @@ public class PessoaJuridicaService {
 
     private static final Logger logger = LoggerFactory.getLogger(PessoaJuridicaService.class);
 
-    private void validarDados(PessoaJuridicaRequest pessoaJuridica){
-
-        if(!ValidarCNPJ.isCnpjValid(pessoaJuridica.getCnpj())){
-            throw new CnpjValidacaoException();
-        }
-
-        if (Boolean.TRUE.equals(iPessoaJuridicaRepository.verificarCnpjExistente(pessoaJuridica.getCnpj()))){
-            throw new CnpjExistenteException();
-        }
-
-        if (Boolean.TRUE.equals(iPessoaRepository.verificarEmailExistente(pessoaJuridica.getEmail()))){
-            throw new EmailExistenteException();
-        }
-
-        if(!ValidarNome.validarNome(pessoaJuridica.getNomeRazaosocial())){
-            throw new NomeValidacaoException();
-        }
-
-        if (!ValidarEmail.validaEmail(pessoaJuridica.getEmail())){
-            throw new EmailValidacaoException();
-        }
-
-        if (!ValidarSenha.validarSenha(pessoaJuridica.getSenha())){
-            throw new SenhaValidacaoException();
-        }
-        if (!ValidarCEP.validarCep(pessoaJuridica.getEndereco().getCep())){
-            throw new CepValidacaoExcecao();
-        }
-
-        if (!ValidarNumeroCelular.validarNumeroCelular(pessoaJuridica.getTelefone())) {
-            throw new NumeroCelularValidacaoException();
-        }
-    }
-
     @Transactional
     public PessoaJuridicaResponse cadastrarPessoaJuridica (PessoaJuridicaRequest juridica){
         logger.info(Constantes.DebugRegistroProcesso);
 
-        validarDados(juridica);
+        validarDadosPessoa.validar(juridica);
 
         try {
 
@@ -126,23 +90,11 @@ public class PessoaJuridicaService {
             EnderecoEntity enderecoCriado = iEnderecoRepository.salvarEndereco(endereco);
 
             logger.info(Constantes.InfoRegistrar, juridica);
-            return mapearPessoaJuridica(juridicaCriada, pessoaCriada, enderecoCriado);
+            return pessoaDtoMapper.mapearPessoaJuridica(juridicaCriada, pessoaCriada, enderecoCriado);
         } catch (Exception e){
             logger.error(Constantes.ErroRegistrarNoServidor);
             throw new PessoaException();
         }
-    }
-
-    private PessoaJuridicaResponse mapearPessoaJuridica(PessoaJuridicaEntity juridicaCriada, PessoaEntity pessoaCriada, EnderecoEntity enderecoCriado){
-        return PessoaJuridicaResponse.builder()
-                .idPessoa(pessoaCriada.getIdPessoa())
-                .nomeRazaosocial(pessoaCriada.getNomeRazaosocial())
-                .cnpj(juridicaCriada.getCnpj())
-                .nomeFantasia(juridicaCriada.getNomeFantasia())
-                .email(pessoaCriada.getEmail())
-                .telefone(pessoaCriada.getTelefone())
-                .endereco(enderecoDtoMapper.mapear(enderecoCriado))
-                .build();
     }
 
     @Transactional(readOnly = true)
@@ -161,7 +113,7 @@ public class PessoaJuridicaService {
             EnderecoEntity endereco = buscarCNPJ.getEndereco();
 
             logger.info(Constantes.InfoBuscar, cnpj);
-            return mapearPessoaJuridica(buscarCNPJ, pessoa, endereco);
+            return pessoaDtoMapper.mapearPessoaJuridica(buscarCNPJ, pessoa, endereco);
         } catch (Exception e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor);
             throw new ObterPessoaPorCnpjNotFoundException();

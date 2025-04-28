@@ -1,0 +1,89 @@
+//Registrar pedidos
+
+CREATE OR REPLACE FUNCTION criar_pedido(
+    p_quantidade INT,
+    p_dt_pedido TIMESTAMP,
+    p_ds_status VARCHAR,
+    p_fk_nr_id_produto INT,
+    p_fk_nr_id_pessoa INT
+)
+RETURNS INT AS $$
+DECLARE
+    v_nr_id_pedido INT;
+BEGIN
+    INSERT INTO pedidos (
+        ds_quantidade,
+        dt_pedido,
+        ds_status,
+        fk_nr_id_produto,
+        fk_nr_id_pessoa
+    )
+    VALUES (
+        p_quantidade,
+        p_dt_pedido,
+    	p_ds_status,
+        p_fk_nr_id_produto,
+        p_fk_nr_id_pessoa
+    )
+    RETURNING nr_id_pedido INTO v_nr_id_pedido;
+
+    RETURN v_nr_id_pedido;
+END;
+$$ LANGUAGE plpgsql;
+
+//Localizar todos os pedidos
+
+CREATE OR REPLACE FUNCTION obter_todos_pedidos_completo()
+RETURNS TABLE (
+
+	nr_id_pessoa INT,
+    nm_roles VARCHAR,
+    nm_nome_razaosocial VARCHAR,
+    ds_email VARCHAR,
+    ds_senha VARCHAR,
+    ds_telefone VARCHAR,
+
+    nr_id_produto INT,
+    nm_nome VARCHAR,
+    ds_preco DOUBLE PRECISION,
+    ds_descricao TEXT,
+    ds_imagem_produto VARCHAR,
+    ds_nm_nome VARCHAR
+
+    nr_id_pedido INT,
+    ds_quantidade INT,
+    dt_pedido TIMESTAMP,
+    ds_status VARCHAR
+
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+
+ 		ps.nr_id_pessoa,
+        ps.nm_roles,
+        ps.nm_nome_razaosocial,
+        ps.ds_email,
+		ps.ds_senha,
+        ps.ds_telefone,
+
+		pr.nr_id_produto,
+        pr.nm_nome,
+        pr.ds_preco,
+        pr.ds_descricao,
+        pr.ds_imagem_produto,
+		pr.ds_nm_nome,
+
+        p.nr_id_pedido,
+        p.ds_quantidade,
+        p.dt_pedido,
+        p.ds_status
+
+    FROM pedidos p
+    JOIN produtos pr ON pr.nr_id_produto = p.fk_nr_id_produto
+    JOIN pessoas ps ON ps.nr_id_pessoa = p.fk_nr_id_pessoa;
+END;
+$$ LANGUAGE plpgsql;
+
+

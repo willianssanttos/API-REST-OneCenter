@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 
 public class PessoaFisicaRequest extends PessoaRequest {
 
-
     private String cpf;
     private Timestamp dataNascimento;
 

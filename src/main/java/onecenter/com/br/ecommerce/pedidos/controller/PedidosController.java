@@ -30,7 +30,7 @@ public class PedidosController implements IPedidosController{
     @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('CLIENTE')")
     @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<List<PedidoResponse>> localizarPedido(){
-        List<PedidoResponse> response = pedidosService.obterTodosProdutos();
+        List<PedidoResponse> response = pedidosService.obterTodosPedidos();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

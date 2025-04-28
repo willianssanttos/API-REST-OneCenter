@@ -1,20 +1,16 @@
 package onecenter.com.br.ecommerce.pessoa.service.pessoas.fisica;
 
-import onecenter.com.br.ecommerce.pessoa.dto.endereco.mapper.EnderecoDtoMapper;
+import onecenter.com.br.ecommerce.pessoa.dto.mapper.EnderecoDtoMapper;
 import onecenter.com.br.ecommerce.config.security.config.SecurityConfiguration;
+import onecenter.com.br.ecommerce.pessoa.dto.mapper.PessoaDtoMapper;
 import onecenter.com.br.ecommerce.pessoa.enums.RolesEnum;
-import onecenter.com.br.ecommerce.pessoa.exception.endereco.CepValidacaoExcecao;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.fisica.PessoaFisicaRequest;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.response.fisica.PessoaFisicaResponse;
 import onecenter.com.br.ecommerce.pessoa.dto.endereco.ApiViaCep.ViaCepResponse;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoEntity;
 import onecenter.com.br.ecommerce.pessoa.entity.fisica.PessoaFisicaEntity;
-import onecenter.com.br.ecommerce.pessoa.exception.login.SenhaValidacaoException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.*;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.CpfExistenteException;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.CpfValidacaoException;
-import onecenter.com.br.ecommerce.pessoa.exception.pessoas.NumeroCelularValidacaoException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.ObterPessoaPorCpfNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.repository.pessoas.IPessoaRepository;
 import onecenter.com.br.ecommerce.pessoa.repository.endereco.IEnderecoRepository;
@@ -28,70 +24,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-
 @Service
 public class PessoaFisicaService {
 
     @Autowired
-    private EnderecoDtoMapper enderecoDtoMapper;
-
+    private PessoaDtoMapper pessoaDtoMapper;
     @Autowired
     private ApiViaCepService apiViaCepService;
-
+    @Autowired
+    private EnderecoDtoMapper enderecoDtoMapper;
     @Autowired
     private IPessoaRepository iPessoaRepository;
-
+    @Autowired
+    private ValidarDadosPessoa validarDadosPessoa;
     @Autowired
     private IEnderecoRepository iEnderecoRepository;
-
     @Autowired
     private SecurityConfiguration securityConfiguration;
-
     @Autowired
     private IPessoaFisicaRepository iPessoaFisicaRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(PessoaFisicaService.class);
 
-    private void validarDados(PessoaFisicaRequest pessoaFisica){
-
-        if(!ValidarCPF.cpfValidado(pessoaFisica.getCpf())){
-            throw new CpfValidacaoException();
-        }
-
-        if (Boolean.TRUE.equals(iPessoaFisicaRepository.verificarCpfExistente(pessoaFisica.getCpf()))){
-            throw new CpfExistenteException();
-        }
-
-        if (Boolean.TRUE.equals(iPessoaRepository.verificarEmailExistente(pessoaFisica.getEmail()))){
-            throw new EmailExistenteException();
-        }
-
-        if(!ValidarNome.validarNome(pessoaFisica.getNomeRazaosocial())){
-            throw new NomeValidacaoException();
-        }
-
-        if (!ValidarEmail.validaEmail(pessoaFisica.getEmail())){
-            throw new EmailValidacaoException();
-        }
-
-        if (!ValidarSenha.validarSenha(pessoaFisica.getSenha())){
-            throw new SenhaValidacaoException();
-        }
-        if (!ValidarCEP.validarCep(pessoaFisica.getEndereco().getCep())){
-            throw new CepValidacaoExcecao();
-        }
-
-        if (!ValidarNumeroCelular.validarNumeroCelular(pessoaFisica.getTelefone())) {
-            throw new NumeroCelularValidacaoException();
-        }
-    }
-
     @Transactional
     public PessoaFisicaResponse cadastrarPessoaFisica (PessoaFisicaRequest fisica){
         logger.info(Constantes.DebugRegistroProcesso);
 
-        validarDados(fisica);
+        validarDadosPessoa.validar(fisica);
 
         try {
 
@@ -133,24 +92,13 @@ public class PessoaFisicaService {
             EnderecoEntity enderecoCriado = iEnderecoRepository.salvarEndereco(endereco);
 
             logger.info(Constantes.InfoRegistrar, fisica);
-            return mapearPessoaFisica(fisicaCriada, pessoaCriada, enderecoCriado);
+            return pessoaDtoMapper.mapearPessoaFisica(fisicaCriada, pessoaCriada, enderecoCriado);
         } catch (Exception e){
             logger.error(Constantes.ErroRegistrarNoServidor);
             throw new PessoaException();
         }
     }
 
-    private PessoaFisicaResponse mapearPessoaFisica(PessoaFisicaEntity fisicaCriada, PessoaEntity pessoaCriada, EnderecoEntity enderecoCriado){
-        return PessoaFisicaResponse.builder()
-                .idPessoa(pessoaCriada.getIdPessoa())
-                .nomeRazaosocial(pessoaCriada.getNomeRazaosocial())
-                .cpf(fisicaCriada.getCpf())
-                .dataNascimento(Timestamp.valueOf(String.valueOf(fisicaCriada.getDataNascimento())))
-                .email(pessoaCriada.getEmail())
-                .telefone(pessoaCriada.getTelefone())
-                .endereco(enderecoDtoMapper.mapear(enderecoCriado))
-                .build();
-    }
 
     @Transactional(readOnly = true)
     public PessoaFisicaResponse buscarPorCpf(String cpf){
@@ -168,7 +116,7 @@ public class PessoaFisicaService {
             EnderecoEntity endereco = buscarCPF.getEndereco();
 
             logger.info(Constantes.InfoBuscar, cpf);
-            return mapearPessoaFisica(buscarCPF, pessoa, endereco);
+            return pessoaDtoMapper.mapearPessoaFisica(buscarCPF, pessoa, endereco);
         } catch (Exception e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e);
             throw new ObterPessoaPorCpfNotFoundException();

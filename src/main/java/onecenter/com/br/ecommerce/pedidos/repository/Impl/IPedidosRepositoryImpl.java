@@ -30,8 +30,15 @@ public class IPedidosRepositoryImpl implements IPedidosRepository {
         logger.info(Constantes.DebugRegistroProcesso);
 
         try {
-            String sql = "INSERT INTO pedidos (fk_nr_id_produto, ds_quantidade, fk_nr_id_pessoa) VALUES (?,?,?) RETURNING nr_id_pedido";
-            jdbcTemplate.queryForObject(sql, Integer.class, pedido.getId_produto(), pedido.getQuantidade(), pedido.getIdPessoa());
+            String sql = "SELECT criar_pedido(?, ?, ?, ?, ?)";
+            Integer idPedido = jdbcTemplate.queryForObject(sql, new Object[]{
+                    pedido.getQuantidade(),
+                    pedido.getDataPedido(),
+                    pedido.getStatusPedido(),
+                    pedido.getIdProduto(),
+                    pedido.getCliente().getIdPessoa()
+                    }, Integer.class);
+            pedido.setIdPedido(idPedido);
             logger.info(Constantes.InfoRegistrar, pedido);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
@@ -41,12 +48,13 @@ public class IPedidosRepositoryImpl implements IPedidosRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PedidosEntity> localizarPedido() {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT * FROM pedidos";
-            return jdbcTemplate.query(sql, new PedidoRowMapper());
+            String sql = "SELECT * FROM obter_todos_pedidos_completo()";
+            List<PedidosEntity> pedido = jdbcTemplate.query(sql, new PedidoRowMapper());
+            return pedido;
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             throw new ErroAoLocalizarPedidoNotFoundException();
