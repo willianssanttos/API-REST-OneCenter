@@ -1,10 +1,9 @@
 package onecenter.com.br.ecommerce.pessoa.controller.juridica;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.juridico.PessoaJuridicaRequest;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.response.juridica.PessoaJuridicaResponse;
-import onecenter.com.br.ecommerce.pessoa.service.pessoas.juridica.PessoaJuridicaService;
+import onecenter.com.br.ecommerce.produto.service.pessoas.juridica.PessoaJuridicaService;
 import onecenter.com.br.ecommerce.utils.validacoes.ValidarDadosPessoa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

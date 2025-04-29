@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ProdutosRowMapper implements RowMapper<ProdutosEntity> {
+
+    @Override
     public ProdutosEntity mapRow(ResultSet rs, int rowNum) throws SQLException{
         String baseUrl = "http://localhost:8080";
         ProdutosEntity produtos = new ProdutosEntity();
@@ -15,7 +17,7 @@ public class ProdutosRowMapper implements RowMapper<ProdutosEntity> {
         produtos.setPreco(rs.getDouble("ds_preco"));
         produtos.setDescricaoProduto(rs.getString("ds_descricao"));
         produtos.setProdutoImagem(baseUrl + rs.getString("ds_imagem_produto"));
-        produtos.setNomeCategoria(rs.getString(6));
+        produtos.setNomeCategoria(rs.getString("nm_nome"));
         return produtos;
     }
 }

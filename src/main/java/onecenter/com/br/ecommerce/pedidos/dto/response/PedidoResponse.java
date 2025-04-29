@@ -9,6 +9,7 @@ import onecenter.com.br.ecommerce.pessoa.dto.pessoas.response.PessoaResponse;
 import onecenter.com.br.ecommerce.produto.dto.produtos.response.ProdutosResponse;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -22,5 +23,7 @@ public class PedidoResponse extends ProdutosResponse {
     private Timestamp dataPedido;
     private String statusPedido;
     private PessoaResponse cliente;
+    private List<ItemPedidoResponse> itens;
+
 
 }

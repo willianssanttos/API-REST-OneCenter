@@ -8,18 +8,20 @@ import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class  PedidosEntity extends ProdutosEntity{
+public class PedidoEntity extends ProdutosEntity{
 
     private Integer idPedido;
     private Integer quantidade;
     private Timestamp dataPedido;
     private String statusPedido;
     private PessoaEntity cliente;
+    private List<ItemPedidoEntity> itens;
 
     @Override
     public String toString() {
@@ -30,6 +32,7 @@ public class  PedidosEntity extends ProdutosEntity{
                 ", Status do Pedido =" + statusPedido +
                 ", Produto =" + getIdProduto() +
                 ", Cliente =" + cliente +
+                ", Itens =" + getItens() +
                 '}';
     }
 }

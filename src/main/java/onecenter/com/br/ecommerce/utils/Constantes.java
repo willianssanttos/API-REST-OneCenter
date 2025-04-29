@@ -87,6 +87,10 @@ public class Constantes {
 
     public static final String ErroLocalizarImagems = "Não foi possivel localizar imagem!.";
 
+    public static final String ErroItemPedidoNãoRegistrado = "Itens selecionados não registrado! Tente novamente mais tarde.";
+
+
+
 
 
 

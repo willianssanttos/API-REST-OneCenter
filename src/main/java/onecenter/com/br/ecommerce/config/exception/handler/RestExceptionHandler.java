@@ -1,6 +1,7 @@
 package onecenter.com.br.ecommerce.config.exception.handler;
 
 import onecenter.com.br.ecommerce.pedidos.exception.ErroAoLocalizarPedidoNotFoundException;
+import onecenter.com.br.ecommerce.pedidos.exception.ItemPedidoException;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.EnderecoException;
 import onecenter.com.br.ecommerce.config.exception.entity.ApiError;
 import onecenter.com.br.ecommerce.pessoa.exception.login.ObterLoginNotFoundException;
@@ -38,6 +39,7 @@ public class RestExceptionHandler {
             ProdutoException.class,
             EnderecoException.class,
             CategoriaException.class,
+            ItemPedidoException.class,
             EditarPessoaException.class,
             EditarProdutoException.class,
             DeletarProdutoException.class,

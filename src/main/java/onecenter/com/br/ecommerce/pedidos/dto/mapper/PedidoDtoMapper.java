@@ -1,8 +1,11 @@
 package onecenter.com.br.ecommerce.pedidos.dto.mapper;
 
 import lombok.RequiredArgsConstructor;
+import onecenter.com.br.ecommerce.pedidos.dto.response.ItemPedidoResponse;
 import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoResponse;
-import onecenter.com.br.ecommerce.pedidos.entity.PedidosEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.repository.itemPedido.IItemsPedidoRepository;
 import onecenter.com.br.ecommerce.pessoa.dto.mapper.EnderecoDtoMapper;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.response.PessoaResponse;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
@@ -13,6 +16,9 @@ import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 import onecenter.com.br.ecommerce.produto.repository.produtos.IProdutosRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 @RequiredArgsConstructor
 public class PedidoDtoMapper {
@@ -21,11 +27,17 @@ public class PedidoDtoMapper {
     private final IPessoaRepository iPessoaRepository;
     private final IEnderecoRepository iEnderecoRepository;
     private final EnderecoDtoMapper enderecoDtoMapper;
+    private final IItemsPedidoRepository iItemsPedidoRepository;
 
-    public PedidoResponse mapear(PedidosEntity pedido){
+    public PedidoResponse mapear(PedidoEntity pedido){
         ProdutosEntity produto = iProdutosRepository.buscarIdProduto(pedido.getIdProduto());
         PessoaEntity pessoa = iPessoaRepository.buscarIdPessoa(pedido.getCliente().getIdPessoa());
         EnderecoEntity endereco = iEnderecoRepository.obterEnderecoPorIdPessoa(pessoa.getIdPessoa());
+
+        List<ItemPedidoResponse> itensResponse = pedido.getItens().stream()
+                .map(this::mapearItemPedido)
+                .collect(Collectors.toList());
+
 
         return PedidoResponse.builder()
                 .idPedido(pedido.getIdPedido())
@@ -39,6 +51,7 @@ public class PedidoDtoMapper {
                 .produtoImagem(produto.getProdutoImagem())
                 .nomeCategoria(produto.getNomeCategoria())
                 .cliente(mapearPessoa(pessoa, endereco))
+                .itens(itensResponse)
                 .build();
     }
 
@@ -49,6 +62,13 @@ public class PedidoDtoMapper {
                 .email(pessoa.getEmail())
                 .telefone(pessoa.getTelefone())
                 .endereco(enderecoDtoMapper.mapear(endereco))
+                .build();
+    }
+
+    private ItemPedidoResponse mapearItemPedido(ItemPedidoEntity itemPedido){
+        return ItemPedidoResponse.builder()
+                .quantidade(itemPedido.getQuantidade())
+                .precoUnitario(itemPedido.getPrecoUnitario())
                 .build();
     }
 }

@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.pessoa.service.endereco;
+package onecenter.com.br.ecommerce.produto.service.endereco;
 
 import com.google.gson.Gson;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.BuscarEnderecoNotFoundException;

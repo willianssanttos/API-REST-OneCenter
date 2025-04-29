@@ -1,6 +1,6 @@
 package onecenter.com.br.ecommerce.pedidos.repository.Impl;
 
-import onecenter.com.br.ecommerce.pedidos.entity.PedidosEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pedidos.exception.PedidosException;
 import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
@@ -26,7 +26,7 @@ public class IPedidosRepositoryImpl implements IPedidosRepository {
 
     @Override
     @Transactional
-    public PedidosEntity criarPedido(PedidosEntity pedido){
+    public PedidoEntity criarPedido(PedidoEntity pedido){
         logger.info(Constantes.DebugRegistroProcesso);
 
         try {
@@ -49,11 +49,11 @@ public class IPedidosRepositoryImpl implements IPedidosRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PedidosEntity> localizarPedido() {
+    public List<PedidoEntity> localizarPedido() {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
             String sql = "SELECT * FROM obter_todos_pedidos_completo()";
-            List<PedidosEntity> pedido = jdbcTemplate.query(sql, new PedidoRowMapper());
+            List<PedidoEntity> pedido = jdbcTemplate.query(sql, new PedidoRowMapper());
             return pedido;
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
