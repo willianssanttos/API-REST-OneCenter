@@ -1,0 +1,27 @@
+Cadastrar itens de pedido
+
+CREATE OR REPLACE FUNCTION inserir_item_pedido(
+    p_fk_nr_id_pedido INTEGER,
+    p_fk_nr_id_produto INTEGER,
+    p_ds_quantidade INTEGER,
+    p_ds_preco_quantidade DOUBLE precision
+) RETURNS INTEGER AS $$
+DECLARE
+    v_id_item_pedido INTEGER;
+BEGIN
+    INSERT INTO itens_pedido (
+        fk_nr_id_pedido,
+        fk_nr_id_produto,
+        ds_quantidade,
+        ds_preco_unitario
+    ) VALUES (
+        p_fk_nr_id_pedido,
+        p_fk_nr_id_produto,
+        p_ds_quantidade,
+        p_ds_preco_quantidade
+    )
+    RETURNING nr_id_itens_pedido INTO v_id_item_pedido;
+
+    RETURN v_id_item_pedido;
+END;
+$$ LANGUAGE plpgsql;

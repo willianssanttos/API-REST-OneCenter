@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.pessoa.service.login;
+package onecenter.com.br.ecommerce.produto.service.login;
 
 import onecenter.com.br.ecommerce.config.security.authentication.JwtTokenService;
 import onecenter.com.br.ecommerce.config.security.userdetails.UserDetailsImpl;
