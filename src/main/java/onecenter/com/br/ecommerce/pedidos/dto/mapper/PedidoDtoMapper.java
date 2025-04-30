@@ -51,7 +51,7 @@ public class PedidoDtoMapper {
                 .produtoImagem(produto.getProdutoImagem())
                 .nomeCategoria(produto.getNomeCategoria())
                 .cliente(mapearPessoa(pessoa, endereco))
-                .itens(itensResponse)
+                .itemPedido(itensResponse)
                 .build();
     }
 
