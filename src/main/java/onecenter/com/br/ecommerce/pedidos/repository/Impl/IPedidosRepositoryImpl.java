@@ -1,5 +1,7 @@
 package onecenter.com.br.ecommerce.pedidos.repository.Impl;
 
+import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoAgrupado;
+import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoResponse;
 import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pedidos.exception.PedidosException;
@@ -53,8 +55,8 @@ public class IPedidosRepositoryImpl implements IPedidosRepository {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
             String sql = "SELECT * FROM obter_todos_pedidos_completo()";
-            List<PedidoEntity> pedido = jdbcTemplate.query(sql, new PedidoRowMapper());
-            return pedido;
+                List<PedidoEntity> pedido = jdbcTemplate.query(sql, new PedidoRowMapper());
+            return PedidoAgrupado.agruparPedidos(pedido);
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             throw new ErroAoLocalizarPedidoNotFoundException();

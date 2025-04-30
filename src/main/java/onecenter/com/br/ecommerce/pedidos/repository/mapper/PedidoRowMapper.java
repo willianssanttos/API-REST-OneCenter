@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PedidoRowMapper implements RowMapper<PedidoEntity> {
@@ -18,18 +18,21 @@ public class PedidoRowMapper implements RowMapper<PedidoEntity> {
     @Override
     public PedidoEntity mapRow(ResultSet rs, int rowNum) throws SQLException{
 
+        int idPedido = rs.getInt("nr_id_pedido");
+
         PessoaEntity pessoa = new PessoaRowMapper().mapRow(rs, rowNum);
         ProdutosEntity produto = new ProdutosRowMapper().mapRow(rs, rowNum);
         ItemPedidoEntity itemPedido = new ItemPedidoRowMapper().mapRow(rs, rowNum);
 
-        return PedidoEntity.builder()
-                .idPedido(rs.getInt("nr_id_pedido"))
+        PedidoEntity pedido = PedidoEntity.builder()
+                .idPedido(idPedido)
                 .quantidade(rs.getInt("ds_quantidade"))
                 .dataPedido(rs.getTimestamp("dt_pedido"))
                 .statusPedido(rs.getString("ds_status"))
                 .idProduto(produto.getIdProduto())
                 .cliente(pessoa)
-                .itens(Collections.singletonList(itemPedido))
+                .itens(new ArrayList<>(List.of(itemPedido)))
                 .build();
+        return pedido;
     }
 }

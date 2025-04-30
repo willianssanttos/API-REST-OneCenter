@@ -33,6 +33,7 @@ $$ LANGUAGE plpgsql;
 
 //Localizar todos os pedidos
 
+
 CREATE OR REPLACE FUNCTION obter_todos_pedidos_completo()
 RETURNS TABLE (
 
@@ -48,7 +49,7 @@ RETURNS TABLE (
     ds_preco DOUBLE PRECISION,
     ds_descricao TEXT,
     ds_imagem_produto VARCHAR,
-    nm_categoria VARCHAR,
+    categoria_nome VARCHAR,
 
     nr_id_pedido INT,
     ds_quantidade INT,
@@ -79,13 +80,12 @@ BEGIN
         pr.ds_preco,
         pr.ds_descricao,
         pr.ds_imagem_produto,
-        c.nm_nome,
+        c.nm_categoria AS categoria_nome,
 
         p.nr_id_pedido,
         p.ds_quantidade,
         p.dt_pedido,
         p.ds_status,
-
 
 		ip.nr_id_itens_pedido AS id_itens_pedido,
 		ip.fk_nr_id_pedido AS item_pedido,
@@ -100,5 +100,3 @@ BEGIN
     JOIN itens_pedido ip ON ip.fk_nr_id_pedido = p.nr_id_pedido;
 END;
 $$ LANGUAGE plpgsql;
-
-

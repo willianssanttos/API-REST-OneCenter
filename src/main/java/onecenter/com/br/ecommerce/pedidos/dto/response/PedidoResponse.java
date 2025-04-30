@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.response.PessoaResponse;
+import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.produto.dto.produtos.response.ProdutosResponse;
+import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -23,7 +26,5 @@ public class PedidoResponse extends ProdutosResponse {
     private Timestamp dataPedido;
     private String statusPedido;
     private PessoaResponse cliente;
-    private List<ItemPedidoResponse> itens;
-
-
+    private List<ItemPedidoResponse> itemPedido;
 }

@@ -36,7 +36,7 @@ BEGIN
         p.ds_preco,
         p.ds_descricao,
         p.ds_imagem_produto,
-        c.nm_nome
+        c.nm_categoria
     FROM produtos p
     INNER JOIN categorias c ON p.fk_nr_id_categoria = c.nr_id_categoria
     WHERE p.nr_id_produto = buscar_produto_id.id_produto;
@@ -73,7 +73,7 @@ BEGIN
         p.ds_preco,
         p.ds_descricao,
         p.ds_imagem_produto,
-        c.nm_nome
+        c.nm_categoria
     FROM produtos p
     INNER JOIN categorias c ON p.fk_nr_id_categoria = c.nr_id_categoria;
 END;

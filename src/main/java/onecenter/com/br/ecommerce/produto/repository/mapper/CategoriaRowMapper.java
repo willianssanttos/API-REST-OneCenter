@@ -10,8 +10,8 @@ public class CategoriaRowMapper implements RowMapper<CategoriaEntity> {
 
     public CategoriaEntity mapRow(ResultSet rs, int rowNum) throws SQLException{
         CategoriaEntity categoria = new CategoriaEntity();
-        categoria.setId_categoria(rs.getInt(1));
-        categoria.setNomeCategoria(rs.getString(2));
+        categoria.setId_categoria(rs.getInt("nr_id_categoria"));
+        categoria.setNomeCategoria(rs.getString("nm_categoria"));
         return categoria;
     }
 }
