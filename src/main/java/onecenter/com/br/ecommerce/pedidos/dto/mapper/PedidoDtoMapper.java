@@ -66,7 +66,6 @@ public class PedidoDtoMapper {
                 .idProduto(produto.getIdProduto())
                 .nome(produto.getNome())
                 .descricaoProduto(produto.getDescricaoProduto())
-                .preco(produto.getPreco())
                 .produtoImagem(produto.getProdutoImagem())
                 .nomeCategoria(produto.getNomeCategoria())
                 .build();

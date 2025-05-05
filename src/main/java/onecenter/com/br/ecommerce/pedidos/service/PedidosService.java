@@ -7,6 +7,7 @@ import onecenter.com.br.ecommerce.pedidos.repository.itemPedido.IItemsPedidoRepo
 import onecenter.com.br.ecommerce.pedidos.strategy.*;
 import onecenter.com.br.ecommerce.pedidos.strategy.calculadora.CalculadoraDeDesconto;
 import onecenter.com.br.ecommerce.pedidos.strategy.clientevip.ClienteVipStrategy;
+import onecenter.com.br.ecommerce.pedidos.strategy.desconto.DescontoManualStrategy;
 import onecenter.com.br.ecommerce.pedidos.strategy.desconto.DescontoProgressivoStrategy;
 import onecenter.com.br.ecommerce.pedidos.strategy.promocao.PromocaoCategoriaStrategy;
 import onecenter.com.br.ecommerce.pessoa.dto.mapper.EnderecoDtoMapper;
@@ -60,7 +61,6 @@ public class PedidosService {
         logger.info(Constantes.DebugRegistroProcesso);
 
         try {
-
             PessoaEntity pessoa = iPessoaRepository.buscarIdPessoa(pedido.getCliente().getIdPessoa());
 
             PedidoEntity inserirPedido = PedidoEntity.builder()
@@ -83,11 +83,17 @@ public class PedidosService {
             }
             inserirPedido.setItens(itens);
 
-            List<DescontoStrategy> descontos = List.of(
-                    new ClienteVipStrategy(),
-                    new PromocaoCategoriaStrategy(),
-                    new DescontoProgressivoStrategy()
-            );
+            List<DescontoStrategy> descontos = new ArrayList<>();
+            descontos.add(new ClienteVipStrategy());
+            descontos.add(new PromocaoCategoriaStrategy());
+            descontos.add(new DescontoProgressivoStrategy());
+
+            if (Boolean.TRUE.equals(pedido.getAplicarDescontoManual()) &&
+                    pedido.getDescontoLiberado() != null &&
+                    pedido.getDescontoLiberado().compareTo(BigDecimal.ZERO) > 0) {
+
+                descontos.add(new DescontoManualStrategy(pedido.getDescontoLiberado()));
+            }
 
             CalculadoraDeDesconto calculadora = new CalculadoraDeDesconto(descontos);
             BigDecimal descontoTotal = calculadora.calcularDesconto(inserirPedido);
