@@ -1,10 +1,10 @@
 package onecenter.com.br.ecommerce.pedidos.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
+
+import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -13,10 +13,12 @@ import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 public class ItemPedidoEntity {
 
     private Integer idItemPedido;
+    @JsonIgnore
+    @ToString.Exclude
     private PedidoEntity pedido;
     private ProdutosEntity produtos;
     private Integer quantidade;
-    private Double precoUnitario;
+    private BigDecimal precoUnitario;
     @Override
     public String toString() {
         return "ItemPedidoEntity{" +

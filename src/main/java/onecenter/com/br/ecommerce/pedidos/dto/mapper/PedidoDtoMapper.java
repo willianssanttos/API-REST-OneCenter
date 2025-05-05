@@ -30,7 +30,7 @@ public class PedidoDtoMapper {
     private final IItemsPedidoRepository iItemsPedidoRepository;
 
     public PedidoResponse mapear(PedidoEntity pedido){
-        ProdutosEntity produto = iProdutosRepository.buscarIdProduto(pedido.getIdProduto());
+
         PessoaEntity pessoa = iPessoaRepository.buscarIdPessoa(pedido.getCliente().getIdPessoa());
         EnderecoEntity endereco = iEnderecoRepository.obterEnderecoPorIdPessoa(pessoa.getIdPessoa());
 
@@ -38,18 +38,12 @@ public class PedidoDtoMapper {
                 .map(this::mapearItemPedido)
                 .collect(Collectors.toList());
 
-
         return PedidoResponse.builder()
                 .idPedido(pedido.getIdPedido())
-                .quantidade(pedido.getQuantidade())
                 .dataPedido(pedido.getDataPedido())
                 .statusPedido(pedido.getStatusPedido())
-                .idProduto(produto.getIdProduto())
-                .nome(produto.getNome())
-                .descricaoProduto(produto.getDescricaoProduto())
-                .preco(produto.getPreco())
-                .produtoImagem(produto.getProdutoImagem())
-                .nomeCategoria(produto.getNomeCategoria())
+                .descontoAplicado(pedido.getDescontoAplicado())
+                .valorTotal(pedido.getValorTotal())
                 .cliente(mapearPessoa(pessoa, endereco))
                 .itemPedido(itensResponse)
                 .build();
@@ -66,9 +60,15 @@ public class PedidoDtoMapper {
     }
 
     private ItemPedidoResponse mapearItemPedido(ItemPedidoEntity itemPedido){
+        ProdutosEntity produto = iProdutosRepository.buscarIdProduto(itemPedido.getProdutos().getIdProduto());
         return ItemPedidoResponse.builder()
                 .quantidade(itemPedido.getQuantidade())
                 .precoUnitario(itemPedido.getPrecoUnitario())
+                .idProduto(produto.getIdProduto())
+                .nome(produto.getNome())
+                .descricaoProduto(produto.getDescricaoProduto())
+                .produtoImagem(produto.getProdutoImagem())
+                .nomeCategoria(produto.getNomeCategoria())
                 .build();
     }
 }

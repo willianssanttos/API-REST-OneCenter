@@ -23,6 +23,7 @@ public class PessoaEntity {
     private String telefone;
     private EnderecoEntity endereco;
     private List<RolesEntity> roles = new ArrayList<>();
+    private boolean vip;
 
     @Override
     public String toString() {

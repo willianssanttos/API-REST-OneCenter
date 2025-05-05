@@ -34,10 +34,10 @@ public class IPedidosRepositoryImpl implements IPedidosRepository {
         try {
             String sql = "SELECT criar_pedido(?, ?, ?, ?, ?)";
             Integer idPedido = jdbcTemplate.queryForObject(sql, new Object[]{
-                    pedido.getQuantidade(),
                     pedido.getDataPedido(),
                     pedido.getStatusPedido(),
-                    pedido.getIdProduto(),
+                    pedido.getDescontoAplicado(),
+                    pedido.getValorTotal(),
                     pedido.getCliente().getIdPessoa()
                     }, Integer.class);
             pedido.setIdPedido(idPedido);

@@ -1,6 +1,7 @@
 package onecenter.com.br.ecommerce.pedidos.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import onecenter.com.br.ecommerce.pedidos.dto.request.PedidoRequest;
 import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoResponse;
 import onecenter.com.br.ecommerce.pedidos.service.PedidosService;
@@ -22,7 +23,7 @@ public class PedidosController implements IPedidosController{
     @PostMapping("/")
     @PreAuthorize("hasRole('CLIENTE')")
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<PedidoResponse> pedidoCriado(@RequestBody PedidoRequest pedido){
+    public ResponseEntity<PedidoResponse> pedidoCriado(@RequestBody @Valid PedidoRequest pedido){
         return new ResponseEntity<>(pedidosService.criarPedidos(pedido), HttpStatus.CREATED);
     }
 

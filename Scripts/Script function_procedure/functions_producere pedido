@@ -1,10 +1,10 @@
 //Registrar pedidos
 
 CREATE OR REPLACE FUNCTION criar_pedido(
-    p_quantidade INT,
     p_dt_pedido TIMESTAMP,
     p_ds_status VARCHAR,
-    p_fk_nr_id_produto INT,
+    p_ds_desconto_aplicado NUMERIC,
+    p_ds_valor_total numeric,
     p_fk_nr_id_pessoa INT
 )
 RETURNS INT AS $$
@@ -12,17 +12,17 @@ DECLARE
     v_nr_id_pedido INT;
 BEGIN
     INSERT INTO pedidos (
-        ds_quantidade,
         dt_pedido,
         ds_status,
-        fk_nr_id_produto,
+        ds_desconto_aplicado,
+		ds_valor_total,
         fk_nr_id_pessoa
     )
     VALUES (
-        p_quantidade,
         p_dt_pedido,
     	p_ds_status,
-        p_fk_nr_id_produto,
+    	p_ds_desconto_aplicado,
+		p_ds_valor_total,
         p_fk_nr_id_pessoa
     )
     RETURNING nr_id_pedido INTO v_nr_id_pedido;
@@ -32,7 +32,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 //Localizar todos os pedidos
-
 
 CREATE OR REPLACE FUNCTION obter_todos_pedidos_completo()
 RETURNS TABLE (
@@ -52,9 +51,9 @@ RETURNS TABLE (
     categoria_nome VARCHAR,
 
     nr_id_pedido INT,
-    ds_quantidade INT,
     dt_pedido TIMESTAMP,
     ds_status VARCHAR,
+    ds_desconto_aplicado NUMERIC,
 
     id_itens_pedido INT,
     item_pedido INT,
@@ -83,9 +82,9 @@ BEGIN
         c.nm_categoria AS categoria_nome,
 
         p.nr_id_pedido,
-        p.ds_quantidade,
         p.dt_pedido,
         p.ds_status,
+        p.ds_desconto_aplicado,
 
 		ip.nr_id_itens_pedido AS id_itens_pedido,
 		ip.fk_nr_id_pedido AS item_pedido,
