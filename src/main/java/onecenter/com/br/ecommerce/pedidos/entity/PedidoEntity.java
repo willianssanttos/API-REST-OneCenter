@@ -3,10 +3,11 @@ package onecenter.com.br.ecommerce.pedidos.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
-import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -14,12 +15,13 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PedidoEntity extends ProdutosEntity{
+@ToString(exclude = {"cliente", "itens"})
+public class PedidoEntity{
 
     private Integer idPedido;
-    private Integer quantidade;
     private Timestamp dataPedido;
     private String statusPedido;
+    private BigDecimal descontoAplicado;
     private PessoaEntity cliente;
     private List<ItemPedidoEntity> itens;
 
@@ -27,12 +29,9 @@ public class PedidoEntity extends ProdutosEntity{
     public String toString() {
         return "PedidosEntity{" +
                 "ID=" + idPedido +
-                ", Quantidade =" + quantidade +
                 ", Data do Pedido =" + dataPedido +
                 ", Status do Pedido =" + statusPedido +
-                ", Produto =" + getIdProduto() +
-                ", Cliente =" + cliente +
-                ", Itens =" + getItens() +
+                ", Desconto Aplicado =" + descontoAplicado +
                 '}';
     }
 }

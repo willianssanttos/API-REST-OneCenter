@@ -21,15 +21,13 @@ public class PedidoRowMapper implements RowMapper<PedidoEntity> {
         int idPedido = rs.getInt("nr_id_pedido");
 
         PessoaEntity pessoa = new PessoaRowMapper().mapRow(rs, rowNum);
-        ProdutosEntity produto = new ProdutosRowMapper().mapRow(rs, rowNum);
         ItemPedidoEntity itemPedido = new ItemPedidoRowMapper().mapRow(rs, rowNum);
 
         PedidoEntity pedido = PedidoEntity.builder()
                 .idPedido(idPedido)
-                .quantidade(rs.getInt("ds_quantidade"))
                 .dataPedido(rs.getTimestamp("dt_pedido"))
                 .statusPedido(rs.getString("ds_status"))
-                .idProduto(produto.getIdProduto())
+                .descontoAplicado(rs.getBigDecimal("ds_desconto_aplicado"))
                 .cliente(pessoa)
                 .itens(new ArrayList<>(List.of(itemPedido)))
                 .build();

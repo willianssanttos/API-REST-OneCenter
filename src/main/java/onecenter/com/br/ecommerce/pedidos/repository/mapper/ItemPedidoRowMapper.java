@@ -18,7 +18,7 @@ public class ItemPedidoRowMapper implements RowMapper<ItemPedidoEntity> {
                 .pedido(PedidoEntity.builder().idPedido(rs.getInt("item_pedido")).build())
                 .produtos(ProdutosEntity.builder().idProduto(rs.getInt("item_produto")).build())
                 .quantidade(rs.getInt("item_quantidade"))
-                .precoUnitario(rs.getDouble("item_preco_unitario"))
+                .precoUnitario(rs.getBigDecimal("item_preco_unitario"))
                 .build();
     }
 }

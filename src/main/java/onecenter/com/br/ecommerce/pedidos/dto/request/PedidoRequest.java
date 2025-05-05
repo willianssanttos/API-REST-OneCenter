@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.request.PessoaRequest;
-import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
-import onecenter.com.br.ecommerce.produto.dto.produtos.request.ProdutoRequest;
 
 import java.util.List;
 
@@ -14,9 +12,9 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PedidoRequest extends ProdutoRequest {
+public class PedidoRequest {
 
-    private Integer quantidade;
+
     private PessoaRequest cliente;
     private List<ItemPedidoRequest> itens;
 

@@ -4,6 +4,11 @@ import onecenter.com.br.ecommerce.pedidos.dto.mapper.PedidoDtoMapper;
 import onecenter.com.br.ecommerce.pedidos.dto.request.ItemPedidoRequest;
 import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.repository.itemPedido.IItemsPedidoRepository;
+import onecenter.com.br.ecommerce.pedidos.strategy.*;
+import onecenter.com.br.ecommerce.pedidos.strategy.calculadora.CalculadoraDeDesconto;
+import onecenter.com.br.ecommerce.pedidos.strategy.clientevip.ClienteVipStrategy;
+import onecenter.com.br.ecommerce.pedidos.strategy.desconto.DescontoProgressivoStrategy;
+import onecenter.com.br.ecommerce.pedidos.strategy.promocao.PromocaoCategoriaStrategy;
 import onecenter.com.br.ecommerce.pessoa.dto.mapper.EnderecoDtoMapper;
 import onecenter.com.br.ecommerce.pedidos.dto.request.PedidoRequest;
 import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoResponse;
@@ -23,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -54,33 +60,46 @@ public class PedidosService {
         logger.info(Constantes.DebugRegistroProcesso);
 
         try {
-            ProdutosEntity produtos = iProdutosRepository.buscarIdProduto(pedido.getIdProduto());
+
             PessoaEntity pessoa = iPessoaRepository.buscarIdPessoa(pedido.getCliente().getIdPessoa());
 
             PedidoEntity inserirPedido = PedidoEntity.builder()
-                    .idProduto(produtos.getIdProduto())
                     .cliente(pessoa)
-                    .quantidade(pedido.getQuantidade())
                     .dataPedido(Timestamp.valueOf(LocalDateTime.now()))
                     .statusPedido("AGUARDANDO_PAGAMENTO")
                     .build();
 
-            PedidoEntity pedidoCriado = iPedidosRepository.criarPedido(inserirPedido);
-
             List<ItemPedidoEntity> itens = new ArrayList<>();
             for (ItemPedidoRequest itemPedido : pedido.getItens()) {
+                ProdutosEntity produtos = iProdutosRepository.buscarIdProduto(itemPedido.getProdutos().getIdProduto());
                 ItemPedidoEntity item = ItemPedidoEntity.builder()
-                        .pedido(pedidoCriado)
+                        .pedido(inserirPedido)
                         .produtos(produtos)
                         .quantidade(itemPedido.getQuantidade())
-                        .precoUnitario(produtos.getPreco())
+                        .precoUnitario(BigDecimal.valueOf(produtos.getPreco()))
                         .build();
-
-                iItemsPedidoRepository.salvarItemPedido(item);
                 itens.add(item);
                 logger.info(Constantes.InfoRegistrar, pedido);
             }
-            pedidoCriado.setItens(itens);
+            inserirPedido.setItens(itens);
+
+            List<DescontoStrategy> descontos = List.of(
+                    new ClienteVipStrategy(),
+                    new PromocaoCategoriaStrategy(),
+                    new DescontoProgressivoStrategy()
+            );
+
+            CalculadoraDeDesconto calculadora = new CalculadoraDeDesconto(descontos);
+            BigDecimal descontoTotal = calculadora.calcularDesconto(inserirPedido);
+            inserirPedido.setDescontoAplicado(descontoTotal);
+
+            PedidoEntity pedidoCriado = iPedidosRepository.criarPedido(inserirPedido);
+
+            for (ItemPedidoEntity item : itens){
+                item.setPedido(pedidoCriado);
+                iItemsPedidoRepository.salvarItemPedido(item);
+            }
+
             return pedidoDtoMapper.mapear(pedidoCriado);
         }
             catch (Exception e){
