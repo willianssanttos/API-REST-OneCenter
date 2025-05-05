@@ -32,11 +32,12 @@ public class IPedidosRepositoryImpl implements IPedidosRepository {
         logger.info(Constantes.DebugRegistroProcesso);
 
         try {
-            String sql = "SELECT criar_pedido(?, ?, ?, ?)";
+            String sql = "SELECT criar_pedido(?, ?, ?, ?, ?)";
             Integer idPedido = jdbcTemplate.queryForObject(sql, new Object[]{
                     pedido.getDataPedido(),
                     pedido.getStatusPedido(),
                     pedido.getDescontoAplicado(),
+                    pedido.getValorTotal(),
                     pedido.getCliente().getIdPessoa()
                     }, Integer.class);
             pedido.setIdPedido(idPedido);

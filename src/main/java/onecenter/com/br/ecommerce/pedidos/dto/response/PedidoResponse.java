@@ -23,6 +23,7 @@ public class PedidoResponse {
     private Timestamp dataPedido;
     private String statusPedido;
     private BigDecimal descontoAplicado;
+    private BigDecimal valorTotal;
     private PessoaResponse cliente;
     private List<ItemPedidoResponse> itemPedido;
 

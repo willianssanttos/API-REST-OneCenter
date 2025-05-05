@@ -99,6 +99,20 @@ public class PedidosService {
             BigDecimal descontoTotal = calculadora.calcularDesconto(inserirPedido);
             inserirPedido.setDescontoAplicado(descontoTotal);
 
+            BigDecimal totalItens = itens.stream()
+                    .map(item -> item.getPrecoUnitario().multiply(BigDecimal.valueOf(item.getQuantidade())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            BigDecimal valorComDesconto = totalItens.subtract(descontoTotal);
+
+            if (valorComDesconto.compareTo(BigDecimal.ZERO) < 0) {
+                valorComDesconto = BigDecimal.ZERO;
+            }
+
+            inserirPedido.setValorTotal(valorComDesconto);
+
+
+
             PedidoEntity pedidoCriado = iPedidosRepository.criarPedido(inserirPedido);
 
             for (ItemPedidoEntity item : itens){

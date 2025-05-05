@@ -43,6 +43,7 @@ public class PedidoDtoMapper {
                 .dataPedido(pedido.getDataPedido())
                 .statusPedido(pedido.getStatusPedido())
                 .descontoAplicado(pedido.getDescontoAplicado())
+                .valorTotal(pedido.getValorTotal())
                 .cliente(mapearPessoa(pessoa, endereco))
                 .itemPedido(itensResponse)
                 .build();

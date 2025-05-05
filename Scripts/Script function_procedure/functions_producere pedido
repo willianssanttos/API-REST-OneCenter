@@ -4,6 +4,7 @@ CREATE OR REPLACE FUNCTION criar_pedido(
     p_dt_pedido TIMESTAMP,
     p_ds_status VARCHAR,
     p_ds_desconto_aplicado NUMERIC,
+    p_ds_valor_total numeric,
     p_fk_nr_id_pessoa INT
 )
 RETURNS INT AS $$
@@ -14,12 +15,14 @@ BEGIN
         dt_pedido,
         ds_status,
         ds_desconto_aplicado,
+		ds_valor_total,
         fk_nr_id_pessoa
     )
     VALUES (
         p_dt_pedido,
     	p_ds_status,
     	p_ds_desconto_aplicado,
+		p_ds_valor_total,
         p_fk_nr_id_pessoa
     )
     RETURNING nr_id_pedido INTO v_nr_id_pedido;
