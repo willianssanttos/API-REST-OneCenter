@@ -89,7 +89,10 @@ public class Constantes {
 
     public static final String ErroItemPedidoNãoRegistrado = "Itens selecionados não registrado! Tente novamente mais tarde.";
 
-
+    //Cupom
+    public static final String ErroCadastrarCupom = "Erro ao gerar Cupom! Tente novamente mais tarde.";
+    public static final String CupomInvalido = "Cupom inválido ou expirado.";
+    public static final String CupomNaoEncontrado = "Cupom não encontrado!";
 
 
 

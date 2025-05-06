@@ -1,13 +1,17 @@
-package onecenter.com.br.ecommerce.pedidos.service;
+package onecenter.com.br.ecommerce.pedidos.service.pedido;
 
 import onecenter.com.br.ecommerce.pedidos.dto.mapper.PedidoDtoMapper;
 import onecenter.com.br.ecommerce.pedidos.dto.request.ItemPedidoRequest;
+import onecenter.com.br.ecommerce.pedidos.entity.CupomEntity;
 import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.exception.CupomInvalidoException;
+import onecenter.com.br.ecommerce.pedidos.repository.cupom.ICupomRepository;
 import onecenter.com.br.ecommerce.pedidos.repository.itemPedido.IItemsPedidoRepository;
 import onecenter.com.br.ecommerce.pedidos.strategy.*;
 import onecenter.com.br.ecommerce.pedidos.strategy.calculadora.CalculadoraDeDesconto;
 import onecenter.com.br.ecommerce.pedidos.strategy.clientevip.ClienteVipStrategy;
 import onecenter.com.br.ecommerce.pedidos.strategy.desconto.DescontoManualStrategy;
+import onecenter.com.br.ecommerce.pedidos.strategy.desconto.DescontoPorCupomStrategy;
 import onecenter.com.br.ecommerce.pedidos.strategy.desconto.DescontoProgressivoStrategy;
 import onecenter.com.br.ecommerce.pedidos.strategy.promocao.PromocaoCategoriaStrategy;
 import onecenter.com.br.ecommerce.pessoa.dto.mapper.EnderecoDtoMapper;
@@ -41,6 +45,8 @@ public class PedidosService {
 
     @Autowired
     private PedidoDtoMapper pedidoDtoMapper;
+    @Autowired
+    private ICupomRepository iCupomRepository;
     @Autowired
     private EnderecoDtoMapper enderecoDtoMapper;
     @Autowired
@@ -88,10 +94,18 @@ public class PedidosService {
             descontos.add(new PromocaoCategoriaStrategy());
             descontos.add(new DescontoProgressivoStrategy());
 
+            if(pedido.getCupomDesconto() != null && !pedido.getCupomDesconto().isBlank()){
+                try {
+                    CupomEntity cupom = iCupomRepository.buscarCupomPorNome(pedido.getCupomDesconto());
+                            descontos.add(new DescontoPorCupomStrategy(cupom.getValorDesconto()));
+                } catch (Exception e){
+                    throw new CupomInvalidoException();
+                }
+            }
+
             if (Boolean.TRUE.equals(pedido.getAplicarDescontoManual()) &&
                     pedido.getDescontoLiberado() != null &&
                     pedido.getDescontoLiberado().compareTo(BigDecimal.ZERO) > 0) {
-
                 descontos.add(new DescontoManualStrategy(pedido.getDescontoLiberado()));
             }
 
@@ -102,24 +116,18 @@ public class PedidosService {
             BigDecimal totalItens = itens.stream()
                     .map(item -> item.getPrecoUnitario().multiply(BigDecimal.valueOf(item.getQuantidade())))
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-
             BigDecimal valorComDesconto = totalItens.subtract(descontoTotal);
 
             if (valorComDesconto.compareTo(BigDecimal.ZERO) < 0) {
                 valorComDesconto = BigDecimal.ZERO;
             }
-
             inserirPedido.setValorTotal(valorComDesconto);
-
-
-
             PedidoEntity pedidoCriado = iPedidosRepository.criarPedido(inserirPedido);
 
             for (ItemPedidoEntity item : itens){
                 item.setPedido(pedidoCriado);
                 iItemsPedidoRepository.salvarItemPedido(item);
             }
-
             return pedidoDtoMapper.mapear(pedidoCriado);
         }
             catch (Exception e){

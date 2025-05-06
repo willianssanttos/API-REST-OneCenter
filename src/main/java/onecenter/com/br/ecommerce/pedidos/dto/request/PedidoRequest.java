@@ -23,5 +23,6 @@ public class PedidoRequest {
     private List<ItemPedidoRequest> itens;
     private BigDecimal descontoLiberado;
     private Boolean aplicarDescontoManual;
+    private String cupomDesconto;
 
 }

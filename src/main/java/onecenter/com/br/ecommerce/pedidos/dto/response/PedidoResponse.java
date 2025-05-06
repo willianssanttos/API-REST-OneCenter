@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import onecenter.com.br.ecommerce.pessoa.dto.pessoas.response.PessoaResponse;
-import onecenter.com.br.ecommerce.produto.dto.produtos.response.ProdutosResponse;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;

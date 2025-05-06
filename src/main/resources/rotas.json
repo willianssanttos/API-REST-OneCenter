@@ -62,7 +62,12 @@
   {
     "path": "/v1/pedido/localizar",
     "roles": ["CLIENTE"]
+  },
+  {
+    "path": "/v1/cupom/",
+    "roles": ["ADMINISTRADOR"]
   }
+
 
 
 ]

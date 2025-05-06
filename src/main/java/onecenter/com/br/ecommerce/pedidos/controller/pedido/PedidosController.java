@@ -1,10 +1,11 @@
-package onecenter.com.br.ecommerce.pedidos.controller;
+package onecenter.com.br.ecommerce.pedidos.controller.pedido;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import onecenter.com.br.ecommerce.pedidos.controller.pedido.IPedidosController;
 import onecenter.com.br.ecommerce.pedidos.dto.request.PedidoRequest;
 import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoResponse;
-import onecenter.com.br.ecommerce.pedidos.service.PedidosService;
+import onecenter.com.br.ecommerce.pedidos.service.pedido.PedidosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/v1/pedido")
-public class PedidosController implements IPedidosController{
+public class PedidosController implements IPedidosController {
 
     @Autowired
     private PedidosService pedidosService;

@@ -25,6 +25,7 @@ public class PedidoEntity{
     private PessoaEntity cliente;
     private List<ItemPedidoEntity> itens;
     private BigDecimal valorTotal;
+    private String cupomDesconto;
 
     @Override
     public String toString() {
@@ -34,6 +35,7 @@ public class PedidoEntity{
                 ", Status do Pedido =" + statusPedido +
                 ", Desconto Aplicado =" + descontoAplicado +
                 ", Valor Tatal =" + valorTotal +
+                ", Cupom de Desconto =" + cupomDesconto +
                 '}';
     }
 }
