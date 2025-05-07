@@ -1,10 +1,9 @@
 package onecenter.com.br.ecommerce.pedidos.repository.Impl;
 
 import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoAgrupado;
-import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoResponse;
 import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
-import onecenter.com.br.ecommerce.pedidos.exception.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pedidos.exception.PedidosException;
+import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
 import onecenter.com.br.ecommerce.pedidos.repository.mapper.PedidoRowMapper;
 import onecenter.com.br.ecommerce.utils.Constantes;
@@ -19,12 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public class IPedidosRepositoryImpl implements IPedidosRepository {
+public class PedidosRepositoryImpl implements IPedidosRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public static final Logger logger = LoggerFactory.getLogger(IPedidosRepositoryImpl.class);
+    public static final Logger logger = LoggerFactory.getLogger(PedidosRepositoryImpl.class);
 
     @Override
     @Transactional
@@ -62,6 +61,8 @@ public class IPedidosRepositoryImpl implements IPedidosRepository {
             throw new ErroAoLocalizarPedidoNotFoundException();
         }
     }
+
+
 
 
 }

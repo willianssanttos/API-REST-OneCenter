@@ -99,3 +99,4 @@ BEGIN
     JOIN itens_pedido ip ON ip.fk_nr_id_pedido = p.nr_id_pedido;
 END;
 $$ LANGUAGE plpgsql;
+

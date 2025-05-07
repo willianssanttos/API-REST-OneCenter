@@ -1,20 +1,24 @@
-package onecenter.com.br.ecommerce.pedidos.service;
+package onecenter.com.br.ecommerce.pedidos.service.pedido;
 
 import onecenter.com.br.ecommerce.pedidos.dto.mapper.PedidoDtoMapper;
 import onecenter.com.br.ecommerce.pedidos.dto.request.ItemPedidoRequest;
 import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomInvalidoException;
 import onecenter.com.br.ecommerce.pedidos.repository.itemPedido.IItemsPedidoRepository;
+import onecenter.com.br.ecommerce.pedidos.service.cupom.CupomService;
 import onecenter.com.br.ecommerce.pedidos.strategy.*;
 import onecenter.com.br.ecommerce.pedidos.strategy.calculadora.CalculadoraDeDesconto;
 import onecenter.com.br.ecommerce.pedidos.strategy.clientevip.ClienteVipStrategy;
 import onecenter.com.br.ecommerce.pedidos.strategy.desconto.DescontoManualStrategy;
+import onecenter.com.br.ecommerce.pedidos.strategy.desconto.DescontoPorCupomStrategy;
 import onecenter.com.br.ecommerce.pedidos.strategy.desconto.DescontoProgressivoStrategy;
 import onecenter.com.br.ecommerce.pedidos.strategy.promocao.PromocaoCategoriaStrategy;
 import onecenter.com.br.ecommerce.pessoa.dto.mapper.EnderecoDtoMapper;
 import onecenter.com.br.ecommerce.pedidos.dto.request.PedidoRequest;
 import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoResponse;
 import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
-import onecenter.com.br.ecommerce.pedidos.exception.ErroAoLocalizarPedidoNotFoundException;
+
 import onecenter.com.br.ecommerce.pedidos.exception.PedidosException;
 import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
@@ -39,6 +43,8 @@ import java.util.stream.Collectors;
 @Service
 public class PedidosService {
 
+    @Autowired
+    private CupomService cupomService;
     @Autowired
     private PedidoDtoMapper pedidoDtoMapper;
     @Autowired
@@ -88,10 +94,21 @@ public class PedidosService {
             descontos.add(new PromocaoCategoriaStrategy());
             descontos.add(new DescontoProgressivoStrategy());
 
+            if(pedido.getCupomDesconto() != null && !pedido.getCupomDesconto().isBlank()){
+                try {
+                   BigDecimal valorDesconto = cupomService.validarEAplicarCupom(
+                           pedido.getCupomDesconto(),
+                           pedido.getCliente().getIdPessoa()
+                   );
+                   descontos.add(new DescontoPorCupomStrategy(valorDesconto));
+                } catch (Exception e){
+                    throw new CupomInvalidoException();
+                }
+            }
+
             if (Boolean.TRUE.equals(pedido.getAplicarDescontoManual()) &&
                     pedido.getDescontoLiberado() != null &&
                     pedido.getDescontoLiberado().compareTo(BigDecimal.ZERO) > 0) {
-
                 descontos.add(new DescontoManualStrategy(pedido.getDescontoLiberado()));
             }
 
@@ -102,17 +119,12 @@ public class PedidosService {
             BigDecimal totalItens = itens.stream()
                     .map(item -> item.getPrecoUnitario().multiply(BigDecimal.valueOf(item.getQuantidade())))
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-
             BigDecimal valorComDesconto = totalItens.subtract(descontoTotal);
 
             if (valorComDesconto.compareTo(BigDecimal.ZERO) < 0) {
                 valorComDesconto = BigDecimal.ZERO;
             }
-
             inserirPedido.setValorTotal(valorComDesconto);
-
-
-
             PedidoEntity pedidoCriado = iPedidosRepository.criarPedido(inserirPedido);
 
             for (ItemPedidoEntity item : itens){
@@ -120,6 +132,9 @@ public class PedidosService {
                 iItemsPedidoRepository.salvarItemPedido(item);
             }
 
+            if(pedido.getCupomDesconto() != null && !pedido.getCupomDesconto().isBlank()){
+                cupomService.marcarCupomComoUsado(pedido.getCupomDesconto());
+            }
             return pedidoDtoMapper.mapear(pedidoCriado);
         }
             catch (Exception e){

@@ -1,7 +1,10 @@
 package onecenter.com.br.ecommerce.config.exception.handler;
 
-import onecenter.com.br.ecommerce.pedidos.exception.ErroAoLocalizarPedidoNotFoundException;
-import onecenter.com.br.ecommerce.pedidos.exception.ItemPedidoException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomDuplicadoException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomInvalidoException;
+import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;
+import onecenter.com.br.ecommerce.pedidos.exception.pedido.ItemPedidoException;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.EnderecoException;
 import onecenter.com.br.ecommerce.config.exception.entity.ApiError;
 import onecenter.com.br.ecommerce.pessoa.exception.login.ObterLoginNotFoundException;
@@ -35,6 +38,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({
             Exception.class,
+            CupomException.class,
             ImagensException.class,
             ProdutoException.class,
             EnderecoException.class,
@@ -100,8 +104,10 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({
             CpfExistenteException.class,
+            CupomInvalidoException.class,
             CnpjExistenteException.class,
-            EmailExistenteException.class
+            EmailExistenteException.class,
+            CupomDuplicadoException.class,
     })
     public ResponseEntity<ApiError> unavailableException(RuntimeException ex) {
         ApiError apiError = ApiError
@@ -132,4 +138,5 @@ public class RestExceptionHandler {
                 .build();
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
+
 }

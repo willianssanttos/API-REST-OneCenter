@@ -10,7 +10,7 @@ public class ClienteVipStrategy implements DescontoStrategy {
     @Override
     public BigDecimal aplicarDesconto(PedidoEntity pedido) {
         if (pedido.getCliente().isVip()) {
-            return calcularTotalPedido(pedido).multiply(new BigDecimal("0.15")); // 15% de desconto
+            return calcularTotalPedido(pedido).multiply(BigDecimal.valueOf(0.15)); // 15% de desconto
         }
         return BigDecimal.ZERO;
     }

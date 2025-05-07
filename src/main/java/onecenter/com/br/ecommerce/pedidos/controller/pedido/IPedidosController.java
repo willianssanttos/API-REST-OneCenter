@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.pedidos.controller;
+package onecenter.com.br.ecommerce.pedidos.controller.pedido;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

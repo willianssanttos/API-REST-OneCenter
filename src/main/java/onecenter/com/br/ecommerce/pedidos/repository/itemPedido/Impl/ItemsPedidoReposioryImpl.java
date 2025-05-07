@@ -1,7 +1,7 @@
 package onecenter.com.br.ecommerce.pedidos.repository.itemPedido.Impl;
 
 import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
-import onecenter.com.br.ecommerce.pedidos.exception.ItemPedidoException;
+import onecenter.com.br.ecommerce.pedidos.exception.pedido.ItemPedidoException;
 import onecenter.com.br.ecommerce.pedidos.repository.itemPedido.IItemsPedidoRepository;
 import onecenter.com.br.ecommerce.pedidos.repository.mapper.ItemPedidoRowMapper;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.BuscarEnderecoNotFoundException;
