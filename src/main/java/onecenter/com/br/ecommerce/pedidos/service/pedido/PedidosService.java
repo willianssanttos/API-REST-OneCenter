@@ -2,11 +2,11 @@ package onecenter.com.br.ecommerce.pedidos.service.pedido;
 
 import onecenter.com.br.ecommerce.pedidos.dto.mapper.PedidoDtoMapper;
 import onecenter.com.br.ecommerce.pedidos.dto.request.ItemPedidoRequest;
-import onecenter.com.br.ecommerce.pedidos.entity.CupomEntity;
 import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
-import onecenter.com.br.ecommerce.pedidos.exception.CupomInvalidoException;
-import onecenter.com.br.ecommerce.pedidos.repository.cupom.ICupomRepository;
+import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomInvalidoException;
 import onecenter.com.br.ecommerce.pedidos.repository.itemPedido.IItemsPedidoRepository;
+import onecenter.com.br.ecommerce.pedidos.service.cupom.CupomService;
 import onecenter.com.br.ecommerce.pedidos.strategy.*;
 import onecenter.com.br.ecommerce.pedidos.strategy.calculadora.CalculadoraDeDesconto;
 import onecenter.com.br.ecommerce.pedidos.strategy.clientevip.ClienteVipStrategy;
@@ -18,7 +18,7 @@ import onecenter.com.br.ecommerce.pessoa.dto.mapper.EnderecoDtoMapper;
 import onecenter.com.br.ecommerce.pedidos.dto.request.PedidoRequest;
 import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoResponse;
 import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
-import onecenter.com.br.ecommerce.pedidos.exception.ErroAoLocalizarPedidoNotFoundException;
+
 import onecenter.com.br.ecommerce.pedidos.exception.PedidosException;
 import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
@@ -44,9 +44,9 @@ import java.util.stream.Collectors;
 public class PedidosService {
 
     @Autowired
-    private PedidoDtoMapper pedidoDtoMapper;
+    private CupomService cupomService;
     @Autowired
-    private ICupomRepository iCupomRepository;
+    private PedidoDtoMapper pedidoDtoMapper;
     @Autowired
     private EnderecoDtoMapper enderecoDtoMapper;
     @Autowired
@@ -96,8 +96,11 @@ public class PedidosService {
 
             if(pedido.getCupomDesconto() != null && !pedido.getCupomDesconto().isBlank()){
                 try {
-                    CupomEntity cupom = iCupomRepository.buscarCupomPorNome(pedido.getCupomDesconto());
-                            descontos.add(new DescontoPorCupomStrategy(cupom.getValorDesconto()));
+                   BigDecimal valorDesconto = cupomService.validarEAplicarCupom(
+                           pedido.getCupomDesconto(),
+                           pedido.getCliente().getIdPessoa()
+                   );
+                   descontos.add(new DescontoPorCupomStrategy(valorDesconto));
                 } catch (Exception e){
                     throw new CupomInvalidoException();
                 }
@@ -127,6 +130,10 @@ public class PedidosService {
             for (ItemPedidoEntity item : itens){
                 item.setPedido(pedidoCriado);
                 iItemsPedidoRepository.salvarItemPedido(item);
+            }
+
+            if(pedido.getCupomDesconto() != null && !pedido.getCupomDesconto().isBlank()){
+                cupomService.marcarCupomComoUsado(pedido.getCupomDesconto());
             }
             return pedidoDtoMapper.mapear(pedidoCriado);
         }

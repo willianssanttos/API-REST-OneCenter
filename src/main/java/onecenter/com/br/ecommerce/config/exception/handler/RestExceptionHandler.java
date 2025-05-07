@@ -1,6 +1,10 @@
 package onecenter.com.br.ecommerce.config.exception.handler;
 
-import onecenter.com.br.ecommerce.pedidos.exception.*;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomDuplicadoException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomInvalidoException;
+import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;
+import onecenter.com.br.ecommerce.pedidos.exception.pedido.ItemPedidoException;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.EnderecoException;
 import onecenter.com.br.ecommerce.config.exception.entity.ApiError;
 import onecenter.com.br.ecommerce.pessoa.exception.login.ObterLoginNotFoundException;

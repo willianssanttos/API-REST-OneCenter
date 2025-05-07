@@ -2,8 +2,8 @@ package onecenter.com.br.ecommerce.pedidos.repository.Impl;
 
 import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoAgrupado;
 import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
-import onecenter.com.br.ecommerce.pedidos.exception.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pedidos.exception.PedidosException;
+import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
 import onecenter.com.br.ecommerce.pedidos.repository.mapper.PedidoRowMapper;
 import onecenter.com.br.ecommerce.utils.Constantes;
@@ -61,6 +61,8 @@ public class PedidosRepositoryImpl implements IPedidosRepository {
             throw new ErroAoLocalizarPedidoNotFoundException();
         }
     }
+
+
 
 
 }

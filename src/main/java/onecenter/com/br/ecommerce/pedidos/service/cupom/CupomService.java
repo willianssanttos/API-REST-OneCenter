@@ -3,15 +3,20 @@ package onecenter.com.br.ecommerce.pedidos.service.cupom;
 import onecenter.com.br.ecommerce.pedidos.dto.request.CupomRequest;
 import onecenter.com.br.ecommerce.pedidos.dto.response.CupomResponse;
 import onecenter.com.br.ecommerce.pedidos.entity.CupomEntity;
-import onecenter.com.br.ecommerce.pedidos.exception.CupomException;
-import onecenter.com.br.ecommerce.pedidos.exception.PedidosException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomInvalidoException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomUtilizadoPorClienteException;
 import onecenter.com.br.ecommerce.pedidos.repository.cupom.ICupomRepository;
+import onecenter.com.br.ecommerce.pedidos.strategy.DescontoStrategy;
+import onecenter.com.br.ecommerce.pedidos.strategy.desconto.DescontoPorCupomStrategy;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 
 @Service
 public class CupomService {
@@ -23,13 +28,14 @@ public class CupomService {
 
     @Transactional
     public CupomResponse cadastrarCupom(CupomRequest cupom){
+        logger.info(Constantes.DebugRegistroProcesso);
         try {
-            CupomEntity cupomCriado = CupomEntity.builder()
+            CupomEntity criarCupom = CupomEntity.builder()
                     .codigo(cupom.getCupom())
                     .valorDesconto(cupom.getValorDesconto())
                     .dataValidade(cupom.getDataValidade())
                     .build();
-            CupomEntity cupomGerado = iCupomRepository.cadastrarCupom(cupomCriado);
+            CupomEntity cupomGerado = iCupomRepository.cadastrarCupom(criarCupom);
             return mapearCupom(cupomGerado);
         }
         catch (Exception e){
@@ -44,5 +50,38 @@ public class CupomService {
                 .valorDesconto(cupom.getValorDesconto())
                 .dataValidade(cupom.getDataValidade())
                 .build();
+    }
+
+    @Transactional
+    public BigDecimal validarEAplicarCupom(String nomeCupom, Integer idPessoa){
+        logger.info(Constantes.DebugBuscarProcesso);
+        try {
+            CupomEntity cupom = iCupomRepository.buscarCupomPorNome(nomeCupom);
+
+            if(cupom == null && Boolean.TRUE.equals(cupom.getCupomUsado())){
+                throw new CupomInvalidoException();
+            }
+
+            boolean jaUsado = iCupomRepository.cupomJaUsadoPorCliente(cupom.getIdCupom(), idPessoa);
+            if (jaUsado){
+                throw new CupomUtilizadoPorClienteException();
+            }
+            iCupomRepository.registrarUsoCupom(cupom.getIdCupom(), idPessoa);
+            return cupom.getValorDesconto();
+        } catch (Exception e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor);
+            throw new CupomException();
+        }
+    }
+
+    @Transactional
+    public void marcarCupomComoUsado(String nomeCupom) {
+        logger.info(Constantes.DebugEditarProcesso);
+        try {
+            iCupomRepository.marcarCupomComoUsado(nomeCupom);
+        } catch (Exception e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor);
+            throw new CupomException();
+        }
     }
 }

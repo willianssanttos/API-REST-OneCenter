@@ -1,0 +1,111 @@
+//Criar CUPOM de desconto para os pedidos
+
+CREATE OR REPLACE FUNCTION inserir_cupom(
+    p_nm_nome_cupom VARCHAR,
+    p_valor_desconto NUMERIC,
+    p_data_validade TIMESTAMP
+)
+RETURNS TABLE (
+    nr_id_cupom INT,
+    nm_nome_cupom VARCHAR,
+    ds_valor_desconto NUMERIC,
+    ds_data_validade TIMESTAMP,
+    ds_usado BOOLEAN
+)
+AS $$
+BEGIN
+
+   IF EXISTS (SELECT 1 FROM cupons WHERE nm_nome_cupom = p_nm_nome_cupom) THEN
+        RAISE EXCEPTION 'Já existe um cupom com esse código.';
+    END IF;
+
+    INSERT INTO cupons (nm_nome_cupom, ds_valor_desconto, ds_data_validade)
+    VALUES (p_nm_nome_cupom, p_valor_desconto, p_data_validade)
+    RETURNING
+        cupons.nr_id_cupom,
+        cupons.nm_nome_cupom,
+        cupons.ds_valor_desconto,
+        cupons.ds_data_validade,
+        cupons.ds_usado
+    INTO
+        nr_id_cupom,
+        nm_nome_cupom,
+        ds_valor_desconto,
+        ds_data_validade,
+        ds_usado;
+
+    RETURN NEXT;
+END;
+$$ LANGUAGE plpgsql;
+
+//Buscar cupom gerado
+
+CREATE OR REPLACE FUNCTION buscar_cupom_por_nome(
+    p_nome_cupom VARCHAR
+)
+RETURNS TABLE (
+    nr_id_cupom INT,
+    nm_nome_cupom VARCHAR,
+    ds_valor_desconto NUMERIC,
+    ds_data_validade TIMESTAMP,
+    ds_usado BOOLEAN
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        c.nr_id_cupom,
+        c.nm_nome_cupom,
+        c.ds_valor_desconto,
+        c.ds_data_validade,
+        c.ds_usado
+    FROM cupons c
+    WHERE TRIM(LOWER(c.nm_nome_cupom)) = TRIM(LOWER(p_nome_cupom));
+END;
+$$ LANGUAGE plpgsql;
+
+
+//Atualizar cupom que o mesmo foi utilizado
+
+CREATE OR REPLACE PROCEDURE atualizar_status_cupom(p_nome_cupom VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE cupons
+    SET ds_usado = TRUE
+    WHERE nm_nome_cupom = p_nome_cupom;
+END;
+$$;
+
+//Validar se cupom foi utilizado
+CREATE OR REPLACE FUNCTION contar_uso_cupom(
+    p_id_cupom INTEGER,
+    p_id_pessoa INTEGER
+)
+RETURNS INTEGER AS $$
+DECLARE
+    v_total INTEGER;
+BEGIN
+    SELECT COUNT(*)
+    INTO v_total
+    FROM cupons_utilizados
+    WHERE fk_nr_id_cupom = p_id_cupom
+      AND fk_nr_id_pessoa = p_id_pessoa;
+
+    RETURN v_total;
+END;
+$$ LANGUAGE plpgsql;
+
+// registrar uso do cupom
+CREATE OR REPLACE PROCEDURE registrar_uso_cupom(
+    p_id_cupom INTEGER,
+    p_id_pessoa INTEGER
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO cupons_utilizados (fk_nr_id_cupom, fk_nr_id_pessoa)
+    VALUES (p_id_cupom, p_id_pessoa);
+END;
+$$;
+

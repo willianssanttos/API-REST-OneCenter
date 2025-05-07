@@ -93,6 +93,14 @@ public class Constantes {
     public static final String ErroCadastrarCupom = "Erro ao gerar Cupom! Tente novamente mais tarde.";
     public static final String CupomInvalido = "Cupom inválido ou expirado.";
     public static final String CupomNaoEncontrado = "Cupom não encontrado!";
+    public static final String CupomJaUilizado = "Cupom já foi utilizado!";
+    public static final String ErroLocalizarInformacaoCupom = "Informação de cupom informado não encontrado!";
+
+    public static final String ErroAtualizaStatusCupom = "Não foi possivel atualizar o status do cupom!";
+
+
+
+
 
 
 

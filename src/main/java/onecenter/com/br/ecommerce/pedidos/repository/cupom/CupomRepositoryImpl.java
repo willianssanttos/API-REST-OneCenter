@@ -1,8 +1,10 @@
 package onecenter.com.br.ecommerce.pedidos.repository.cupom;
 
 import onecenter.com.br.ecommerce.pedidos.entity.CupomEntity;
-import onecenter.com.br.ecommerce.pedidos.exception.CupomException;
-import onecenter.com.br.ecommerce.pedidos.exception.ErroLocalizarCupomNotFoundException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.ErroAtualizarStatusCupomException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.ErroLocalizarCupomNotFoundException;
+import onecenter.com.br.ecommerce.pedidos.exception.cupom.ErroLocalizarInformacaoUsoCupomNotFoundException;
 import onecenter.com.br.ecommerce.pedidos.repository.mapper.CupomRowMapper;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import org.slf4j.Logger;
@@ -37,7 +39,6 @@ public class CupomRepositoryImpl implements ICupomRepository {
                     cupom.getValorDesconto(),
                     Timestamp.valueOf(cupom.getDataValidade())
             );
-
             logger.info(Constantes.InfoRegistrar, cupom);
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
@@ -56,6 +57,45 @@ public class CupomRepositoryImpl implements ICupomRepository {
         } catch (DataAccessException e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             throw new ErroLocalizarCupomNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean cupomJaUsadoPorCliente(Integer idCupom, Integer idCliente) {
+        try {
+            String sql = "SELECT * FROM contar_uso_cupom (?,?)";
+            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idCupom, idCliente);
+            return count != null && count > 0;
+        } catch (DataAccessException e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
+            throw new ErroLocalizarInformacaoUsoCupomNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void registrarUsoCupom(Integer idCupom, Integer idCliente) {
+        try {
+            String sql = "CALL registrar_uso_cupom (?, ?)";
+            jdbcTemplate.update(sql, idCupom, idCliente);
+        } catch (DataAccessException e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
+            throw new ErroLocalizarInformacaoUsoCupomNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void marcarCupomComoUsado(String nomeCupom){
+        logger.info(Constantes.DebugEditarProcesso);
+        try {
+            String sql = "CALL atualizar_status_cupom(?)";
+            jdbcTemplate.update(sql, nomeCupom);
+            logger.info(Constantes.InfoEditar, nomeCupom);
+        } catch (DataAccessException e){
+            logger.error(Constantes.ErroEditarRegistroNoServidor, e.getMessage());
+            throw new ErroAtualizarStatusCupomException();
         }
     }
 }

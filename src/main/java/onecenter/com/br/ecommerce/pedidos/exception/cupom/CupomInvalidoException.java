@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.pedidos.exception;
+package onecenter.com.br.ecommerce.pedidos.exception.cupom;
 
 import onecenter.com.br.ecommerce.utils.Constantes;
 
