@@ -58,7 +58,11 @@ public class SecurityConfiguration {
             for (Map<String, Object> rota : rotas) {
                 String path = (String) rota.get("path");
                 List<String> roles = (List<String>) rota.get("roles");
-                rotasMap.put(path, roles);
+
+                rotasMap.merge(path, roles, (oldRoles, newRoles) -> {
+                    oldRoles.addAll(newRoles);
+                    return oldRoles.stream().distinct().toList();
+                });
             }
         } catch (IOException e) {
             throw new RuntimeException("Erro ao carregar o arquivo de rotas: " + e.getMessage());

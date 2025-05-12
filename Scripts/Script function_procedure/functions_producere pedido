@@ -35,7 +35,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION obter_todos_pedidos_completo()
 RETURNS TABLE (
-
+    -- Campos esperados por PessoaRowMapper
     nr_id_pessoa INT,
     nm_roles VARCHAR,
     nm_nome_razaosocial VARCHAR,
@@ -43,23 +43,74 @@ RETURNS TABLE (
     ds_senha VARCHAR,
     ds_telefone VARCHAR,
 
-    nr_id_produto INT,
-    nm_nome VARCHAR,
-    ds_preco DOUBLE PRECISION,
-    ds_descricao TEXT,
-    ds_imagem_produto VARCHAR,
-    categoria_nome VARCHAR,
+    -- Campos esperados por ItemPedidoRowMapper
+    nr_id_itens_pedido INT,
+    fk_nr_id_pedido INT,
+    fk_nr_id_produto INT,
+    ds_quantidade INT,
+    ds_preco_unitario DOUBLE PRECISION,
 
+    -- Campos do pedido
     nr_id_pedido INT,
     dt_pedido TIMESTAMP,
     ds_status VARCHAR,
     ds_desconto_aplicado NUMERIC,
+    ds_valor_total DOUBLE PRECISION
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        pes.nr_id_pessoa,
+        pes.nm_roles,
+        pes.nm_nome_razaosocial,
+        pes.ds_email,
+        pes.ds_senha,
+        pes.ds_telefone,
 
+        ip.nr_id_itens_pedido,
+        ip.fk_nr_id_pedido,
+        ip.fk_nr_id_produto,
+        ip.ds_quantidade,
+        ip.ds_preco_unitario,
+
+        p.nr_id_pedido,
+        p.dt_pedido,
+        p.ds_status,
+        p.ds_desconto_aplicado,
+        p.ds_valor_total
+
+    FROM pedidos p
+    JOIN pessoas pes ON p.fk_nr_id_pessoa = pes.nr_id_pessoa
+    JOIN itens_pedido ip ON ip.fk_nr_id_pedido = p.nr_id_pedido;
+END;
+$$ LANGUAGE plpgsql;
+
+//Localizar pedido ID Pesso
+
+CREATE OR REPLACE FUNCTION obter_pedidos_por_id_pessoa(p_id_pessoa INT)
+RETURNS TABLE (
+
+	-- Campos esperados por PessoaRowMapper
+    id_pessoa INT,
+    nm_roles VARCHAR,
+    nm_nome_razaosocial VARCHAR,
+    ds_email VARCHAR,
+    ds_senha VARCHAR,
+    ds_telefone VARCHAR,
+
+    -- Campos esperados por ItemPedidoRowMapper
     id_itens_pedido INT,
     item_pedido INT,
     item_produto INT,
     item_quantidade INT,
-    item_preco_unitario DOUBLE PRECISION
+    item_preco_unitario DOUBLE PRECISION,
+
+    nr_id_pedido INT,
+    dt_pedido TIMESTAMP,
+    ds_status VARCHAR,
+    ds_desconto_aplicado numeric,
+    ds_valor_total DOUBLE PRECISION
 
 )
 AS $$
@@ -67,36 +118,29 @@ BEGIN
     RETURN QUERY
     SELECT
 
-        ps.nr_id_pessoa,
-        ps.nm_roles,
-        ps.nm_nome_razaosocial,
-        ps.ds_email,
-        ps.ds_senha,
-        ps.ds_telefone,
+		pes.nr_id_pessoa AS id_pessoa,
+        pes.nm_roles,
+        pes.nm_nome_razaosocial,
+        pes.ds_email,
+        pes.ds_senha,
+        pes.ds_telefone,
 
-        pr.nr_id_produto,
-        pr.nm_nome,
-        pr.ds_preco,
-        pr.ds_descricao,
-        pr.ds_imagem_produto,
-        c.nm_categoria AS categoria_nome,
+ 		ip.nr_id_itens_pedido AS id_itens_pedido,
+        ip.fk_nr_id_pedido AS item_pedido,
+        ip.fk_nr_id_produto AS item_produto,
+        ip.ds_quantidade AS item_quantidade,
+        ip.ds_preco_unitario AS item_preco_unitario,
 
         p.nr_id_pedido,
         p.dt_pedido,
         p.ds_status,
         p.ds_desconto_aplicado,
-
-		ip.nr_id_itens_pedido AS id_itens_pedido,
-		ip.fk_nr_id_pedido AS item_pedido,
-		ip.fk_nr_id_produto AS item_produto,
-        ip.ds_quantidade AS item_quantidade,
-        ip.ds_preco_unitario AS item_preco_unitario
+		p.ds_valor_total
 
     FROM pedidos p
-    JOIN produtos pr ON pr.nr_id_produto = p.fk_nr_id_produto
-    JOIN categorias c ON c.nr_id_categoria = pr.fk_nr_id_categoria
-    JOIN pessoas ps ON ps.nr_id_pessoa = p.fk_nr_id_pessoa
-    JOIN itens_pedido ip ON ip.fk_nr_id_pedido = p.nr_id_pedido;
+    JOIN pessoas pes ON p.fk_nr_id_pessoa = pes.nr_id_pessoa
+    JOIN itens_pedido ip ON ip.fk_nr_id_pedido = p.nr_id_pedido
+    WHERE pes.nr_id_pessoa = p_id_pessoa;
 END;
 $$ LANGUAGE plpgsql;
 

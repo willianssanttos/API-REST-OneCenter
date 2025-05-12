@@ -4,8 +4,6 @@ import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.pessoa.repository.mapper.PessoaRowMapper;
-import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
-import onecenter.com.br.ecommerce.produto.repository.mapper.ProdutosRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -28,6 +26,7 @@ public class PedidoRowMapper implements RowMapper<PedidoEntity> {
                 .dataPedido(rs.getTimestamp("dt_pedido"))
                 .statusPedido(rs.getString("ds_status"))
                 .descontoAplicado(rs.getBigDecimal("ds_desconto_aplicado"))
+                .valorTotal(rs.getBigDecimal("ds_valor_total"))
                 .cliente(pessoa)
                 .itens(new ArrayList<>(List.of(itemPedido)))
                 .build();

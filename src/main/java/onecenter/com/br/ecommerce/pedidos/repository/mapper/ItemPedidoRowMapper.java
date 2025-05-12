@@ -14,11 +14,11 @@ public class ItemPedidoRowMapper implements RowMapper<ItemPedidoEntity> {
     public ItemPedidoEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
 
         return ItemPedidoEntity.builder()
-                .idItemPedido(rs.getInt("id_itens_pedido"))
-                .pedido(PedidoEntity.builder().idPedido(rs.getInt("item_pedido")).build())
-                .produtos(ProdutosEntity.builder().idProduto(rs.getInt("item_produto")).build())
-                .quantidade(rs.getInt("item_quantidade"))
-                .precoUnitario(rs.getBigDecimal("item_preco_unitario"))
+                .idItemPedido(rs.getInt("nr_id_itens_pedido"))
+                .pedido(PedidoEntity.builder().idPedido(rs.getInt("fk_nr_id_pedido")).build())
+                .produtos(ProdutosEntity.builder().idProduto(rs.getInt("fk_nr_id_produto")).build())
+                .quantidade(rs.getInt("ds_quantidade"))
+                .precoUnitario(rs.getBigDecimal("ds_preco_unitario"))
                 .build();
     }
 }

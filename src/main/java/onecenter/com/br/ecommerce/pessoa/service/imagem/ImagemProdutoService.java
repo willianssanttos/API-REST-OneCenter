@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.produto.service.imagem;
+package onecenter.com.br.ecommerce.pessoa.service.imagem;
 
 import onecenter.com.br.ecommerce.produto.dto.imagens.request.ImagensProdutosRequest;
 import onecenter.com.br.ecommerce.produto.dto.imagens.response.ImagensProdutosResponse;

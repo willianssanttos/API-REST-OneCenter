@@ -5,7 +5,7 @@ import onecenter.com.br.ecommerce.produto.dto.produtos.request.ProdutoRequest;
 import onecenter.com.br.ecommerce.produto.dto.produtos.response.ProdutosResponse;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 import onecenter.com.br.ecommerce.produto.service.produtos.ProdutosService;
-import onecenter.com.br.ecommerce.produto.service.imagem.FileStorageService;
+import onecenter.com.br.ecommerce.pessoa.service.imagem.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

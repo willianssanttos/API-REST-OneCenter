@@ -20,6 +20,8 @@ public class PedidoAgrupado {
                         .idPedido(pedidosItem.getIdPedido())
                         .dataPedido(pedidosItem.getDataPedido())
                         .statusPedido(pedidosItem.getStatusPedido())
+                        .descontoAplicado(pedidosItem.getDescontoAplicado())
+                        .valorTotal(pedidosItem.getValorTotal())
                         .cliente(pedidosItem.getCliente())
                         .itens(new ArrayList<>())
                         .build();

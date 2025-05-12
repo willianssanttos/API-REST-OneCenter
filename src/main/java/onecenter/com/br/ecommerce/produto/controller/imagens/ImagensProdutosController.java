@@ -3,7 +3,7 @@ package onecenter.com.br.ecommerce.produto.controller.imagens;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import onecenter.com.br.ecommerce.produto.dto.imagens.request.ImagensProdutosRequest;
 import onecenter.com.br.ecommerce.produto.dto.imagens.response.ImagensProdutosResponse;
-import onecenter.com.br.ecommerce.produto.service.imagem.ImagemProdutoService;
+import onecenter.com.br.ecommerce.pessoa.service.imagem.ImagemProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

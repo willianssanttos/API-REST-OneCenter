@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.produto.service.pessoas.fisica;
+package onecenter.com.br.ecommerce.pessoa.service.pessoas.fisica;
 
 import onecenter.com.br.ecommerce.pessoa.dto.mapper.EnderecoDtoMapper;
 import onecenter.com.br.ecommerce.config.security.config.SecurityConfiguration;
@@ -15,7 +15,7 @@ import onecenter.com.br.ecommerce.pessoa.exception.pessoas.fisica.ObterPessoaPor
 import onecenter.com.br.ecommerce.pessoa.repository.pessoas.IPessoaRepository;
 import onecenter.com.br.ecommerce.pessoa.repository.endereco.IEnderecoRepository;
 import onecenter.com.br.ecommerce.pessoa.repository.pessoas.fisica.IPessoaFisicaRepository;
-import onecenter.com.br.ecommerce.produto.service.endereco.ApiViaCepService;
+import onecenter.com.br.ecommerce.pessoa.service.endereco.ApiViaCepService;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import onecenter.com.br.ecommerce.utils.validacoes.*;
 import org.slf4j.Logger;

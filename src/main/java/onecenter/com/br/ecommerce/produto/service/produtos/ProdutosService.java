@@ -11,7 +11,7 @@ import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 import onecenter.com.br.ecommerce.produto.exception.imagens.ImagensException;
 import onecenter.com.br.ecommerce.produto.repository.categoria.ICategoriaRepository;
 import onecenter.com.br.ecommerce.produto.repository.produtos.IProdutosRepository;
-import onecenter.com.br.ecommerce.produto.service.imagem.FileStorageService;
+import onecenter.com.br.ecommerce.pessoa.service.imagem.FileStorageService;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

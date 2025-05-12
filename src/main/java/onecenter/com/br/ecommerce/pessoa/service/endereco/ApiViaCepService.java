@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.produto.service.endereco;
+package onecenter.com.br.ecommerce.pessoa.service.endereco;
 
 import com.google.gson.Gson;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.BuscarEnderecoNotFoundException;
@@ -36,7 +36,6 @@ public class ApiViaCepService {
             // Converte a resposta JSON para um objeto CepResponse usando Gson
             return new Gson().fromJson(jsonCep.toString(), ViaCepResponse.class);
         } catch (Exception e) {
-            // Lança uma exceção personalizada se ocorrer um erro
             throw new BuscarEnderecoNotFoundException();
         }
     }

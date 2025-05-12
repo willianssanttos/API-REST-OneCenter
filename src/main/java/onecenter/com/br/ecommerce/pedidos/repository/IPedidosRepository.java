@@ -8,5 +8,6 @@ public interface IPedidosRepository {
 
     PedidoEntity criarPedido(PedidoEntity pedido);
     List<PedidoEntity> localizarPedido();
+    List<PedidoEntity> buscarPedidosPorIdPessoa(Integer idPessoa);
 
 }

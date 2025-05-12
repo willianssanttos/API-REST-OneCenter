@@ -27,7 +27,7 @@ public class CupomService {
     public static final Logger logger = LoggerFactory.getLogger(CupomService.class);
 
     @Transactional
-    public CupomResponse cadastrarCupom(CupomRequest cupom){
+    public CupomResponse cadastrarCupom(CupomRequest cupom, Integer token){
         logger.info(Constantes.DebugRegistroProcesso);
         try {
             CupomEntity criarCupom = CupomEntity.builder()
