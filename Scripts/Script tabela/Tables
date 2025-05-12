@@ -59,9 +59,46 @@ CREATE TABLE IF NOT EXISTS imagens_produtos (
 
 CREATE TABLE IF NOT EXISTS pedidos (
     nr_id_pedido SERIAL NOT NULL PRIMARY KEY,
+    dt_pedido TIMESTAMP,
+    ds_status VARCHAR(50),
+    ds_desconto_aplicado NUMERIC,
+    ds_valor_total DOUBLE precision,
+    fk_nr_id_pessoa INT NOT NULL,
+    FOREIGN KEY (fk_nr_id_pessoa) REFERENCES pessoas (nr_id_pessoa)
+);
+
+CREATE TABLE IF NOT EXISTS itens_pedido (
+    nr_id_itens_pedido SERIAL PRIMARY KEY,
+    fk_nr_id_pedido INT NOT NULL,
     fk_nr_id_produto INT NOT NULL,
     ds_quantidade INT NOT NULL,
-    fk_nr_id_pessoa INT NOT NULL,
-    FOREIGN KEY (fk_nr_id_pessoa) REFERENCES pessoas (nr_id_pessoa),
-    FOREIGN KEY (fk_nr_id_produto) REFERENCES produtos (nr_id_produto)
+    ds_preco_unitario DOUBLE precision NOT NULL,
+    FOREIGN KEY (fk_nr_id_pedido) REFERENCES pedidos(nr_id_pedido),
+    FOREIGN KEY (fk_nr_id_produto) REFERENCES produtos(nr_id_produto)
+);
+
+CREATE TABLE IF NOT EXISTS cupons (
+    nr_id_cupom SERIAL PRIMARY KEY,
+    nm_nome_cupom VARCHAR(100) UNIQUE NOT NULL,
+    ds_valor_desconto NUMERIC(10, 2) NOT NULL,
+    ds_data_validade TIMESTAMP NOT NULL,
+    ds_usado BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE cupons_utilizados (
+    nr_id_cupons_utilizados SERIAL PRIMARY KEY,
+    fk_nr_id_cupom INT REFERENCES cupons(nr_id_cupom),
+    fk_nr_id_pessoa INT,
+    ds_data_uso TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE table if not EXISTS pagamentos (
+    nr_id_pagamento SERIAL PRIMARY KEY,
+    ds_forma_pagamento VARCHAR(50) NOT NULL,
+    ds_status_pagamento VARCHAR(50) NOT NULL,
+    ds_valor_total DOUBLE precision,
+    ds_data_pagamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fk_nr_id_pedido INT NOT NULL,
+    fk_nr_id_transacao_externa VARCHAR(255),
+    FOREIGN KEY (fk_nr_id_pedido) REFERENCES pedidos(nr_id_pedido)
 );

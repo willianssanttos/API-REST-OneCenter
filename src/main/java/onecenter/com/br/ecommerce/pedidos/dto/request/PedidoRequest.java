@@ -17,7 +17,6 @@ import java.util.List;
 @NoArgsConstructor
 public class PedidoRequest {
 
-    private PessoaRequest cliente;
     @NotEmpty(message = "O pedido deve conter ao menos um item.")
     @Valid
     private List<ItemPedidoRequest> itens;

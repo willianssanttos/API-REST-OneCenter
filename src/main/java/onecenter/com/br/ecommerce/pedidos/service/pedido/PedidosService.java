@@ -63,11 +63,11 @@ public class PedidosService {
     public static final Logger logger = LoggerFactory.getLogger(PedidosService.class);
 
     @Transactional
-    public PedidoResponse criarPedidos(PedidoRequest pedido){
+    public PedidoResponse criarPedidos(PedidoRequest pedido, Integer token) {
         logger.info(Constantes.DebugRegistroProcesso);
 
         try {
-            PessoaEntity pessoa = iPessoaRepository.buscarIdPessoa(pedido.getCliente().getIdPessoa());
+            PessoaEntity pessoa = iPessoaRepository.buscarIdPessoa(token);
 
             PedidoEntity inserirPedido = PedidoEntity.builder()
                     .cliente(pessoa)
@@ -98,7 +98,7 @@ public class PedidosService {
                 try {
                    BigDecimal valorDesconto = cupomService.validarEAplicarCupom(
                            pedido.getCupomDesconto(),
-                           pedido.getCliente().getIdPessoa()
+                           token
                    );
                    descontos.add(new DescontoPorCupomStrategy(valorDesconto));
                 } catch (Exception e){
@@ -150,8 +150,17 @@ public class PedidosService {
             List<PedidoEntity> pedidos = iPedidosRepository.localizarPedido();
             return pedidos.stream().map(pedidoDtoMapper::mapear).collect(Collectors.toList());
         } catch (Exception e){
-            logger.error(Constantes.ErroRegistrarNoServidor);
+            logger.error(Constantes.ErroRegistrarNoServidor, e);
             throw new ErroAoLocalizarPedidoNotFoundException();
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<PedidoResponse> obterPedidosDoCliente(Integer idPessoa) {
+        List<PedidoEntity> pedidos = iPedidosRepository.buscarPedidosPorIdPessoa(idPessoa);
+        return pedidos.stream()
+                .map(pedidoDtoMapper::mapear)
+                .collect(Collectors.toList());
+    }
+
 }

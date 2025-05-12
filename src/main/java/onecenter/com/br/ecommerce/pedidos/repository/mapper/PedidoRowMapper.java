@@ -28,6 +28,7 @@ public class PedidoRowMapper implements RowMapper<PedidoEntity> {
                 .dataPedido(rs.getTimestamp("dt_pedido"))
                 .statusPedido(rs.getString("ds_status"))
                 .descontoAplicado(rs.getBigDecimal("ds_desconto_aplicado"))
+                .valorTotal(rs.getBigDecimal("ds_valor_total"))
                 .cliente(pessoa)
                 .itens(new ArrayList<>(List.of(itemPedido)))
                 .build();

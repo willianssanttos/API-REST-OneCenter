@@ -1,7 +1,6 @@
 package onecenter.com.br.ecommerce.config.security.userdetails;
 
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,11 +10,14 @@ import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
 
-    @Autowired
-    private PessoaEntity login;
+    private final PessoaEntity login;
 
     public UserDetailsImpl(PessoaEntity login) {
         this.login = login;
+    }
+
+    public PessoaEntity getLogin() {
+        return login;
     }
 
     @Override

@@ -4,14 +4,12 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import onecenter.com.br.ecommerce.config.security.userdetails.UserDetailsImpl;
-import onecenter.com.br.ecommerce.utils.Constantes;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
 @Service
@@ -22,40 +20,36 @@ public class JwtTokenService {
 
     private static final String EMISSOR = "OneCenter";
 
-    public String generateJwtToken(UserDetailsImpl login) {
+    public String generateJwtToken(UserDetailsImpl userDetails) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
+
             return JWT.create()
                     .withIssuer(EMISSOR)
                     .withIssuedAt(Instant.now())
                     .withExpiresAt(Instant.now().plus(4, ChronoUnit.HOURS))
-                    .withSubject(login.getUsername())
+                    .withSubject(userDetails.getUsername()) // email
+                    .withClaim("idPessoa", userDetails.getLogin().getIdPessoa())
+                    .withClaim("vip", userDetails.getLogin().isVip())
+                    .withClaim("rolePrincipal", userDetails.getLogin().getRolePrincipal())
+                    .withClaim("roles", userDetails.getLogin().getRoles().stream()
+                            .map(role -> role.getNomeRole().name()).toList())
                     .sign(algorithm);
-        } catch (JWTCreationException exception){
-            throw new JWTCreationException(Constantes.GerarToken, exception);
+        } catch (JWTCreationException exception) {
+            throw new JWTCreationException("Erro ao gerar token", exception);
         }
     }
 
-    public String getSubjectFromToken(String token) {
+    public DecodedJWT decodeToken(String token) {
         try {
-
             Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
             return JWT.require(algorithm)
                     .withIssuer(EMISSOR)
                     .build()
-                    .verify(token)
-                    .getSubject();
-        } catch (JWTVerificationException exception){
-            throw new JWTVerificationException(Constantes.Token);
+                    .verify(token);
+        } catch (JWTVerificationException exception) {
+            throw new JWTVerificationException("Token inválido ou expirado");
         }
-    }
-
-    private Instant creationDate() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
-    }
-
-    private Instant expirationDate() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 
 }

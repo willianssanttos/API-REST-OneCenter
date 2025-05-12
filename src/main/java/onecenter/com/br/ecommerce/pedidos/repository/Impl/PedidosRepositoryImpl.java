@@ -54,7 +54,7 @@ public class PedidosRepositoryImpl implements IPedidosRepository {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
             String sql = "SELECT * FROM obter_todos_pedidos_completo()";
-                List<PedidoEntity> pedido = jdbcTemplate.query(sql, new PedidoRowMapper());
+            List<PedidoEntity> pedido = jdbcTemplate.query(sql, new PedidoRowMapper());
             return PedidoAgrupado.agruparPedidos(pedido);
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
@@ -62,7 +62,17 @@ public class PedidosRepositoryImpl implements IPedidosRepository {
         }
     }
 
-
-
-
+    @Override
+    @Transactional(readOnly = true)
+    public List<PedidoEntity> buscarPedidosPorIdPessoa(Integer idPessoa) {
+        logger.info(Constantes.DebugBuscarProcesso);
+        try {
+            String sql = "SELECT * FROM obter_pedidos_por_id_pessoa(?)";
+            List<PedidoEntity> pedido = jdbcTemplate.query(sql, new PedidoRowMapper(), idPessoa);
+            return PedidoAgrupado.agruparPedidos(pedido);
+        } catch (DataAccessException e) {
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
+            throw new ErroAoLocalizarPedidoNotFoundException();
+        }
+    }
 }
