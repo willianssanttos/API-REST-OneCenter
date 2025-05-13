@@ -7,6 +7,7 @@ import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedido
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomInvalidoException;
 import onecenter.com.br.ecommerce.pedidos.repository.itemPedido.IItemsPedidoRepository;
 import onecenter.com.br.ecommerce.pedidos.service.cupom.CupomService;
+import onecenter.com.br.ecommerce.pedidos.service.email.EmailService;
 import onecenter.com.br.ecommerce.pedidos.strategy.*;
 import onecenter.com.br.ecommerce.pedidos.strategy.calculadora.CalculadoraDeDesconto;
 import onecenter.com.br.ecommerce.pedidos.strategy.clientevip.ClienteVipStrategy;
@@ -22,6 +23,7 @@ import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.PedidosException;
 import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
+import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoEntity;
 import onecenter.com.br.ecommerce.pessoa.repository.endereco.IEnderecoRepository;
 import onecenter.com.br.ecommerce.pessoa.repository.pessoas.IPessoaRepository;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
@@ -43,6 +45,8 @@ import java.util.stream.Collectors;
 @Service
 public class PedidosService {
 
+    @Autowired
+    private EmailService emailService;
     @Autowired
     private CupomService cupomService;
     @Autowired
@@ -135,6 +139,23 @@ public class PedidosService {
             if(pedido.getCupomDesconto() != null && !pedido.getCupomDesconto().isBlank()){
                 cupomService.marcarCupomComoUsado(pedido.getCupomDesconto());
             }
+
+            String destinatario = pedidoCriado.getCliente().getEmail();
+            String assunto = "Recebemos seu pedido";
+            EnderecoEntity endereco = iEnderecoRepository.obterEnderecoPorIdPessoa(pessoa.getIdPessoa());
+            emailService.enviarEmail(
+                    destinatario,
+                    assunto,
+                    pedidoCriado.getIdPedido(),
+                    pedidoCriado.getStatusPedido(),
+                    pedidoCriado.getDescontoAplicado(),
+                    pedidoCriado.getValorTotal(),
+                    pedidoCriado.getCliente().getNomeRazaosocial(),
+                    pedido.getCupomDesconto(),
+                    pedidoCriado.getCliente().getTelefone(),
+                    endereco,
+                    pedidoCriado.getItens()
+            );
             return pedidoDtoMapper.mapear(pedidoCriado);
         }
             catch (Exception e){
