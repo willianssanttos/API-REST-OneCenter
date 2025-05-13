@@ -62,6 +62,8 @@ public class Constantes {
     public static final String Token = "Token inválido ou expirado!";
     public static final String erroLoginConta = "Usuário ou senha incorretos!";
 
+    public static final String ERRO_ENVIAR_EMAIL = "Erro ao enviar e-mail:";
+
 
 
     // Mensagem de erro de pessoas
