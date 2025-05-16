@@ -159,7 +159,7 @@ public class PedidosService {
             return pedidoDtoMapper.mapear(pedidoCriado);
         }
             catch (Exception e){
-            logger.error(Constantes.ErroRegistrarNoServidor);
+            logger.error(Constantes.ErroRegistrarNoServidor, e);
             throw new PedidosException();
         }
     }
@@ -178,10 +178,15 @@ public class PedidosService {
 
     @Transactional(readOnly = true)
     public List<PedidoResponse> obterPedidosDoCliente(Integer idPessoa) {
-        List<PedidoEntity> pedidos = iPedidosRepository.buscarPedidosPorIdPessoa(idPessoa);
-        return pedidos.stream()
-                .map(pedidoDtoMapper::mapear)
-                .collect(Collectors.toList());
+        logger.info(Constantes.DebugBuscarProcesso);
+        try {
+            List<PedidoEntity> pedidos = iPedidosRepository.buscarPedidosPorIdPessoa(idPessoa);
+            return pedidos.stream()
+                    .map(pedidoDtoMapper::mapear)
+                    .collect(Collectors.toList());
+        } catch (Exception e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e);
+            throw new ErroAoLocalizarPedidoNotFoundException();
+        }
     }
-
 }

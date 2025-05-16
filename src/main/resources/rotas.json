@@ -4,6 +4,10 @@
     "roles": []
   },
   {
+    "path": "/v1/pagamentos/teste-ngrok",
+    "roles": []
+  },
+  {
     "path": "/v1/pessoa/fisica/",
     "roles": []
   },

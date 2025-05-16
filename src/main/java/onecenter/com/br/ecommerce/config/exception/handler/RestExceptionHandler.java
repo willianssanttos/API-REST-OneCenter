@@ -3,6 +3,7 @@ package onecenter.com.br.ecommerce.config.exception.handler;
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomDuplicadoException;
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomException;
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomInvalidoException;
+import onecenter.com.br.ecommerce.pedidos.exception.pagamento.AtualizarStatusPagamentoException;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.ItemPedidoException;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.EnderecoException;
@@ -47,6 +48,7 @@ public class RestExceptionHandler {
             EditarPessoaException.class,
             EditarProdutoException.class,
             DeletarProdutoException.class,
+            AtualizarStatusPagamentoException.class,
             ObterTodasPessoasNotFoundException.class
     })
     public ResponseEntity<ApiError> genericException(Exception ex){

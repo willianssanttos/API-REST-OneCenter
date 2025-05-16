@@ -63,7 +63,7 @@ public class EmailService {
             model.put("cep", endereco.getCep());
             model.put("itensPedidos", itensPedidos);
 
-            Template template = freemarkerConfig.getTemplate("email/email-pedido.ftl");
+            Template template = freemarkerConfig.getTemplate("email/email-pedido-gerado.ftl");
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
 
             helper.setTo(destinatario);

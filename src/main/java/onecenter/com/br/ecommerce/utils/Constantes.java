@@ -97,8 +97,12 @@ public class Constantes {
     public static final String CupomNaoEncontrado = "Cupom não encontrado!";
     public static final String CupomJaUilizado = "Cupom já foi utilizado!";
     public static final String ErroLocalizarInformacaoCupom = "Informação de cupom informado não encontrado!";
-
     public static final String ErroAtualizaStatusCupom = "Não foi possivel atualizar o status do cupom!";
+    public static final String ErroAtualizarStatusPagamentoPedido = "Não foi possivel atualizar o status do pagamento do pedido!";
+    public static final String ErroAoSalvarPreferenciaPagamento = "Não foi possivel registrar preferencia de pagamento!";
+
+
+
 
 
 
