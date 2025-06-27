@@ -60,9 +60,10 @@ public class CategoriaProdutosRepositoryImpl implements ICategoriaRepository {
     public Integer obterCategoriaPorNome(String nomeCategoria) {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String sql = "SELECT * FROM buscar_id_categoria_por_nome(?)";
+            String sql = "SELECT * FROM categorias WHERE nm_categoria = ? ";
             logger.info(Constantes.InfoBuscar, nomeCategoria);
-            return jdbcTemplate.queryForObject(sql, new Object[]{nomeCategoria}, Integer.class);
+            CategoriaEntity categoria = jdbcTemplate.queryForObject(sql, new Object[]{nomeCategoria}, new CategoriaRowMapper());
+            return categoria.getId_categoria();
         } catch (DataAccessException e) {
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             throw new CategoriaNotFoundException();

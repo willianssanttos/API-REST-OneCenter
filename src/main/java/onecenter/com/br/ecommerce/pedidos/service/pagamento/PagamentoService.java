@@ -3,15 +3,18 @@ package onecenter.com.br.ecommerce.pedidos.service.pagamento;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.client.preference.*;
+import com.mercadopago.exceptions.MPApiException;
+import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.payment.Payment;
 import com.mercadopago.resources.preference.Preference;
 import onecenter.com.br.ecommerce.config.mercadopago.MercadoPagoConfiguracao;
+import onecenter.com.br.ecommerce.config.webconfig.ImagemProperties;
 import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.pagamento.AtualizarStatusPagamentoException;
-import onecenter.com.br.ecommerce.pedidos.exception.pagamento.PreferenciaPagamentoException;
 import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
 import onecenter.com.br.ecommerce.pedidos.service.email.EmailService;
+import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,55 +33,60 @@ public class PagamentoService {
     private EmailService emailService;
 
     @Autowired
+    private ImagemProperties imagemProperties;
+    @Autowired
     private IPedidosRepository iPedidosRepository;
+    @Autowired
+    private MercadoPagoConfiguracao mercadoPagoConfiguracao;
+
 
     public static final Logger logger = LoggerFactory.getLogger(PagamentoService.class);
 
-    public String criarPreferenciaPagamento(Integer token, Integer idPedido) {
+    public String criarPreferenciaPagamento(Integer token, Integer idPedido) throws MPException, MPApiException {
         logger.info(Constantes.DebugRegistroProcesso);
 
-        MercadoPagoConfig.setAccessToken("TEST-1640815376925393-012907-1c8105c8165ad989e4ec9bf7b9c7c9ef-211994072");
+        MercadoPagoConfig.setAccessToken(mercadoPagoConfiguracao.getAccessToken());
 
-        try {
-             PedidoEntity pedido = iPedidosRepository.buscarPedidosPorId(idPedido);
+        String baseUrl = imagemProperties.getBaseUrl();
 
-            List<PreferenceItemRequest> items = new ArrayList<>();
-            for (ItemPedidoEntity item : pedido.getItens()) {
-                PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
-                        .id(pedido.getIdPedido().toString())
-                        .title(item.getProdutos().getNome())
-                        .quantity(item.getQuantidade())
-                        .unitPrice(item.getPrecoUnitario())
+        PedidoEntity pedido = iPedidosRepository.buscarPedidosPorId(idPedido);
+
+        PreferenceBackUrlsRequest backUrls =
+                PreferenceBackUrlsRequest.builder()
+                        .success(baseUrl + "/webhook/mercadopago")
+                        .pending(baseUrl + "/webhook/mercadopago")
+                        .failure(baseUrl + "/webhook/mercadopago")
                         .build();
-                items.add(itemRequest);
-            }
 
-            PreferencePayerRequest pagamento = PreferencePayerRequest.builder()
-                    .email(pedido.getCliente().getEmail())
+        List<PreferenceItemRequest> items = new ArrayList<>();
+
+        for (ItemPedidoEntity item : pedido.getItens()) {
+            ProdutosEntity produto = item.getProdutos();
+
+            PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
+                    .id(produto.getIdProduto().toString())
+                    .title(produto.getNome())
+                    .description(produto.getDescricaoProduto())
+                    .pictureUrl(baseUrl + "/uploads/" + produto.getProdutoImagem())
+                    .categoryId(produto.getNomeCategoria())
+                    .quantity(item.getQuantidade())
+                    .currencyId("BRL")
+                    .unitPrice(item.getPrecoUnitario())
                     .build();
 
-            PreferenceRequest preference = PreferenceRequest.builder()
-                    .items(items)
-                    .payer(pagamento)
-                    .backUrls(PreferenceBackUrlsRequest.builder()
-                            .success("http://localhost:8080/webhook/mercadopago")
-                            .failure("http://localhost:8080/webhook/mercadopago")
-                            .pending("http://localhost:8080/webhook/mercadopago")
-                            .build())
-                    .autoReturn("approved")
-                    .build();
-
-            PreferenceClient cliente = new PreferenceClient();
-            Preference preferencia = cliente.create(preference);
-
-            logger.info(Constantes.InfoRegistrar, preferencia);
-            return preferencia.getInitPoint();
-
-        } catch (Exception e) {
-            logger.error(Constantes.ErroRegistrarNoServidor, e);
-            throw new PreferenciaPagamentoException();
+            items.add(itemRequest);
         }
+
+        PreferenceRequest preferenceRequest = PreferenceRequest.builder()
+                .items(items)
+                .backUrls(backUrls)
+                .build();
+        PreferenceClient client = new PreferenceClient();
+        Preference preference = client.create(preferenceRequest);
+
+        return preference.getSandboxInitPoint();
     }
+
 
     public void processarWebhook(Map<String, Object> playload) {
         logger.info(Constantes.DebugRegistroProcesso);

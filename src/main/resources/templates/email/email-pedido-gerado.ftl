@@ -15,7 +15,9 @@
     <h3>📦 Itens do Pedido</h3>
     <#list itensPedidos as item>
         <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+        <#if item.produtos.produtoImagem??>
             <img src="${item.produtos.produtoImagem}" alt="Imagem do produto" width="100" height="100" style="float: left; margin-right: 15px;">
+        </#if>
             <p><strong>${item.produtos.nome}</strong></p>
             <p>Quantidade: ${item.quantidade}</p>
             <p>Preço: R$ ${item.precoUnitario}</p>
