@@ -3,15 +3,12 @@ package onecenter.com.br.ecommerce.pedidos.controller.pagamento;
 import onecenter.com.br.ecommerce.pedidos.service.pagamento.PagamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/webhook")
+@RequestMapping(value = "/mercadopago", method = {RequestMethod.GET, RequestMethod.POST})
 public class WebhookController {
 
     @Autowired
@@ -22,4 +19,5 @@ public class WebhookController {
         pagamentoService.processarWebhook(playload);
         return ResponseEntity.ok().build();
     }
+
 }

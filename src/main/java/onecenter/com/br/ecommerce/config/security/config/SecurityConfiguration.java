@@ -42,7 +42,8 @@ public class SecurityConfiguration {
             "/webjars/**",
             "/uploads/**",
             "/v1/produtos/{id}",
-            "/v1/login/usuario"
+            "/v1/login/usuario",
+            "/webhook/mercadopago"
     };
     public static Map<String, List<String>> rotasMap = new HashMap<>();
 

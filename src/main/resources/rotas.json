@@ -4,7 +4,7 @@
     "roles": []
   },
   {
-    "path": "/v1/pagamentos/teste-ngrok",
+    "path": "/webhook/mercadopago",
     "roles": []
   },
   {

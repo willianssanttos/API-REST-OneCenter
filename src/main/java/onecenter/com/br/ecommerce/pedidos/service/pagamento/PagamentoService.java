@@ -13,6 +13,7 @@ import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.pagamento.AtualizarStatusPagamentoException;
 import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
+import onecenter.com.br.ecommerce.pedidos.repository.pagamentos.IPagamentoRepository;
 import onecenter.com.br.ecommerce.pedidos.service.email.EmailService;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 import onecenter.com.br.ecommerce.utils.Constantes;
@@ -31,11 +32,12 @@ public class PagamentoService {
 
     @Autowired
     private EmailService emailService;
-
     @Autowired
     private ImagemProperties imagemProperties;
     @Autowired
     private IPedidosRepository iPedidosRepository;
+    @Autowired
+    private IPagamentoRepository iPagamentoRepository;
     @Autowired
     private MercadoPagoConfiguracao mercadoPagoConfiguracao;
 
@@ -51,12 +53,12 @@ public class PagamentoService {
 
         PedidoEntity pedido = iPedidosRepository.buscarPedidosPorId(idPedido);
 
-        PreferenceBackUrlsRequest backUrls =
-                PreferenceBackUrlsRequest.builder()
-                        .success(baseUrl + "/webhook/mercadopago")
-                        .pending(baseUrl + "/webhook/mercadopago")
-                        .failure(baseUrl + "/webhook/mercadopago")
-                        .build();
+//        PreferenceBackUrlsRequest backUrls =
+//                PreferenceBackUrlsRequest.builder()
+//                        .success(baseUrl + "/webhook/mercadopago")
+//                        .pending(baseUrl + "/webhook/mercadopago")
+//                        .failure(baseUrl + "/webhook/mercadopago")
+//                        .build();
 
         List<PreferenceItemRequest> items = new ArrayList<>();
 
@@ -79,14 +81,24 @@ public class PagamentoService {
 
         PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                 .items(items)
-                .backUrls(backUrls)
+                .backUrls(PreferenceBackUrlsRequest.builder()
+                        .success(baseUrl + "/webhook/mercadopago")
+                        .pending(baseUrl + "/webhook/mercadopago")
+                        .failure(baseUrl + "/webhook/mercadopago")
+                        .build())
+                .autoReturn("approved")
+                .externalReference(pedido.getIdPedido().toString())
                 .build();
+
+//        PreferenceRequest preferenceRequest = PreferenceRequest.builder()
+//                .items(items)
+//                .backUrls(backUrls)
+//                .build();
         PreferenceClient client = new PreferenceClient();
         Preference preference = client.create(preferenceRequest);
 
         return preference.getSandboxInitPoint();
     }
-
 
     public void processarWebhook(Map<String, Object> playload) {
         logger.info(Constantes.DebugRegistroProcesso);
@@ -97,8 +109,11 @@ public class PagamentoService {
 
             if (pagamento == null) return;
 
+            String externalRef = pagamento.getExternalReference();
+            Integer pedidoId = Integer.parseInt(externalRef);
+
+
             String status = pagamento.getStatus();
-            Long pedidoId = pagamento.getOrder().getId();
 
             Optional<PedidoEntity> pedidoOpt = Optional.ofNullable(iPedidosRepository.buscarPedidosPorId(pedidoId.intValue()));
 
@@ -120,6 +135,15 @@ public class PagamentoService {
                 }
                 logger.info(Constantes.InfoRegistrar, pedido);
                 iPedidosRepository.atualizarStatusPagamento(pedido.getIdPedido(), pedido.getStatusPedido());
+
+                iPagamentoRepository.salvarPagamento(
+                        pagamento.getPaymentMethodId(),
+                        status,
+                        pagamento.getTransactionAmount(),
+                        pagamento.getDateApproved(),
+                        pedido.getIdPedido(),
+                        pagamento.getId().toString()
+                );
 
                 emailService.enviarEmail(
                         pedido.getCliente().getEmail(),
