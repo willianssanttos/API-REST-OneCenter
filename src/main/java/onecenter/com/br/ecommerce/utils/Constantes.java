@@ -2,6 +2,13 @@ package onecenter.com.br.ecommerce.utils;
 
 public class Constantes {
 
+    //Login
+    public static final String AcessoNegadoException = "Você não tem permissão de acesso!";
+    public static final String AcessoNegadoConteudoException = "Cliente não autorizado a acessar este contéudo. Cliente logado: {}";
+
+
+
+
     //Mensagem debug logger
     public static final String DebugRegistroProcesso = "Iniciando o processo de registro no servidor. ";
     public static final String DebugBuscarProcesso = "Iniciando o processo de busca no servidor.";
@@ -98,8 +105,23 @@ public class Constantes {
     public static final String CupomJaUilizado = "Cupom já foi utilizado!";
     public static final String ErroLocalizarInformacaoCupom = "Informação de cupom informado não encontrado!";
     public static final String ErroAtualizaStatusCupom = "Não foi possivel atualizar o status do cupom!";
+
+    //Pagamentos
+
+    public static final String PagamentoDuplicado = "Pagamento {} já processado. Ignorando duplicata!";
+    public static final String ErroAoSalvarPagamento = "Não foi possivel registrar pagamento realizado!";
+    public static final String ErroAoGerarCheckoutDePagamento = "Não foi possivel gerar o chechout pagamento!";
     public static final String ErroAtualizarStatusPagamentoPedido = "Não foi possivel atualizar o status do pagamento do pedido!";
-    public static final String ErroAoSalvarPreferenciaPagamento = "Não foi possivel registrar preferencia de pagamento!";
+    public static final String ErroAoLocalizarPagamentoExistente = "Não foi possivel localizar registro de pagamento existente na base de dados!";
+
+    //Notificação WebHook
+
+    public static final String NotificacaoRecebida = "Recebido webhook: {}";
+    public static final String ErroNotificacaoRecebida = "Erro ao processar webhook do Mercado Pago!";
+    public static final String WebhookIgnorado = "Webhook ignorado. Tipo não suportado: {}";
+    public static final String WebhookTipoPagamento = "Webhook do tipo payment sem campo 'data.id'. Ignorado.";
+
+
 
 
 

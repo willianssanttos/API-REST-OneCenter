@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/mercadopago", method = {RequestMethod.GET, RequestMethod.POST})
+@RequestMapping(value = "/webhook", method = {RequestMethod.GET, RequestMethod.POST})
 public class WebhookController {
 
     @Autowired
@@ -16,8 +16,8 @@ public class WebhookController {
 
     @PostMapping("/mercadopago")
     public ResponseEntity<Void> receberNotificacao(@RequestBody Map<String, Object> playload) {
-        pagamentoService.processarWebhook(playload);
-        return ResponseEntity.ok().build();
+      pagamentoService.processarWebhook(playload);
+      return ResponseEntity.ok().build();
     }
 
 }

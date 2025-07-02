@@ -1,7 +1,5 @@
 package onecenter.com.br.ecommerce.pedidos.controller.pagamento;
 
-import com.mercadopago.exceptions.MPApiException;
-import com.mercadopago.exceptions.MPException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import onecenter.com.br.ecommerce.config.security.userdetails.UserDetailsImpl;
 import onecenter.com.br.ecommerce.pedidos.service.pagamento.PagamentoService;
@@ -22,7 +20,7 @@ public class PagamentoController {
     @PostMapping("/criar/{idPedido}")
     @PreAuthorize("hasRole('CLIENTE')")
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<String> criarPagamento(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable Integer idPedido) throws MPException, MPApiException {
+    public ResponseEntity<String> criarPagamento(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable Integer idPedido) {
         Integer token = user.getLogin().getIdPessoa();
         String urlPagamento = pagamentoService.criarPreferenciaPagamento(token, idPedido);
         return new ResponseEntity<>(urlPagamento, HttpStatus.CREATED);

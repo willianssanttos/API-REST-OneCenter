@@ -4,10 +4,14 @@ import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomDuplicadoExceptio
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomException;
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomInvalidoException;
 import onecenter.com.br.ecommerce.pedidos.exception.pagamento.AtualizarStatusPagamentoException;
+import onecenter.com.br.ecommerce.pedidos.exception.pagamento.CheckoutPagamentoException;
+import onecenter.com.br.ecommerce.pedidos.exception.pagamento.PagamentoException;
+import onecenter.com.br.ecommerce.pedidos.exception.pagamento.PagamentoExistenteExceptionNotFound;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.ItemPedidoException;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.EnderecoException;
 import onecenter.com.br.ecommerce.config.exception.entity.ApiError;
+import onecenter.com.br.ecommerce.pessoa.exception.login.AcessoNegadoException;
 import onecenter.com.br.ecommerce.pessoa.exception.login.ObterLoginNotFoundException;
 import onecenter.com.br.ecommerce.pessoa.exception.login.SenhaValidacaoException;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.*;
@@ -44,6 +48,7 @@ public class RestExceptionHandler {
             ProdutoException.class,
             EnderecoException.class,
             CategoriaException.class,
+            PagamentoException.class,
             ItemPedidoException.class,
             EditarPessoaException.class,
             EditarProdutoException.class,
@@ -63,12 +68,14 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler({
+
             ObterLoginNotFoundException.class,
             CategoriaNotFoundException.class,
             ObterProdutosNotFundException.class,
             ImagemProdutoNotFoundException.class,
             ObterPessoaPorCpfNotFoundException.class,
             ObterPessoaPorCnpjNotFoundException.class,
+            PagamentoExistenteExceptionNotFound.class,
             ErroLocalizarImagemNotFoundException.class,
             ErroLocalizarPessoaNotFoundException.class,
             ErroLocalizarProdutoNotFoundException.class,
@@ -91,6 +98,7 @@ public class RestExceptionHandler {
             NomeValidacaoException.class,
             EmailValidacaoException.class,
             SenhaValidacaoException.class,
+            CheckoutPagamentoException.class,
             NumeroCelularValidacaoException.class
     })
     public ResponseEntity<ApiError> badRequetException(RuntimeException ex) {
@@ -120,6 +128,20 @@ public class RestExceptionHandler {
                 .errors(List.of(ex.getMessage()))
                 .build();
         return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler({
+            AcessoNegadoException.class,
+    })
+    public ResponseEntity<ApiError> unauthorizedAccess(RuntimeException ex) {
+        ApiError apiError = ApiError
+                .builder()
+                .timestamp(LocalDateTime.now())
+                .code(HttpStatus.FORBIDDEN.value())
+                .status(HttpStatus.FORBIDDEN.name())
+                .errors(List.of(ex.getMessage()))
+                .build();
+        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler({

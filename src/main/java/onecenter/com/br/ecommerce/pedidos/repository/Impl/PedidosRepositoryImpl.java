@@ -2,7 +2,7 @@ package onecenter.com.br.ecommerce.pedidos.repository.Impl;
 
 import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoAgrupado;
 import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
-import onecenter.com.br.ecommerce.pedidos.exception.PedidosException;
+import onecenter.com.br.ecommerce.pedidos.exception.pedido.PedidosException;
 import onecenter.com.br.ecommerce.pedidos.exception.pagamento.AtualizarStatusPagamentoException;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
@@ -65,7 +65,7 @@ public class PedidosRepositoryImpl implements IPedidosRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PedidoEntity> buscarPedidosPorIdPessoa(Integer idPessoa) {
+    public List<PedidoEntity>buscarPedidosPorIdPessoa(Integer idPessoa) {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
             String sql = "SELECT * FROM obter_pedidos_por_id_pessoa(?)";
@@ -103,5 +103,4 @@ public class PedidosRepositoryImpl implements IPedidosRepository {
             throw new AtualizarStatusPagamentoException();
         }
     }
-
 }
