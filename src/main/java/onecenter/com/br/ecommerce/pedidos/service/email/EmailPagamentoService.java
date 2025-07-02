@@ -6,7 +6,6 @@ import freemarker.template.TemplateException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
-import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoEntity;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,23 +23,22 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class EmailService {
+public class EmailPagamentoService {
 
     @Autowired
     private JavaMailSender emailSender;
 
     private final Configuration freemarkerConfig;
 
-    public EmailService(@Qualifier("freemarkerConfigPersonalizado") Configuration freemarkerConfig){
+    public EmailPagamentoService(@Qualifier("freemarkerConfigPersonalizado") Configuration freemarkerConfig){
         this.freemarkerConfig = freemarkerConfig;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
+    private static final Logger logger = LoggerFactory.getLogger(EmailPagamentoService.class);
 
-    public void enviarEmail(String destinatario, String assunto,
-                            Integer pedido, String statusPedido, BigDecimal descontoAplicado, BigDecimal valorTotal,
-                            String nomeRazaosocial, String cupomDesconto, String telefone,
-                            EnderecoEntity endereco, List<ItemPedidoEntity> itensPedidos){
+    public void enviarAtualizacaoPagamento(String destinatario, String assunto,
+                            Integer pedido, String statusPedido, BigDecimal valorTotal,
+                            String nomeRazaosocial, List<ItemPedidoEntity> itensPedidos){
 
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
@@ -49,21 +47,18 @@ public class EmailService {
             Map<String, Object> model = new HashMap<>();
             model.put("pedido", pedido);
             model.put("statusPedido", statusPedido);
-            model.put("descontoAplicado", descontoAplicado);
             model.put("valorTotal", valorTotal);
             model.put("nomeRazaosocial", nomeRazaosocial);
-            model.put("cupomDesconto", cupomDesconto);
-            model.put("telefone", telefone);
-            model.put("endereco", endereco);
-            model.put("rua", endereco.getRua());
-            model.put("numero", endereco.getNumero());
-            model.put("bairro", endereco.getBairro());
-            model.put("cidade", endereco.getLocalidade());
-            model.put("estado", endereco.getUf());
-            model.put("cep", endereco.getCep());
             model.put("itensPedidos", itensPedidos);
 
-            Template template = freemarkerConfig.getTemplate("email/email-pedido-gerado.ftl");
+            String templateNome = switch (statusPedido.toUpperCase()) {
+                case "APROVADO" -> "email/email-pagamento-aprovado.ftl";
+                case "REJEITADO" -> "email/email-pagamento-rejeitado.ftl";
+                case "PROCESSANDO" -> "email/email-pagamento-processando.ftl";
+                default -> "email/email-pedido-gerado.ftl";
+            };
+
+            Template template = freemarkerConfig.getTemplate(templateNome);
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
 
             helper.setTo(destinatario);

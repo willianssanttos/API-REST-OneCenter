@@ -4,6 +4,10 @@
     "roles": []
   },
   {
+    "path": "/webhook/mercadopago",
+    "roles": []
+  },
+  {
     "path": "/v1/pessoa/fisica/",
     "roles": []
   },

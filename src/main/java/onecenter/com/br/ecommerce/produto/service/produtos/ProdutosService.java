@@ -66,7 +66,7 @@ public class ProdutosService {
                 .preco(produtoInserido.getPreco())
                 .produtoImagem(String.valueOf(produtoInserido.getProdutoImagem()))
                 .descricaoProduto(produtoInserido.getDescricaoProduto())
-                .nomeCategoria(EnumCategoria.valueOf(produtoInserido.getNomeCategoria()).name())
+                .nomeCategoria(produtoInserido.getNomeCategoria()) //Todo verificar o pobroblema q esta dando nesse retorno
                 .build();
     }
 

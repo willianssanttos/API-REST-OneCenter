@@ -19,6 +19,7 @@ public class ItemPedidoEntity {
     private ProdutosEntity produtos;
     private Integer quantidade;
     private BigDecimal precoUnitario;
+    private String produtoImagem;
     @Override
     public String toString() {
         return "ItemPedidoEntity{" +

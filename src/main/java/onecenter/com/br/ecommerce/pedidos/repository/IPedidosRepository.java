@@ -9,5 +9,7 @@ public interface IPedidosRepository {
     PedidoEntity criarPedido(PedidoEntity pedido);
     List<PedidoEntity> localizarPedido();
     List<PedidoEntity> buscarPedidosPorIdPessoa(Integer idPessoa);
+    PedidoEntity buscarPedidosPorId(Integer idPedido);
+    void atualizarStatusPagamento(Integer idPedido, String novoStatus);
 
 }

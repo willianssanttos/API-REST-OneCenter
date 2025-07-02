@@ -4,7 +4,6 @@ import onecenter.com.br.ecommerce.pedidos.dto.mapper.PedidoDtoMapper;
 import onecenter.com.br.ecommerce.pedidos.dto.request.ItemPedidoRequest;
 import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;
-import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomInvalidoException;
 import onecenter.com.br.ecommerce.pedidos.repository.itemPedido.IItemsPedidoRepository;
 import onecenter.com.br.ecommerce.pedidos.service.cupom.CupomService;
 import onecenter.com.br.ecommerce.pedidos.service.email.EmailService;
@@ -19,8 +18,7 @@ import onecenter.com.br.ecommerce.pessoa.dto.mapper.EnderecoDtoMapper;
 import onecenter.com.br.ecommerce.pedidos.dto.request.PedidoRequest;
 import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoResponse;
 import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
-
-import onecenter.com.br.ecommerce.pedidos.exception.PedidosException;
+import onecenter.com.br.ecommerce.pedidos.exception.pedido.PedidosException;
 import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoEntity;
@@ -99,20 +97,16 @@ public class PedidosService {
             descontos.add(new DescontoProgressivoStrategy());
 
             if(pedido.getCupomDesconto() != null && !pedido.getCupomDesconto().isBlank()){
-                try {
-                   BigDecimal valorDesconto = cupomService.validarEAplicarCupom(
-                           pedido.getCupomDesconto(),
-                           token
-                   );
-                   descontos.add(new DescontoPorCupomStrategy(valorDesconto));
-                } catch (Exception e){
-                    throw new CupomInvalidoException();
-                }
+               BigDecimal valorDesconto = cupomService.validarEAplicarCupom(
+                       pedido.getCupomDesconto(),
+                       token
+               );
+               descontos.add(new DescontoPorCupomStrategy(valorDesconto));
             }
 
             if (Boolean.TRUE.equals(pedido.getAplicarDescontoManual()) &&
-                    pedido.getDescontoLiberado() != null &&
-                    pedido.getDescontoLiberado().compareTo(BigDecimal.ZERO) > 0) {
+                pedido.getDescontoLiberado() != null &&
+                pedido.getDescontoLiberado().compareTo(BigDecimal.ZERO) > 0) {
                 descontos.add(new DescontoManualStrategy(pedido.getDescontoLiberado()));
             }
 
@@ -159,7 +153,7 @@ public class PedidosService {
             return pedidoDtoMapper.mapear(pedidoCriado);
         }
             catch (Exception e){
-            logger.error(Constantes.ErroRegistrarNoServidor);
+            logger.error(Constantes.ErroRegistrarNoServidor, e);
             throw new PedidosException();
         }
     }
@@ -178,10 +172,15 @@ public class PedidosService {
 
     @Transactional(readOnly = true)
     public List<PedidoResponse> obterPedidosDoCliente(Integer idPessoa) {
-        List<PedidoEntity> pedidos = iPedidosRepository.buscarPedidosPorIdPessoa(idPessoa);
-        return pedidos.stream()
-                .map(pedidoDtoMapper::mapear)
-                .collect(Collectors.toList());
+        logger.info(Constantes.DebugBuscarProcesso);
+        try {
+            List<PedidoEntity> pedidos = iPedidosRepository.buscarPedidosPorIdPessoa(idPessoa);
+            return pedidos.stream()
+                    .map(pedidoDtoMapper::mapear)
+                    .collect(Collectors.toList());
+        } catch (Exception e){
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e);
+            throw new ErroAoLocalizarPedidoNotFoundException();
+        }
     }
-
 }

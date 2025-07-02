@@ -1,0 +1,35 @@
+CREATE OR REPLACE FUNCTION public.existe_pagamento(p_id_pagamento character varying)
+ RETURNS boolean
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM pagamentos WHERE fk_nr_id_transacao_externa = p_id_pagamento
+    );
+END;
+$function$
+;
+
+CREATE OR REPLACE PROCEDURE public.salvar_pagamento(IN p_forma_pagamento character varying, IN p_status character varying, IN p_valor numeric, IN p_data_pagamento timestamp without time zone, IN p_id_pedido integer, IN p_id_transacao_externa character varying)
+ LANGUAGE plpgsql
+AS $procedure$
+BEGIN
+    INSERT INTO pagamentos (
+        ds_forma_pagamento,
+        ds_status_pagamento,
+        ds_valor_total,
+        ds_data_pagamento,
+        fk_nr_id_pedido,
+        fk_nr_id_transacao_externa
+    )
+    VALUES (
+        p_forma_pagamento,
+        p_status,
+        p_valor,
+        p_data_pagamento,
+        p_id_pedido,
+        p_id_transacao_externa
+    );
+END;
+$procedure$
+;

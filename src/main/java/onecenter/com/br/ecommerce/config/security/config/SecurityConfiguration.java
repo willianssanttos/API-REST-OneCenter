@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -42,7 +41,9 @@ public class SecurityConfiguration {
             "/swagger-ui/index.html/",
             "/webjars/**",
             "/uploads/**",
-            "/v1/produtos/{id}"
+            "/v1/produtos/{id}",
+            "/v1/login/usuario",
+            "/webhook/mercadopago"
     };
     public static Map<String, List<String>> rotasMap = new HashMap<>();
 

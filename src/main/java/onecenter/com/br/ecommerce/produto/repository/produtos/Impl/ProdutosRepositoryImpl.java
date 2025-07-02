@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.produto.repository.produtos.Impl;
 
+import onecenter.com.br.ecommerce.config.webconfig.ImagemProperties;
 import onecenter.com.br.ecommerce.pessoa.exception.pessoas.ErroLocalizarPessoaNotFoundException;
 import onecenter.com.br.ecommerce.produto.exception.DeletarProdutoException;
 import onecenter.com.br.ecommerce.produto.exception.EditarProdutoException;
@@ -24,6 +25,9 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ImagemProperties imagemProperties;
 
     public static final Logger logger = LoggerFactory.getLogger(ProdutosRepositoryImpl.class);
 
@@ -55,7 +59,8 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
             String sql = "SELECT * FROM buscar_produto_id(?)";
-            return jdbcTemplate.queryForObject(sql,  new ProdutosRowMapper(), IdProduto);
+            String baseUrl = imagemProperties.getBaseUrl();
+            return jdbcTemplate.queryForObject(sql,  new ProdutosRowMapper(baseUrl), IdProduto);
         } catch (DataAccessException e){
             logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             throw new ErroLocalizarPessoaNotFoundException();
@@ -67,7 +72,7 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     public List<String> buscarImagensProduto(Integer idProduto) {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String baseUrl = "http://localhost:8080";
+            String baseUrl = imagemProperties.getBaseUrl();
             String sql = "SELECT ds_caminho FROM buscar_imagens_produto(?)";
             return jdbcTemplate.query(sql, (rs, rowNum) -> baseUrl + rs.getString("ds_caminho"), idProduto);
         } catch (DataAccessException e) {
@@ -82,7 +87,8 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
             String sql = "SELECT * FROM obter_todos_produtos()";
-            List<ProdutosEntity> produtos = jdbcTemplate.query(sql, new ProdutosRowMapper());
+            String baseUrl = imagemProperties.getBaseUrl();
+            List<ProdutosEntity> produtos = jdbcTemplate.query(sql, new ProdutosRowMapper(baseUrl));
             logger.info(Constantes.InfoBuscar, produtos);
             return produtos;
         } catch (DataAccessException e){

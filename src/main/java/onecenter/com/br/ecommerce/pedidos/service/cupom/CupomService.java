@@ -7,8 +7,6 @@ import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomException;
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomInvalidoException;
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomUtilizadoPorClienteException;
 import onecenter.com.br.ecommerce.pedidos.repository.cupom.ICupomRepository;
-import onecenter.com.br.ecommerce.pedidos.strategy.DescontoStrategy;
-import onecenter.com.br.ecommerce.pedidos.strategy.desconto.DescontoPorCupomStrategy;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
