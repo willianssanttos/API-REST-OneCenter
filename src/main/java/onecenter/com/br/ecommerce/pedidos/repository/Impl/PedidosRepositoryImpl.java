@@ -1,7 +1,7 @@
 package onecenter.com.br.ecommerce.pedidos.repository.Impl;
 
 import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoAgrupado;
-import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.PedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.PedidosException;
 import onecenter.com.br.ecommerce.pedidos.exception.pagamento.AtualizarStatusPagamentoException;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;

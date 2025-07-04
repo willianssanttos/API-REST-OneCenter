@@ -9,35 +9,22 @@ import java.nio.file.*;
 @Service
 public class FileStorageService {
 
-    private static final String diretorioUpload = "src/main/resources/static/uploads/";
+    private static final String diretorioUpload = "./uploads/";
 
     public String salvarImagem(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             throw new IOException(Constantes.ArquivoImagemVazio);
         }
 
-        // Caminho do diretório
         Path diretorioPath = Paths.get(diretorioUpload);
-
-        // Criar diretório caso não exista
         if (!Files.exists(diretorioPath)) {
             Files.createDirectories(diretorioPath);
         }
 
-        // Caminho do arquivo no diretório
-        Path caminhoArquivoExistente = diretorioPath.resolve(file.getOriginalFilename());
-
-        // Se a imagem já existir, retorna o mesmo caminho
-        if (Files.exists(caminhoArquivoExistente)) {
-            return "/uploads/" + file.getOriginalFilename();
-        }
-
-        // Gerar um nome único para a imagem caso não exista
         String nomeArquivo = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        Path caminhoArquivoNovo = diretorioPath.resolve(nomeArquivo);
+        Path caminhoArquivo = diretorioPath.resolve(nomeArquivo);
 
-        // Salvar o arquivo
-        Files.copy(file.getInputStream(), caminhoArquivoNovo, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(file.getInputStream(), caminhoArquivo, StandardCopyOption.REPLACE_EXISTING);
 
         return "/uploads/" + nomeArquivo;
     }

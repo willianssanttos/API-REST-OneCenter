@@ -1,6 +1,6 @@
 package onecenter.com.br.ecommerce.pedidos.dto.response;
 
-import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.PedidoEntity;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

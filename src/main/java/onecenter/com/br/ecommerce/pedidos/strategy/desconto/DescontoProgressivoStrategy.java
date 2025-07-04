@@ -1,7 +1,7 @@
 package onecenter.com.br.ecommerce.pedidos.strategy.desconto;
 
-import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
-import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.ItemPedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.PedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.strategy.DescontoStrategy;
 
 import java.math.BigDecimal;

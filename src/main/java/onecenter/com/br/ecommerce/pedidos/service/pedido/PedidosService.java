@@ -2,10 +2,12 @@ package onecenter.com.br.ecommerce.pedidos.service.pedido;
 
 import onecenter.com.br.ecommerce.pedidos.dto.mapper.PedidoDtoMapper;
 import onecenter.com.br.ecommerce.pedidos.dto.request.ItemPedidoRequest;
-import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.ItemPedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pedidos.repository.itemPedido.IItemsPedidoRepository;
+import onecenter.com.br.ecommerce.pedidos.repository.pagamentos.IPagamentoRepository;
 import onecenter.com.br.ecommerce.pedidos.service.cupom.CupomService;
+import onecenter.com.br.ecommerce.pedidos.service.email.EmailPagamentoService;
 import onecenter.com.br.ecommerce.pedidos.service.email.EmailService;
 import onecenter.com.br.ecommerce.pedidos.strategy.*;
 import onecenter.com.br.ecommerce.pedidos.strategy.calculadora.CalculadoraDeDesconto;
@@ -17,7 +19,7 @@ import onecenter.com.br.ecommerce.pedidos.strategy.promocao.PromocaoCategoriaStr
 import onecenter.com.br.ecommerce.pessoa.dto.mapper.EnderecoDtoMapper;
 import onecenter.com.br.ecommerce.pedidos.dto.request.PedidoRequest;
 import onecenter.com.br.ecommerce.pedidos.dto.response.PedidoResponse;
-import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.PedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.PedidosException;
 import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
@@ -59,6 +61,10 @@ public class PedidosService {
     private IProdutosRepository iProdutosRepository;
     @Autowired
     private IEnderecoRepository iEnderecoRepository;
+    @Autowired
+    private IPagamentoRepository iPagamentoRepository;
+    @Autowired
+    private EmailPagamentoService emailPagamentoService;
     @Autowired
     private IItemsPedidoRepository iItemsPedidoRepository;
 
@@ -137,6 +143,7 @@ public class PedidosService {
             String destinatario = pedidoCriado.getCliente().getEmail();
             String assunto = "Recebemos seu pedido";
             EnderecoEntity endereco = iEnderecoRepository.obterEnderecoPorIdPessoa(pessoa.getIdPessoa());
+
             emailService.enviarEmail(
                     destinatario,
                     assunto,

@@ -5,7 +5,8 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
+import onecenter.com.br.ecommerce.config.webconfig.ImagemProperties;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.ItemPedidoEntity;
 import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoEntity;
 import onecenter.com.br.ecommerce.utils.Constantes;
 import org.slf4j.Logger;
@@ -28,6 +29,8 @@ public class EmailService {
 
     @Autowired
     private JavaMailSender emailSender;
+    @Autowired
+    private ImagemProperties imagemProperties;
 
     private final Configuration freemarkerConfig;
 
@@ -49,6 +52,7 @@ public class EmailService {
             Map<String, Object> model = new HashMap<>();
             model.put("pedido", pedido);
             model.put("statusPedido", statusPedido);
+            model.put("baseUrl", imagemProperties.getBaseUrl());
             model.put("descontoAplicado", descontoAplicado);
             model.put("valorTotal", valorTotal);
             model.put("nomeRazaosocial", nomeRazaosocial);

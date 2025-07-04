@@ -1,7 +1,7 @@
 package onecenter.com.br.ecommerce.pedidos.repository.mapper;
 
-import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
-import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.ItemPedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.PedidoEntity;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.pessoa.repository.mapper.PessoaRowMapper;
 import org.springframework.jdbc.core.RowMapper;

@@ -1,6 +1,6 @@
 package onecenter.com.br.ecommerce.pedidos.repository.itemPedido.Impl;
 
-import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.ItemPedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.ItemPedidoException;
 import onecenter.com.br.ecommerce.pedidos.repository.itemPedido.IItemsPedidoRepository;
 import onecenter.com.br.ecommerce.pedidos.repository.mapper.ItemPedidoRowMapper;

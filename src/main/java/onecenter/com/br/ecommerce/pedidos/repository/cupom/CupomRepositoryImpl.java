@@ -1,6 +1,6 @@
 package onecenter.com.br.ecommerce.pedidos.repository.cupom;
 
-import onecenter.com.br.ecommerce.pedidos.entity.CupomEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.CupomEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomException;
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.ErroAtualizarStatusCupomException;
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.ErroLocalizarCupomNotFoundException;

@@ -16,7 +16,7 @@
     <#list itensPedidos as item>
         <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
         <#if item.produtos.produtoImagem??>
-            <img src="${item.produtos.produtoImagem}" alt="Imagem do produto" width="100" height="100" style="float: left; margin-right: 15px;">
+            <img src="${baseUrl}/uploads/${item.produtos.produtoImagem}" alt="Imagem do produto" width="100" height="100">
         </#if>
             <p><strong>${item.produtos.nome}</strong></p>
             <p>Quantidade: ${item.quantidade}</p>

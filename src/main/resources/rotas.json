@@ -4,6 +4,10 @@
     "roles": []
   },
   {
+    "path": "/uploads/**",
+    "roles": []
+  },
+  {
     "path": "/webhook/mercadopago",
     "roles": []
   },
