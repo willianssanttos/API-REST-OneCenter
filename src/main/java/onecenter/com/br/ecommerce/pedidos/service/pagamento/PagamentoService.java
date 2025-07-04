@@ -7,8 +7,8 @@ import com.mercadopago.resources.payment.Payment;
 import com.mercadopago.resources.preference.Preference;
 import onecenter.com.br.ecommerce.config.mercadopago.MercadoPagoConfiguracao;
 import onecenter.com.br.ecommerce.config.webconfig.ImagemProperties;
-import onecenter.com.br.ecommerce.pedidos.entity.ItemPedidoEntity;
-import onecenter.com.br.ecommerce.pedidos.entity.PedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.ItemPedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.PedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.pagamento.AtualizarStatusPagamentoException;
 import onecenter.com.br.ecommerce.pedidos.exception.pagamento.CheckoutPagamentoException;
 import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
@@ -23,11 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PagamentoService {
@@ -124,12 +120,6 @@ public class PagamentoService {
             if (externalRef == null) return;
             Integer pedidoId = Integer.parseInt(externalRef);
 
-            boolean pagamentoJaExiste = iPagamentoRepository.existePagamentoPorId(pagamento.getId().toString());
-            if (pagamentoJaExiste) {
-                logger.info(Constantes.PagamentoDuplicado, pagamento.getId());
-                return;
-            }
-
             Optional<PedidoEntity> pedidoOpt = Optional.ofNullable(iPedidosRepository.buscarPedidosPorId(pedidoId));
             if (pedidoOpt.isPresent()) {
                 PedidoEntity pedido = pedidoOpt.get();
@@ -144,22 +134,29 @@ public class PagamentoService {
 
                 iPedidosRepository.atualizarStatusPagamento(pedido.getIdPedido(), pedido.getStatusPedido());
 
-                iPagamentoRepository.salvarPagamento(
-                        pagamento.getPaymentMethodId(),
-                        status,
-                        pagamento.getTransactionAmount(),
-                        pagamento.getDateApproved(),
-                        pedido.getIdPedido(),
-                        pagamento.getId().toString()
-                );
+                if("approved".equalsIgnoreCase(status)){
+                    boolean pagamentoJaExiste = iPagamentoRepository.existePagamentoPorId(pagamento.getId().toString());
+                    if(!pagamentoJaExiste){
+                        iPagamentoRepository.salvarPagamento(
+                                pagamento.getPaymentMethodId(),
+                                status,
+                                pagamento.getTransactionAmount(),
+                                pagamento.getDateApproved(),
+                                pedido.getIdPedido(),
+                                pagamento.getId().toString()
+                        );
+                    }
+                }
 
                 emailPagamentoService.enviarAtualizacaoPagamento(
                         pedido.getCliente().getEmail(),
                         "Atualização do seu pedido",
                         pedido.getIdPedido(),
                         pedido.getStatusPedido(),
+                        pedido.getDescontoAplicado(),
                         pedido.getValorTotal(),
                         pedido.getCliente().getNomeRazaosocial(),
+                        pedido.getCupomDesconto(),
                         pedido.getItens()
                 );
             }
@@ -169,9 +166,6 @@ public class PagamentoService {
             throw new AtualizarStatusPagamentoException();
         }
     }
-
-
-
 }
 
 

@@ -1,6 +1,6 @@
 package onecenter.com.br.ecommerce.pedidos.repository.cupom;
 
-import onecenter.com.br.ecommerce.pedidos.entity.CupomEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.CupomEntity;
 
 public interface ICupomRepository {
 

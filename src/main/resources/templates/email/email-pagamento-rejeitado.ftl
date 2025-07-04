@@ -2,15 +2,14 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Pagemento aprovado</title>
+    <title>Pagemento Rejeitado</title>
 </head>
 <body style="font-family: Arial, sans-serif;">
 
-    <h2>PAGAMENTO APROVADO</h2>
+    <h2>PAGAMENTO REJEITADO</h2>
     <p>Olá, ${nomeRazaosocial}!<p>
-    <p>O pagamento dos(s) pedidos(s) <strong>#${pedido}</strong> está(o) aprovado(s)!.</strong>.</p><br>
-    <p>Estamos preparando o seu pedido, e notificaremos em breve quando o mesmo tiver em transporte.</p><br>
-    <p>Lembrando: a One Center nunca fará cobranças adicionais após sua compra.</p><br>
+    <p>O pagamento dos(s) pedidos(s) <strong>#${pedido}</strong> foi rejeitado(s)!.</strong>.</p><br>
+    <p>Verifique as informações com administradora financeira o ocorrido.</p><br>
 
     <h3>Confira abaixo os detalhes do seu pedido </h3>
     <p><strong>${statusPedido?lower_case?replace("_", " ")}</p>
@@ -18,9 +17,6 @@
     <h3>📦 Detalhes dos(s) Produtos(s)</h3>
     <#list itensPedidos as item>
         <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-         <#if item.produtos.produtoImagem??>
-                <img src="${baseUrl}/uploads/${item.produtos.produtoImagem}" alt="Imagem do produto" width="100" height="100">
-         </#if>
             <p>Quantidade: ${item.quantidade}</p>
             <p>Preço: R$ ${item.precoUnitario}</p>
             <div style="clear: both;"></div>

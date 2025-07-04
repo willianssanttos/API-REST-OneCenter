@@ -1,4 +1,4 @@
-package onecenter.com.br.ecommerce.pedidos.entity;
+package onecenter.com.br.ecommerce.pedidos.entity.pedido;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

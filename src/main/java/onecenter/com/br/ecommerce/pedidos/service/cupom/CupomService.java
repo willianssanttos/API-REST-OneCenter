@@ -2,7 +2,7 @@ package onecenter.com.br.ecommerce.pedidos.service.cupom;
 
 import onecenter.com.br.ecommerce.pedidos.dto.request.CupomRequest;
 import onecenter.com.br.ecommerce.pedidos.dto.response.CupomResponse;
-import onecenter.com.br.ecommerce.pedidos.entity.CupomEntity;
+import onecenter.com.br.ecommerce.pedidos.entity.pedido.CupomEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomException;
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomInvalidoException;
 import onecenter.com.br.ecommerce.pedidos.exception.cupom.CupomUtilizadoPorClienteException;
