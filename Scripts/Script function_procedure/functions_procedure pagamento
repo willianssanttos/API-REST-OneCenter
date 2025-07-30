@@ -1,3 +1,5 @@
+//validar se pagamento ja consta na base de dados
+
 CREATE OR REPLACE FUNCTION public.existe_pagamento(p_id_pagamento character varying)
  RETURNS boolean
  LANGUAGE plpgsql
@@ -10,6 +12,7 @@ END;
 $function$
 ;
 
+//Realiza o cadastro do pagamento na base de dados
 CREATE OR REPLACE PROCEDURE public.salvar_pagamento(IN p_forma_pagamento character varying, IN p_status character varying, IN p_valor numeric, IN p_data_pagamento timestamp without time zone, IN p_id_pedido integer, IN p_id_transacao_externa character varying)
  LANGUAGE plpgsql
 AS $procedure$
@@ -33,3 +36,46 @@ BEGIN
 END;
 $procedure$
 ;
+
+
+CREATE OR REPLACE FUNCTION buscar_pagamento_por_pedido(p_id_pedido INTEGER)
+RETURNS TABLE (
+    nr_id_pagamento INTEGER,
+    ds_forma_pagamento VARCHAR,
+    ds_status_pagamento VARCHAR,
+    ds_valor_total DOUBLE PRECISION,
+    ds_data_pagamento TIMESTAMP,
+    fk_nr_id_pedido INTEGER,
+    fk_nr_id_transacao_externa VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.nr_id_pagamento,
+        p.ds_forma_pagamento,
+        p.ds_status_pagamento,
+        p.ds_valor_total,
+        p.ds_data_pagamento,
+        p.fk_nr_id_pedido,
+        p.fk_nr_id_transacao_externa
+    FROM pagamentos p
+    WHERE p.fk_nr_id_pedido = p_id_pedido;
+END;
+$$;
+
+
+CREATE OR REPLACE PROCEDURE atualizar_status_estorno(
+    IN p_id_pagamento INTEGER,
+    IN p_status_pagamento VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE pagamentos
+    SET ds_status_pagamento = p_status_pagamento
+    WHERE nr_id_pagamento = p_id_pagamento;
+END;
+$$;
+

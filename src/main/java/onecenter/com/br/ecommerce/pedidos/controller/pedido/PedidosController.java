@@ -47,4 +47,13 @@ public class PedidosController implements IPedidosController {
         List<PedidoResponse> response = pedidosService.obterTodosPedidos();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PostMapping("/cancelar/{idPedido}")
+    @PreAuthorize("hasRole('CLIENTE')")
+    @SecurityRequirement(name = "jwt_auth")
+    public ResponseEntity<Void> cancelarPedido(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable Integer idPedido) {
+        Integer token = user.getLogin().getIdPessoa();
+        pedidosService.cancelarPedido(idPedido, token);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }

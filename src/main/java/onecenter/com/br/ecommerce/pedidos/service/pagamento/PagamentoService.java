@@ -7,6 +7,7 @@ import com.mercadopago.resources.payment.Payment;
 import com.mercadopago.resources.preference.Preference;
 import onecenter.com.br.ecommerce.config.mercadopago.MercadoPagoConfiguracao;
 import onecenter.com.br.ecommerce.config.webconfig.ImagemProperties;
+import onecenter.com.br.ecommerce.pedidos.entity.pagamento.PagamentoEntity;
 import onecenter.com.br.ecommerce.pedidos.entity.pedido.ItemPedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.entity.pedido.PedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.pagamento.AtualizarStatusPagamentoException;
@@ -15,10 +16,11 @@ import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
 import onecenter.com.br.ecommerce.pedidos.repository.pagamentos.IPagamentoRepository;
 import onecenter.com.br.ecommerce.pedidos.service.email.EmailPagamentoService;
 import onecenter.com.br.ecommerce.pessoa.exception.login.AcessoNegadoException;
+import onecenter.com.br.ecommerce.produto.entity.Enums.StatusPagamento;
+import onecenter.com.br.ecommerce.produto.entity.Enums.StatusPedido;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 import onecenter.com.br.ecommerce.produto.repository.produtos.IProdutosRepository;
 import onecenter.com.br.ecommerce.utils.Constantes;
-import onecenter.com.br.ecommerce.utils.TypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,13 +105,12 @@ public class PagamentoService {
                 return;
             }
 
-            Object dataObj = payload.get("data");
-            Optional<Map<String, Object>> dataOpt = TypeUtils.safaCastToMap(dataObj);
-            if (dataOpt.isEmpty() || !dataOpt.get().containsKey("id")) {
+
+            Map<String, Object> data = (Map<String, Object>) payload.get("data");
+            if (data == null || !data.containsKey("id")) {
                 logger.warn(Constantes.WebhookTipoPagamento);
                 return;
             }
-            Map<String, Object> data = dataOpt.get();
 
             Long pagamentoId = Long.parseLong(data.get("id").toString());
             PaymentClient client = new PaymentClient();
@@ -126,10 +127,18 @@ public class PagamentoService {
                 String status = pagamento.getStatus();
 
                 switch (status) {
-                    case "approved" -> pedido.setStatusPedido("APROVADO");
-                    case "rejected" -> pedido.setStatusPedido("REJEITADO");
-                    case "in_process" -> pedido.setStatusPedido("PROCESSANDO");
-                    default -> pedido.setStatusPedido("PENDENTE");
+                    case "approved" -> pedido.setStatusPedido(StatusPagamento.APROVADO.name());
+                    case "rejected" -> pedido.setStatusPedido(StatusPagamento.REJEITADO.name());
+                    case "in_process" -> pedido.setStatusPedido(StatusPagamento.EM_PROCESSO.name());
+                    case "refunded", "cancelled" -> {
+                        pedido.setStatusPedido(StatusPedido.CANCELADO.name());
+                        List<PagamentoEntity> pagamentos = iPagamentoRepository.buscarPagamentoRealizado(pedido.getIdPedido());
+                        pagamentos.stream()
+                                .filter(p -> p.getIdTransacaoExterna().equals(String.valueOf(pagamentoId)))
+                                .findFirst()
+                                .ifPresent(p -> iPagamentoRepository.atualizarStatusEstorno(p.getIdPagamento(), StatusPagamento.ESTORNADO.name()));
+                    }
+                    default -> pedido.setStatusPedido(StatusPedido.PENDENTE.name());
                 }
 
                 iPedidosRepository.atualizarStatusPagamento(pedido.getIdPedido(), pedido.getStatusPedido());

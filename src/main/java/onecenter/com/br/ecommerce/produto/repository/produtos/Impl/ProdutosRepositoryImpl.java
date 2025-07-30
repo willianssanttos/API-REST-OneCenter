@@ -72,7 +72,7 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
     public List<String> buscarImagensProduto(Integer idProduto) {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
-            String baseUrl = imagemProperties.getBaseUrl();
+            String baseUrl = "http://localhost:8080";
             String sql = "SELECT ds_caminho FROM buscar_imagens_produto(?)";
             return jdbcTemplate.query(sql, (rs, rowNum) -> baseUrl + rs.getString("ds_caminho"), idProduto);
         } catch (DataAccessException e) {
@@ -87,7 +87,7 @@ public class ProdutosRepositoryImpl implements IProdutosRepository {
         logger.info(Constantes.DebugBuscarProcesso);
         try {
             String sql = "SELECT * FROM obter_todos_produtos()";
-            String baseUrl = imagemProperties.getBaseUrl();
+            String baseUrl = "http://localhost:8080";
             List<ProdutosEntity> produtos = jdbcTemplate.query(sql, new ProdutosRowMapper(baseUrl));
             logger.info(Constantes.InfoBuscar, produtos);
             return produtos;
