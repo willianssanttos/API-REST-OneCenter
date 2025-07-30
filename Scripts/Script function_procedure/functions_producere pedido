@@ -144,3 +144,18 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+//Atualizar status de pagamento do pedido
+
+CREATE OR REPLACE PROCEDURE public.atualizar_status_pagamento_pedido(
+    IN p_id_pedido integer,
+    IN p_status character varying
+)
+LANGUAGE plpgsql
+AS $procedure$
+BEGIN
+    UPDATE pedidos
+    SET ds_status = p_status
+    WHERE nr_id_pedido = p_id_pedido;
+END;
+$procedure$;
+

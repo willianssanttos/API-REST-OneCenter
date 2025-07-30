@@ -1,8 +1,13 @@
 package onecenter.com.br.ecommerce.pedidos.service.pedido;
 
+import com.mercadopago.MercadoPagoConfig;
+import com.mercadopago.client.payment.PaymentRefundClient;
+import onecenter.com.br.ecommerce.config.mercadopago.MercadoPagoConfiguracao;
 import onecenter.com.br.ecommerce.pedidos.dto.mapper.PedidoDtoMapper;
 import onecenter.com.br.ecommerce.pedidos.dto.request.ItemPedidoRequest;
+import onecenter.com.br.ecommerce.pedidos.entity.pagamento.PagamentoEntity;
 import onecenter.com.br.ecommerce.pedidos.entity.pedido.ItemPedidoEntity;
+import onecenter.com.br.ecommerce.pedidos.exception.pedido.CancelarPedidoException;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pedidos.repository.itemPedido.IItemsPedidoRepository;
 import onecenter.com.br.ecommerce.pedidos.repository.pagamentos.IPagamentoRepository;
@@ -24,8 +29,11 @@ import onecenter.com.br.ecommerce.pedidos.exception.pedido.PedidosException;
 import onecenter.com.br.ecommerce.pedidos.repository.IPedidosRepository;
 import onecenter.com.br.ecommerce.pessoa.entity.PessoaEntity;
 import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoEntity;
+import onecenter.com.br.ecommerce.pessoa.exception.login.AcessoNegadoException;
 import onecenter.com.br.ecommerce.pessoa.repository.endereco.IEnderecoRepository;
 import onecenter.com.br.ecommerce.pessoa.repository.pessoas.IPessoaRepository;
+import onecenter.com.br.ecommerce.produto.entity.Enums.StatusPagamento;
+import onecenter.com.br.ecommerce.produto.entity.Enums.StatusPedido;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 import onecenter.com.br.ecommerce.produto.repository.produtos.IProdutosRepository;
 import onecenter.com.br.ecommerce.utils.Constantes;
@@ -67,6 +75,8 @@ public class PedidosService {
     private EmailPagamentoService emailPagamentoService;
     @Autowired
     private IItemsPedidoRepository iItemsPedidoRepository;
+    @Autowired
+    private MercadoPagoConfiguracao mercadoPagoConfiguracao;
 
     public static final Logger logger = LoggerFactory.getLogger(PedidosService.class);
 
@@ -80,7 +90,7 @@ public class PedidosService {
             PedidoEntity inserirPedido = PedidoEntity.builder()
                     .cliente(pessoa)
                     .dataPedido(Timestamp.valueOf(LocalDateTime.now()))
-                    .statusPedido("AGUARDANDO_PAGAMENTO")
+                    .statusPedido(StatusPagamento.AGUARDANDO_PAGAMENTO.name())
                     .build();
 
             List<ItemPedidoEntity> itens = new ArrayList<>();
@@ -160,8 +170,60 @@ public class PedidosService {
             return pedidoDtoMapper.mapear(pedidoCriado);
         }
             catch (Exception e){
-            logger.error(Constantes.ErroRegistrarNoServidor, e);
+            logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
             throw new PedidosException();
+        }
+    }
+    @Transactional
+    public void cancelarPedido(Integer idPedido, Integer token) {
+        logger.info(Constantes.DebugRegistroProcesso);
+
+        try {
+            PedidoEntity pedido = iPedidosRepository.buscarPedidosPorId(idPedido);
+            if (pedido == null) throw new ErroAoLocalizarPedidoNotFoundException();
+
+            if(!pedido.getCliente().getIdPessoa().equals(token)){
+                logger.warn(Constantes.AcessoNegadoConteudoException, token);
+                throw new AcessoNegadoException();
+            }
+
+            if(StatusPedido.CANCELADO.name().equalsIgnoreCase(pedido.getStatusPedido())) return;
+
+            pedido.setStatusPedido(StatusPedido.CANCELADO.name());
+            iPedidosRepository.atualizarStatusPagamento(pedido.getIdPedido(), StatusPedido.CANCELADO.name());
+
+            MercadoPagoConfig.setAccessToken(mercadoPagoConfiguracao.getAccessToken());
+
+            List<PagamentoEntity> pagamentos = iPagamentoRepository.buscarPagamentoRealizado(idPedido);
+            pagamentos.stream()
+                    .filter(p -> "approved".equalsIgnoreCase(p.getStatusPagamento()))
+                    .forEach(p -> {
+                        try{
+                            Long idTransacao = Long.valueOf(p.getIdTransacaoExterna());
+                            PaymentRefundClient refundClient = new PaymentRefundClient();
+                            refundClient.refund(idTransacao);
+
+                            iPagamentoRepository.atualizarStatusEstorno(p.getIdPagamento(), StatusPagamento.PENDENTE_ESTORNO.name());
+                            logger.info(Constantes.EstornoSolicitado, idTransacao);
+                        } catch (Exception e){
+                            logger.error(Constantes.ErroEstornoPagamento + p.getIdPagamento(), e.getMessage());
+                        }
+                    });
+
+            emailPagamentoService.enviarAtualizacaoPagamento(
+                    pedido.getCliente().getEmail(),
+                    "Cancelamento do Pedido",
+                    pedido.getIdPedido(),
+                    "CANCELADO",
+                    pedido.getDescontoAplicado(),
+                    pedido.getValorTotal(),
+                    pedido.getCliente().getNomeRazaosocial(),
+                    pedido.getCupomDesconto(),
+                    pedido.getItens()
+            );
+        } catch (Exception e){
+            logger.error(Constantes.ErroCancelarPedido, e.getMessage());
+            throw new CancelarPedidoException();
         }
     }
 
@@ -172,7 +234,7 @@ public class PedidosService {
             List<PedidoEntity> pedidos = iPedidosRepository.localizarPedido();
             return pedidos.stream().map(pedidoDtoMapper::mapear).collect(Collectors.toList());
         } catch (Exception e){
-            logger.error(Constantes.ErroRegistrarNoServidor, e);
+            logger.error(Constantes.ErroRegistrarNoServidor, e.getMessage());
             throw new ErroAoLocalizarPedidoNotFoundException();
         }
     }
@@ -186,7 +248,7 @@ public class PedidosService {
                     .map(pedidoDtoMapper::mapear)
                     .collect(Collectors.toList());
         } catch (Exception e){
-            logger.error(Constantes.ErroBuscarRegistroNoServidor, e);
+            logger.error(Constantes.ErroBuscarRegistroNoServidor, e.getMessage());
             throw new ErroAoLocalizarPedidoNotFoundException();
         }
     }

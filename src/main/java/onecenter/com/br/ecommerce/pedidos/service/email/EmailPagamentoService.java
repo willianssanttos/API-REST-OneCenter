@@ -62,6 +62,7 @@ public class EmailPagamentoService {
                 case "APROVADO" -> "email/email-pagamento-aprovado.ftl";
                 case "REJEITADO" -> "email/email-pagamento-rejeitado.ftl";
                 case "PROCESSANDO" -> "email/email-pagamento-processando.ftl";
+                case "CANCELADO" -> "email/email-pedido-cancelado.ftl";
                 default -> "email/email-pedido-gerado.ftl";
             };
 

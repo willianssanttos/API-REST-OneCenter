@@ -85,7 +85,7 @@ public class Constantes {
     //Erros de pedidos
 
     public static final String ErroCadastrarPedido = "Erro ao realizar pedido! Tente novamente mais tarde.";
-
+    public static final String ErroCancelarPedido = "Erro ao realizar cancelamento do pedido! Tente novamente mais tarde.";
     public static final String ErroLocalizarPedido = "Pedidos não localizados! Tente novamente mais tarde.";
 
     public static final String ErroPessoaNãoEncontrada = "Não foi possivel localizar cliente!.";
@@ -109,9 +109,13 @@ public class Constantes {
     //Pagamentos
 
     public static final String PagamentoDuplicado = "Pagamento {} já processado. Ignorando duplicata!";
+    public static final String EstornoSolicitado = "🟢 Estorno solicitado com sucesso para transação {}";
+
+    public static final String ErroEstornoPagamento = "Erro ao estornar pagamento: ";
     public static final String ErroAoSalvarPagamento = "Não foi possivel registrar pagamento realizado!";
     public static final String ErroAoGerarCheckoutDePagamento = "Não foi possivel gerar o chechout pagamento!";
     public static final String ErroAtualizarStatusPagamentoPedido = "Não foi possivel atualizar o status do pagamento do pedido!";
+    public static final String ErroAtualizarStatusEstorno = "Não foi possivel atualizar o status do estorno realizado do cancelamento do pedido!";
     public static final String ErroAoLocalizarPagamentoExistente = "Não foi possivel localizar registro de pagamento existente na base de dados!";
 
     //Notificação WebHook

@@ -7,6 +7,7 @@ import onecenter.com.br.ecommerce.pedidos.exception.pagamento.AtualizarStatusPag
 import onecenter.com.br.ecommerce.pedidos.exception.pagamento.CheckoutPagamentoException;
 import onecenter.com.br.ecommerce.pedidos.exception.pagamento.PagamentoException;
 import onecenter.com.br.ecommerce.pedidos.exception.pagamento.PagamentoExistenteExceptionNotFound;
+import onecenter.com.br.ecommerce.pedidos.exception.pedido.CancelarPedidoException;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.ErroAoLocalizarPedidoNotFoundException;
 import onecenter.com.br.ecommerce.pedidos.exception.pedido.ItemPedidoException;
 import onecenter.com.br.ecommerce.pessoa.exception.endereco.EnderecoException;
@@ -53,6 +54,7 @@ public class RestExceptionHandler {
             EditarPessoaException.class,
             EditarProdutoException.class,
             DeletarProdutoException.class,
+            CancelarPedidoException.class,
             AtualizarStatusPagamentoException.class,
             ObterTodasPessoasNotFoundException.class
     })
