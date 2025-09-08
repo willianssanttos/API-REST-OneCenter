@@ -32,8 +32,8 @@ import onecenter.com.br.ecommerce.pessoa.entity.endereco.EnderecoEntity;
 import onecenter.com.br.ecommerce.pessoa.exception.login.AcessoNegadoException;
 import onecenter.com.br.ecommerce.pessoa.repository.endereco.IEnderecoRepository;
 import onecenter.com.br.ecommerce.pessoa.repository.pessoas.IPessoaRepository;
-import onecenter.com.br.ecommerce.produto.entity.Enums.StatusPagamento;
-import onecenter.com.br.ecommerce.produto.entity.Enums.StatusPedido;
+import onecenter.com.br.ecommerce.pedidos.entity.Enums.StatusPagamento;
+import onecenter.com.br.ecommerce.pedidos.entity.Enums.StatusPedido;
 import onecenter.com.br.ecommerce.produto.entity.produtos.ProdutosEntity;
 import onecenter.com.br.ecommerce.produto.repository.produtos.IProdutosRepository;
 import onecenter.com.br.ecommerce.utils.Constantes;
@@ -90,7 +90,7 @@ public class PedidosService {
             PedidoEntity inserirPedido = PedidoEntity.builder()
                     .cliente(pessoa)
                     .dataPedido(Timestamp.valueOf(LocalDateTime.now()))
-                    .statusPedido(StatusPagamento.AGUARDANDO_PAGAMENTO.name())
+                    .statusPedido(StatusPagamento.PENDING.name())
                     .build();
 
             List<ItemPedidoEntity> itens = new ArrayList<>();
@@ -203,10 +203,10 @@ public class PedidosService {
                             PaymentRefundClient refundClient = new PaymentRefundClient();
                             refundClient.refund(idTransacao);
 
-                            iPagamentoRepository.atualizarStatusEstorno(p.getIdPagamento(), StatusPagamento.PENDENTE_ESTORNO.name());
+                            iPagamentoRepository.atualizarStatusEstorno(p.getIdPagamento(), StatusPagamento.PENDING.name());
                             logger.info(Constantes.EstornoSolicitado, idTransacao);
                         } catch (Exception e){
-                            logger.error(Constantes.ErroEstornoPagamento + p.getIdPagamento(), e.getMessage());
+                            logger.error(Constantes.ErroEstornoPagamento, e.getMessage());
                         }
                     });
 

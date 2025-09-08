@@ -1,5 +1,6 @@
 package onecenter.com.br.ecommerce.pedidos.repository.pagamentos;
 
+import onecenter.com.br.ecommerce.pedidos.entity.pagamento.HistoricoPagamentoNaoAssociadoPedidoEntity;
 import onecenter.com.br.ecommerce.pedidos.entity.pagamento.PagamentoEntity;
 import onecenter.com.br.ecommerce.pedidos.exception.pagamento.AtualizarStatusPagamentoException;
 import onecenter.com.br.ecommerce.pedidos.exception.pagamento.PagamentoException;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -90,5 +92,28 @@ public class PagamentoRepositoryImpl implements IPagamentoRepository{
             logger.error(Constantes.ErroAtualizarStatusEstorno, e.getMessage());
             throw new AtualizarStatusPagamentoException();
         }
+    }
+
+    @Override
+    @Transactional
+    public HistoricoPagamentoNaoAssociadoPedidoEntity historicoPagamentoNaoAssociadoPedido (HistoricoPagamentoNaoAssociadoPedidoEntity historico){
+        logger.info(Constantes.DebugRegistroProcesso);
+        try {
+            String sql = "SELECT salvar_pagamento_nao_associado_pedido(?, ?, ?, ?, ?, ?, ?)";
+            jdbcTemplate.update(sql,
+                    historico.getIdTransacaoExterna(),
+                    historico.getFormaPagamento(),
+                    historico.getStatusPagamento(),
+                    historico.getValorTotal(),
+                    historico.getDataAprovacao(),
+                    historico.getMotivo(),
+                    historico.getDataRegistro()
+            );
+            logger.info(Constantes.InfoRegistrar, historico);
+        } catch (DataAccessException e){
+            logger.error(Constantes.ErroAoSalvarPagamento, e.getMessage());
+            throw new PagamentoException();
+        }
+        return historico;
     }
 }

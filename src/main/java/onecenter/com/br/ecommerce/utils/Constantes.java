@@ -111,7 +111,7 @@ public class Constantes {
     public static final String PagamentoDuplicado = "Pagamento {} já processado. Ignorando duplicata!";
     public static final String EstornoSolicitado = "🟢 Estorno solicitado com sucesso para transação {}";
 
-    public static final String ErroEstornoPagamento = "Erro ao estornar pagamento: ";
+    public static final String ErroEstornoPagamento = "Erro ao estornar pagamento IdPagamento: {}";
     public static final String ErroAoSalvarPagamento = "Não foi possivel registrar pagamento realizado!";
     public static final String ErroAoGerarCheckoutDePagamento = "Não foi possivel gerar o chechout pagamento!";
     public static final String ErroAtualizarStatusPagamentoPedido = "Não foi possivel atualizar o status do pagamento do pedido!";
